@@ -1,9 +1,11 @@
 // use localStorage to store the authority info, which might be sent from server in actual project.
+import {parse} from "qs";
+
 export function getAuthority(str?: string): string | string[] {
-  // return localStorage.getItem('antd-pro-authority') || ['admin', 'user'];
+
   const authorityString =
-    typeof str === 'undefined' ? localStorage.getItem('antd-pro-authority') : str;
-  // authorityString could be admin, "admin", ["admin"]
+    typeof str === 'undefined' ? localStorage.getItem('ship-manager-authority') : str;
+
   let authority;
   try {
     if (authorityString) {
@@ -15,15 +17,27 @@ export function getAuthority(str?: string): string | string[] {
   if (typeof authority === 'string') {
     return [authority];
   }
-  // preview.pro.ant.design only do not use in your production.
-  // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
-  if (!authority && ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
-    return ['admin'];
-  }
+
   return authority;
+}
+
+export function getPageQuery() {
+  return parse(window.location.href.split('?')[1]);
 }
 
 export function setAuthority(authority: string | string[]): void {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+  return localStorage.setItem('ship-manager-authority', JSON.stringify(proAuthority));
+}
+
+export function updateToken(token: string) {
+  if (token === null) {
+    localStorage.removeItem("ship-manager-token")
+  } else {
+    localStorage.setItem('ship-manager-token', token);
+  }
+}
+
+export function getToken() {
+  return localStorage.getItem("ship-manager-token");
 }

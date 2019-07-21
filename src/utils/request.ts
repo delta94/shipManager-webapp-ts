@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import {getToken} from "@/utils/authority";
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -36,6 +37,7 @@ const errorHandler = (error: { response: Response }): Response => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
+    throw error;
   }
   return response;
 };
@@ -46,6 +48,23 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
+});
+
+// request interceptor, change url or options.
+request.interceptors.request.use((url, options) => {
+  let token = getToken();
+  if (token) {
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${token}`
+    };
+  }
+  return (
+    {
+      url: url,
+      options: options
+    }
+  );
 });
 
 export default request;

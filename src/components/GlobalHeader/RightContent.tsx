@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
 import styles from './index.less';
 import NoticeIconView from './NoticeIconView';
 export type SiderTheme = 'light' | 'dark';
@@ -46,7 +45,6 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
       </Tooltip>
       <NoticeIconView />
       <Avatar menu />
-      <SelectLang className={styles.action} />
     </div>
   );
 };

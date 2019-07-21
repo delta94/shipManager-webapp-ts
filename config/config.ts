@@ -8,7 +8,6 @@ const { pwa, primaryColor } = defaultSettings; // preview.pro.ant.design only do
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
-
 const plugins: IPlugin[] = [
   [
     'umi-plugin-react',
@@ -55,7 +54,6 @@ const plugins: IPlugin[] = [
     },
   ],
 ];
-
 export default {
   plugins,
   block: {
@@ -67,7 +65,6 @@ export default {
   },
   devtool: isAntDesignProPreview ? 'source-map' : false,
   // umi routes: https://umijs.org/zh/guide/router.html
-
   routes: [
     {
       path: '/user',
@@ -81,21 +78,29 @@ export default {
           name: 'login',
           path: '/user/login',
           component: './user/login',
-        }
+        },
       ],
     },
     {
+
       path: '/',
       component: '../layouts/BasicLayout',
       Routes: ['src/pages/Authorized'],
-      authority: ['admin', 'user'],
       routes: [
+        { path: '/', redirect: '/welcome' },
         {
-          path: '/',
+          path: '/welcome',
           name: 'welcome',
           icon: 'smile',
+          authority: ['ROLE_USER', 'ROLE_ADMIN'],
           component: './Welcome',
-        }
+        },
+        {
+          name: '403',
+          path: '/exception/403',
+          component: './exception/403',
+          hideInMenu: true
+        },
       ],
     },
     {
@@ -150,13 +155,10 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  /*
   proxy: {
-    '/server/api/': {
-      target: 'https://preview.pro.ant.design/',
+    '/api/': {
+      target: 'http://127.0.0.1:8080/',
       changeOrigin: true,
-      pathRewrite: { '^/server': '' },
     },
   },
-  */
 } as IConfig;
