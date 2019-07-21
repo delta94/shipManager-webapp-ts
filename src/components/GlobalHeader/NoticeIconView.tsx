@@ -5,13 +5,14 @@ import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import { NoticeItem } from '@/models/global';
 import NoticeIcon from '../NoticeIcon';
-import { CurrentUser } from '@/models/user';
+
 import { ConnectProps, ConnectState } from '@/models/connect';
 import styles from './index.less';
+import IAccount from "@/interfaces/IAccount";
 
 export interface GlobalHeaderRightProps extends ConnectProps {
   notices?: NoticeItem[];
-  currentUser?: CurrentUser;
+  currentUser?: IAccount;
   fetchingNotices?: boolean;
   onNoticeVisibleChange?: (visible: boolean) => void;
   onNoticeClear?: (tabName?: string) => void;
@@ -121,7 +122,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
     return (
       <NoticeIcon
         className={styles.action}
-        count={currentUser && currentUser.unreadCount}
+        count={currentUser && 0}
         onItemClick={item => {
           this.changeReadState(item as NoticeItem);
         }}
