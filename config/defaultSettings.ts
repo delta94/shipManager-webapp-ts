@@ -53,7 +53,7 @@ export default {
   "menu": {
     "locale": true
   },
-  "title": "Ant Design Pro",
+  "title": "船务管理系统",
   "pwa": false,
   "iconfontUrl": ""
 } as DefaultSettings;
