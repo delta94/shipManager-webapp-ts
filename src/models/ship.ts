@@ -1,10 +1,10 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 
-import {addShip, infoShip, listShip, listShipMaterial, listShipTypes} from "@/pages/ship/list/service";
+import {addShip, infoShip, listShip, listShipMaterial, listShipTypes} from "@/services/ship";
 import IShip, {IShipMaterial, IShipType} from "@/interfaces/IShip";
 
-export interface StateType {
+export interface ShipStateType {
   data: {
     list: IShip[],
     pagination: {}
@@ -16,12 +16,12 @@ export interface StateType {
 
 export type Effect = (
   action: AnyAction,
-  effects: EffectsCommandMap & { select: <T>(func: (state: StateType) => T) => T },
+  effects: EffectsCommandMap & { select: <T>(func: (state: ShipStateType) => T) => T },
 ) => void;
 
-export interface ModelType {
+export interface ShipModelType {
   namespace: string;
-  state: StateType;
+  state: ShipStateType;
   effects: {
     fetch: Effect
     fetchTypes: Effect
@@ -30,14 +30,14 @@ export interface ModelType {
     target: Effect
   };
   reducers: {
-    save: Reducer<StateType>;
-    saveTypes: Reducer<StateType>;
-    saveMaterial: Reducer<StateType>;
-    loadShip: Reducer<StateType>;
+    save: Reducer<ShipStateType>;
+    saveTypes: Reducer<ShipStateType>;
+    saveMaterial: Reducer<ShipStateType>;
+    loadShip: Reducer<ShipStateType>;
   };
 }
 
-const Model: ModelType = {
+const ShipModel: ShipModelType = {
   namespace: 'ship',
 
   state: {
@@ -108,30 +108,30 @@ const Model: ModelType = {
       return {
         ...state,
         data: action.payload,
-      } as StateType
+      } as ShipStateType
     },
 
     saveTypes(state, action) {
       return {
         ...state,
         types: action.payload,
-      } as StateType
+      } as ShipStateType
     },
 
     saveMaterial(state, action) {
       return {
         ...state,
         materials: action.payload,
-      } as StateType
+      } as ShipStateType
     },
 
     loadShip(state, action) {
       return {
         ...state,
         target: action.payload
-      } as StateType
+      } as ShipStateType
     }
   },
 };
 
-export default Model;
+export default ShipModel;
