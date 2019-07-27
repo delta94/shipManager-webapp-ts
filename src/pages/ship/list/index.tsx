@@ -5,12 +5,10 @@ import {
   Col,
   DatePicker,
   Divider,
-  Dropdown,
   Form,
   Icon,
   Input,
   InputNumber,
-  Menu,
   Row,
   Select,
   message,
@@ -23,13 +21,13 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 
-import { StateType } from './model';
 import CreateForm from './components/CreateForm';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
 import UpdateForm, { FormValsType } from './components/UpdateForm';
-import {TableListData, TableListItem, TableListPagination, TableListParams} from './ship.d';
+import {TableListData, TableListItem, TableListPagination} from './ship.d';
 
 import styles from './style.less';
+import {ShipStateType} from "@/models/ship";
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -38,7 +36,7 @@ const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key =>
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   loading: boolean;
-  ship: StateType;
+  ship: ShipStateType;
 }
 
 interface TableListState {
@@ -56,7 +54,7 @@ interface TableListState {
     ship,
     loading,
   }: {
-    ship: StateType;
+    ship: ShipStateType;
     loading: {
       models: {
         [key: string]: boolean;
@@ -110,7 +108,7 @@ class TableList extends Component<TableListProps, TableListState> {
           <Divider type="vertical" />
           <a onClick={() => this.handleUpdateShip(record)}>修改</a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleDeleteShip(record)}>
+          <Popconfirm title="是否要删除此船舶？" onConfirm={() => this.handleDeleteShip(record)}>
             <a>删除</a>
           </Popconfirm>
         </Fragment>
@@ -148,18 +146,20 @@ class TableList extends Component<TableListProps, TableListState> {
       return newObj;
     }, {});
 
-    const params: Partial<TableListParams> = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
+    const params = {
+      page: pagination.current,
+      size: pagination.pageSize,
       ...formValues,
       ...filters,
     };
+
     if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
+      //@ts-ignore
+      params.sort = `${sorter.field},${sorter.order === "ascend" ? "asc" : "desc"}`;
     }
 
     dispatch({
-      type: 'tableList/fetch',
+      type: 'ship/fetch',
       payload: params,
     });
   };
@@ -403,12 +403,6 @@ class TableList extends Component<TableListProps, TableListState> {
     } = this.props;
 
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
 
     const parentMethods = {
       handleAdd: this.handleAdd,
@@ -427,16 +421,6 @@ class TableList extends Component<TableListProps, TableListState> {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
