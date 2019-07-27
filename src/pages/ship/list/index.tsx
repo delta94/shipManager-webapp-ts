@@ -115,7 +115,7 @@ class TableList extends Component<TableListProps, TableListState> {
   ];
 
   handleViewShip = (record: TableListItem) => {
-    this.props.dispatch(routerRedux.push(`/ship/details/${record.id}`));
+    this.props.dispatch(routerRedux.push(`/ship/profile/${record.id}`));
   };
 
   handleUpdateShip = (record: TableListItem) => {

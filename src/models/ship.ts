@@ -108,7 +108,6 @@ const ShipModel: ShipModelType = {
     },
 
     *target({ payload, callback }, { call, put }) {
-
       let ship = yield call(infoShip, payload);
       yield put({
         type: 'loadShip',
