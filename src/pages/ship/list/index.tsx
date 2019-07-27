@@ -3,12 +3,9 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Divider,
   Form,
-  Icon,
   Input,
-  InputNumber,
   Row,
   Select,
   message,
@@ -16,6 +13,7 @@ import {
 import React, { Component, Fragment } from 'react';
 
 import { Dispatch } from 'redux';
+import {routerRedux} from "dva/router";
 import { FormComponentProps } from 'antd/es/form';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
@@ -117,7 +115,7 @@ class TableList extends Component<TableListProps, TableListState> {
   ];
 
   handleViewShip = (record: TableListItem) => {
-
+    this.props.dispatch(routerRedux.push(`/ship/details/${record.id}`));
   };
 
   handleUpdateShip = (record: TableListItem) => {
@@ -125,7 +123,15 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleDeleteShip = (record: TableListItem) => {
-
+    const { dispatch } = this.props;
+    debugger
+    dispatch({
+      type: "ship/remove",
+      payload: record.id,
+      callback: () => {
+        message.success("船舶删除成功")
+      }
+    })
   };
 
   componentDidMount() {
@@ -172,7 +178,7 @@ class TableList extends Component<TableListProps, TableListState> {
       formValues: {},
     });
     dispatch({
-      type: 'tableList/fetch',
+      type: 'ship/fetch',
       payload: {},
     });
   };

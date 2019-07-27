@@ -1,13 +1,14 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 
-import {addShip, infoShip, listShip, listShipMaterial, listShipTypes} from "@/services/ship";
+import {addShip, infoShip, listShip, deleteShip, listShipMaterial, listShipTypes} from "@/services/ship";
 import IShip, {IShipMaterial, IShipType} from "@/interfaces/IShip";
+import {ITableListPagination} from "@/interfaces/ITableList";
 
 export interface ShipStateType {
   data: {
     list: IShip[],
-    pagination: {}
+    pagination: ITableListPagination
   },
   target?: IShip,
   types: IShipType[],
@@ -27,6 +28,7 @@ export interface ShipModelType {
     fetchTypes: Effect
     fetchMaterial: Effect
     add: Effect
+    remove: Effect
     target: Effect
   };
   reducers: {
@@ -34,6 +36,7 @@ export interface ShipModelType {
     saveTypes: Reducer<ShipStateType>;
     saveMaterial: Reducer<ShipStateType>;
     loadShip: Reducer<ShipStateType>;
+    removeShip: Reducer<ShipStateType>
   };
 }
 
@@ -43,7 +46,11 @@ const ShipModel: ShipModelType = {
   state: {
     data: {
       list: [],
-      pagination: {}
+      pagination: {
+        total: 0,
+        current: 0,
+        pageSize: 0
+      }
     },
     target: undefined,
     types: [],
@@ -91,6 +98,15 @@ const ShipModel: ShipModelType = {
       if (callback) callback();
     },
 
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(deleteShip, payload);
+      yield put({
+        type: 'removeShip',
+        payload: response
+      });
+      if (callback) callback();
+    },
+
     *target({ payload, callback }, { call, put }) {
 
       let ship = yield call(infoShip, payload);
@@ -129,6 +145,22 @@ const ShipModel: ShipModelType = {
       return {
         ...state,
         target: action.payload
+      } as ShipStateType
+    },
+
+    removeShip(state, action) {
+      // @ts-ignore
+      let { list: ship, pagination } = state.data;
+      return {
+        ...state,
+        data: {
+          list: ship.filter(item => item != action.payload),
+          pagination: {
+            total: pagination.total - 1,
+            pageSize: pagination.pageSize,
+            current: pagination.current
+          }
+        }
       } as ShipStateType
     }
   },
