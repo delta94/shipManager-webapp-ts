@@ -92,30 +92,40 @@ export default {
           redirect: '/ship/list',
         },
         {
-          name: '船舶列表',
-          path: '/ship/list',
-          component: './ship/list',
+          path: '/ship',
+          name: '船舶管理',
+          icon: 'book',
+          routes: [
+            {
+              name: '船舶列表',
+              path: '/ship/list',
+              component: './ship/list',
+            },
+            {
+              name: '新建船舶',
+              path: '/ship/create',
+              component: './ship/create',
+            },
+            {
+              name: '船舶详情',
+              path: '/ship/profile/:id',
+              component: './ship/profile',
+              hideInMenu: true,
+            },
+            {
+              name: '更新船舶',
+              path: '/ship/update/:id',
+              component: './ship/update',
+              hideInMenu: true,
+            }
+          ]
         },
-
-        {
-          name: '船舶详情',
-          path: '/ship/profile/:id',
-          component: './ship/profile',
-          hideInMenu: true,
-        },
-
         {
           name: '403',
           path: '/exception/403',
           component: './exception/403',
           hideInMenu: true,
-        },
-
-        {
-          name: 'list',
-          path: '/demo/list',
-          component: './demo/list',
-        },
+        }
       ],
     },
     {

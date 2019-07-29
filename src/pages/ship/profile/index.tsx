@@ -100,7 +100,9 @@ interface ShipProfileState {
 class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
 
   componentWillMount() {
-    if (this.props.match.params && this.props.match.params.id) {
+
+    if (this.props.match.params) {
+      // @ts-ignore
       let shipId = parseInt(this.props.match.params.id, 10);
       setTimeout(() => {
         this.props.dispatch({
@@ -155,8 +157,6 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
           <div className={styles.title}>载重吨信息</div>
           <Table size="middle" bordered={false} pagination={false} dataSource={ship.payloads} columns={payloadColumn} />
         </Card>
-
-
       </PageHeaderWrapper>
     );
   }

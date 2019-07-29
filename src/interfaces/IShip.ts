@@ -21,6 +21,7 @@ export default interface IShip {
   netTone: number;
   sailors: ISailor[];
   payloads: IShipPayload[];
+  sailorCount: number;
   typeName: string;
   typeId: number;
   materialName: string;
