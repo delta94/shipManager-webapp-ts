@@ -19,7 +19,8 @@ import {FormComponentProps} from "antd/es/form";
 import {Dispatch} from "redux";
 import PageHeaderWrapper from "@ant-design/pro-layout/es/PageHeaderWrapper";
 import {ShipStateType} from "@/models/ship";
-import {IShipMaterial, IShipType} from "@/interfaces/IShip";
+import {IShipBusinessArea, IShipMaterial, IShipType} from "@/interfaces/IShip";
+import {TableForm} from "@/pages/ship/create/components/TableForm";
 
 const { Option } = Select;
 
@@ -45,34 +46,35 @@ const fieldLabels = {
   height: '船身高 (米)'
 };
 
-const mockData = {
-  "name": "章云号",
-  "typeId": 1,
-  "materialId": 2,
-  "owner": "李星",
-  "shareInfo": "托管",
-  "registerIdentifier": "2148932",
-  "examineIdentifier": "3820311",
-  "carrierIdentifier": "3233333",
-  "buildAt": "2018-10-09",
-  "assembleAt": "2018-10-09",
-  "harbor": "珠海港",
-  "formerName": "",
-  "grossTone": 138,
-  "netTone": 234,
-  "length": 12,
-  "width": 12,
-  "height": 32,
-  "depth": 32,
-  "createAt": "2018-10-09 22:39:05",
-  "updateAt": "2018-10-09 22:40:47"
-};
+// const mockData = {
+//   "name": "章云号",
+//   "typeId": 1,
+//   "materialId": 2,
+//   "owner": "李星",
+//   "shareInfo": "托管",
+//   "registerIdentifier": "2148932",
+//   "examineIdentifier": "3820311",
+//   "carrierIdentifier": "3233333",
+//   "buildAt": "2018-10-09",
+//   "assembleAt": "2018-10-09",
+//   "harbor": "珠海港",
+//   "formerName": "",
+//   "grossTone": 138,
+//   "netTone": 234,
+//   "length": 12,
+//   "width": 12,
+//   "height": 32,
+//   "depth": 32,
+//   "createAt": "2018-10-09 22:39:05",
+//   "updateAt": "2018-10-09 22:40:47"
+// };
 
 interface ShipCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   submitting: boolean;
   types: IShipType[],
   materials: IShipMaterial[]
+  businessAreas: IShipBusinessArea[]
 }
 
 
@@ -82,6 +84,7 @@ interface ShipCreateProps extends FormComponentProps {
   }) => ({
     types: ship.types,
     materials: ship.materials,
+    businessAreas: ship.businessAreas,
     loading: loading.effects['ship/create'],
   }),
 )
@@ -97,13 +100,14 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
     this.resizeFooterToolbar();
 
     this.props.dispatch({type: 'ship/fetchTypes'});
-
+    this.props.dispatch({type: 'ship/fetchBusinessAreas'});
     this.props.dispatch({type: 'ship/fetchMaterial'});
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }
+
   getErrorInfo = () => {
     const {
       form: { getFieldsError },
@@ -191,7 +195,8 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
       form: { getFieldDecorator },
       submitting,
       types,
-      materials
+      materials,
+      businessAreas
     } = this.props;
     const { width } = this.state;
 
@@ -353,12 +358,10 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
             </Row>
           </Card>
 
-          <Card title="载重吨列表" className={styles.card} bordered={false}>
-            <div>todo</div>
-          </Card>
-
-          <Card title="相关证书信息" className={styles.card} bordered={false}>
-            <div>todo</div>
+          <Card title="载重吨列表" bordered={false}>
+            {getFieldDecorator('payloads', {
+              initialValue: [],
+            })(<TableForm areaList={businessAreas} />)}
           </Card>
 
           <Card title="船员信息" className={styles.card} bordered={false}>

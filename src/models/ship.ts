@@ -1,8 +1,11 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 
-import {addShip, infoShip, listShip, deleteShip, listShipMaterial, listShipTypes} from "@/services/ship";
-import IShip, {IShipMaterial, IShipType} from "@/interfaces/IShip";
+import {
+  addShip, infoShip, listShip, deleteShip, listShipMaterial, listShipTypes,
+  listShipBusinessAreas
+} from "@/services/ship";
+import IShip, {IShipBusinessArea, IShipMaterial, IShipType} from "@/interfaces/IShip";
 import {ITableListPagination} from "@/interfaces/ITableList";
 
 export interface ShipStateType {
@@ -12,6 +15,7 @@ export interface ShipStateType {
   },
   target?: IShip,
   types: IShipType[],
+  businessAreas: IShipBusinessArea[],
   materials: IShipMaterial[]
 }
 
@@ -26,6 +30,7 @@ export interface ShipModelType {
   effects: {
     fetch: Effect
     fetchTypes: Effect
+    fetchBusinessAreas: Effect
     fetchMaterial: Effect
     add: Effect
     remove: Effect
@@ -34,6 +39,7 @@ export interface ShipModelType {
   reducers: {
     save: Reducer<ShipStateType>;
     saveTypes: Reducer<ShipStateType>;
+    saveBusinessAreas: Reducer<ShipStateType>
     saveMaterial: Reducer<ShipStateType>;
     loadShip: Reducer<ShipStateType>;
     removeShip: Reducer<ShipStateType>
@@ -54,7 +60,8 @@ const ShipModel: ShipModelType = {
     },
     target: undefined,
     types: [],
-    materials: []
+    materials: [],
+    businessAreas: [],
   },
 
   effects: {
@@ -85,6 +92,15 @@ const ShipModel: ShipModelType = {
 
       yield put({
         type: 'saveMaterial',
+        payload: response,
+      });
+    },
+
+    *fetchBusinessAreas({ payload }, { call, put }) {
+      const response = yield call(listShipBusinessAreas, payload);
+
+      yield put({
+        type: 'saveBusinessAreas',
         payload: response,
       });
     },
@@ -137,6 +153,13 @@ const ShipModel: ShipModelType = {
       return {
         ...state,
         materials: action.payload,
+      } as ShipStateType
+    },
+
+    saveBusinessAreas(state, action) {
+      return {
+        ...state,
+        businessAreas: action.payload,
       } as ShipStateType
     },
 

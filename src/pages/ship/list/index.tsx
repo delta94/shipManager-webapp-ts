@@ -19,9 +19,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 
-import CreateForm from './components/CreateForm';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import UpdateForm, { FormValsType } from './components/UpdateForm';
 import {TableListData, TableListItem, TableListPagination} from './ship.d';
 
 import styles from './style.less';
@@ -124,7 +122,6 @@ class TableList extends Component<TableListProps, TableListState> {
 
   handleDeleteShip = (record: TableListItem) => {
     const { dispatch } = this.props;
-    debugger
     dispatch({
       type: "ship/remove",
       payload: record.id,
@@ -183,37 +180,6 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
-
-  handleMenuClick = (e: { key: string }) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'tableList/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
   handleSelectRows = (rows: TableListItem[]) => {
     this.setState({
       selectedRows: rows,
@@ -249,45 +215,8 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  handleModalVisible = (flag?: boolean) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  };
-
-  handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
-  };
-
-  handleAdd = (fields: { desc: any }) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'tableList/add',
-      payload: {
-        desc: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.handleModalVisible();
-  };
-
-  handleUpdate = (fields: FormValsType) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'tableList/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
-    });
-
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
+  handleClickAdd = () => {
+    this.props.dispatch(routerRedux.push("/ship/create/"));
   };
 
   renderSimpleForm() {
@@ -335,23 +264,15 @@ class TableList extends Component<TableListProps, TableListState> {
       loading,
     } = this.props;
 
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows } = this.state;
 
-    const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
-    const updateMethods = {
-      handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleUpdate: this.handleUpdate,
-    };
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
                 新建
               </Button>
             </div>
@@ -365,14 +286,6 @@ class TableList extends Component<TableListProps, TableListState> {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null}
       </PageHeaderWrapper>
     );
   }
