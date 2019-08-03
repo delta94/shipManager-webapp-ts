@@ -130,6 +130,11 @@ export default {
               path: '/person/sailor/list',
               name: '船员管理',
               component: './sailor/list'
+            },
+            {
+              path: '/person/sailor/create',
+              name: '新建船员',
+              component: './sailor/create'
             }
           ]
         },
