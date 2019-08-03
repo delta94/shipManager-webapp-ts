@@ -109,14 +109,10 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
   }
 
   getErrorInfo = () => {
-    const {
-      form: { getFieldsError },
-    } = this.props;
+    const { form: { getFieldsError } } = this.props;
     const errors = getFieldsError();
     const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-    if (!errors || errorCount === 0) {
-      return null;
-    }
+    if (!errors || errorCount === 0) { return null }
     const scrollToField = (fieldKey: string) => {
       const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
       if (labelNode) {
@@ -177,15 +173,9 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
     } = this.props;
     validateFieldsAndScroll((error, values) => {
       if (!error) {
-
         values.assembleAt = values.assembleAt.format("YYYY-MM-DD");
         values.buildAt = values.buildAt.format("YYYY-MM-DD");
-
-        // submit the values
-        dispatch({
-          type: 'ship/create',
-          payload: values,
-        });
+        dispatch({ type: 'ship/create', payload: values });
       }
     });
   };

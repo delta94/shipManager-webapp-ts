@@ -46,3 +46,8 @@ export interface IShipBusinessArea {
   remark: string;
 }
 
+export interface IShipMeta {
+  id: number
+  name: string
+}
+

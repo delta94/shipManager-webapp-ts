@@ -121,6 +121,19 @@ export default {
           ]
         },
         {
+          path: '/person',
+          name: '人员管理',
+          icon: 'profile',
+          routes: [
+            { path: '/', redirect: '/person/sailor/list' },
+            {
+              path: '/person/sailor/list',
+              name: '船员管理',
+              component: './sailor/list'
+            }
+          ]
+        },
+        {
           name: '403',
           path: '/exception/403',
           component: './exception/403',

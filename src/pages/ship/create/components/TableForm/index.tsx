@@ -1,4 +1,4 @@
-import { Button, Divider, Input, Select, Popconfirm, Table, message } from 'antd';
+import { Button, Divider, Input, InputNumber, Select, Popconfirm, Table, message } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
 
 const Option = Select.Option;
@@ -10,11 +10,12 @@ import {IShipBusinessArea} from "@/interfaces/IShip";
 interface TableFormDateType {
   key: string;
   area?: string;
-  payload?: string;
+  payload?: number;
   remark?: string;
   isNew?: boolean;
   editable?: boolean;
 }
+
 interface TableFormProps {
   areaList:  IShipBusinessArea[]
   loading?: boolean;
@@ -32,9 +33,7 @@ interface TableFormState {
 export class TableForm extends PureComponent<TableFormProps, TableFormState> {
 
   static getDerivedStateFromProps(nextProps: TableFormProps, preState: TableFormState) {
-    if (isEqual(nextProps.value, preState.value)) {
-      return null;
-    }
+    if (isEqual(nextProps.value, preState.value)) return null;
 
     const areaListMap = {};
 
@@ -74,7 +73,8 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
             </Select>
           );
         }
-        return text
+        let item = this.props.areaList.filter(item => item.id.toString() == text);
+        return item.length > 0 ? item[0].name : text;
       },
     },
     {
@@ -85,19 +85,17 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
-            <Input
-              value={text}
-              onChange={e => this.handleFieldChange(e, 'payload', record.key)}
-              onKeyPress={e => this.handleKeyPress(e, record.key)}
-              placeholder="载重吨"
+            <InputNumber defaultValue={record.payload}
+                         min={0}
+                         onChange={e => this.handleFieldChange(e, 'payload', record.key)}
             />
           );
         }
-        return this.props.areaList;
+        return `${text} 吨`;
       },
     },
     {
-      title: '备注',
+      title: '备注信息',
       dataIndex: 'remark',
       key: 'remark',
       width: '20%',
@@ -168,9 +166,9 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
     };
 
     if (props.areaList && props.areaList.length > 0) {
-        this.props.areaList.forEach(item => {
-          this.state.areaListMap[item.id] = item;
-        });
+      this.props.areaList.forEach(item => {
+        this.state.areaListMap[item.id] = item;
+      });
     }
   }
 
@@ -194,13 +192,13 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
     }
   };
 
-  newMember = () => {
+  handleCreateNewItem = () => {
     const { data = [] } = this.state;
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: `NEW_TEMP_ID_${this.index}`,
       area: '',
-      payload: '',
+      payload: 0,
       remark: '',
       editable: true,
       isNew: true,
@@ -230,6 +228,7 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
     const newData = [...data];
     const target = this.getRowByKey(key, newData);
     if (target) {
+      // number => payload
       target[fieldName] = typeof e === "number" ? e : e.target.value;
       this.setState({ data: newData });
     }
@@ -237,21 +236,17 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
 
   saveRow(e: React.MouseEvent | React.KeyboardEvent, key: string) {
     e.persist();
-    this.setState({
-      loading: true,
-    });
+    this.setState({ loading: true });
     setTimeout(() => {
       if (this.clickedCancel) {
         this.clickedCancel = false;
         return;
       }
       const target = this.getRowByKey(key) || {};
-      if (!target.area || !target.payload) {
+      if (target.area == undefined || target.payload == undefined) {
         message.error('请填写完整信息。');
         (e.target as HTMLInputElement).focus();
-        this.setState({
-          loading: false,
-        });
+        this.setState({ loading: false });
         return;
       }
       delete target.isNew;
@@ -261,10 +256,8 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
       if (onChange) {
         onChange(data);
       }
-      this.setState({
-        loading: false,
-      });
-    }, 500);
+      this.setState({ loading: false });
+    }, 100);
   }
 
   cancel(e: React.MouseEvent, key: string) {
@@ -303,9 +296,9 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
           <Button
             style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
             type="dashed"
-            onClick={this.newMember}
+            onClick={this.handleCreateNewItem}
             icon="plus">
-            新增成员
+            新增记录
           </Button>
       </Fragment>
     )

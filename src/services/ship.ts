@@ -27,7 +27,7 @@ export async function listShipMeta() {
 export async function addShip(params: any) {
   return request('/api/ships', {
     method: 'POST',
-    body: params
+    data: params
   });
 }
 

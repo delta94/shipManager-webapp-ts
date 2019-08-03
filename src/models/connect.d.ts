@@ -6,6 +6,7 @@ import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { UserModelState } from './user';
 import {ShipModelType} from "@/models/ship";
+import {SailorModelType} from "@/models/sailor";
 
 export { GlobalModelState, SettingModelState, UserModelState };
 
@@ -17,7 +18,8 @@ export interface Loading {
     menu?: boolean;
     setting?: boolean;
     user?: boolean;
-    ship?: boolean
+    ship?: boolean;
+    sailor?: boolean;
   };
 }
 
@@ -27,6 +29,7 @@ export interface ConnectState {
   settings: SettingModelState;
   user: UserModelState;
   ship: ShipModelType;
+  sailor: SailorModelType;
 }
 
 export type Effect = (

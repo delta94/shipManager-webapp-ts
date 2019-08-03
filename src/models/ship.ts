@@ -32,7 +32,7 @@ export interface ShipModelType {
     fetchTypes: Effect
     fetchBusinessAreas: Effect
     fetchMaterial: Effect
-    add: Effect
+    create: Effect
     remove: Effect
     target: Effect
   };
@@ -105,7 +105,8 @@ const ShipModel: ShipModelType = {
       });
     },
 
-    *add({ payload, callback }, { call, put }) {
+    *create({ payload, callback }, { call, put }) {
+      debugger
       const response = yield call(addShip, payload);
       yield put({
         type: 'save',
