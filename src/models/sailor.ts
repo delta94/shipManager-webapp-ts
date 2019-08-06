@@ -6,7 +6,8 @@ import {
   addSailor,
   listSailor,
   deleteSailor,
-  listSailorPosition
+  listSailorPosition,
+  infoSailor
 } from "@/services/sailor";
 
 import {ITableListPagination} from "@/interfaces/ITableList";
@@ -21,7 +22,7 @@ export interface SailorModelState {
   },
   positions: ISailorPosition[],
   shipListMeta: IShipMeta[],
-  target?: ISailor,
+  target?: ISailor ,
 }
 export type Effect = (
   action: AnyAction,
@@ -35,6 +36,7 @@ export interface SailorModelType {
     fetch: Effect
     create: Effect
     remove: Effect
+    target: Effect
     fetchShipMetaList: Effect
     fetchPositionTypes: Effect
   };
@@ -44,6 +46,7 @@ export interface SailorModelType {
     saveTypes: ImmerReducer<SailorModelState>;
     saveShipMeta: ImmerReducer<SailorModelState>;
     removeSailor: ImmerReducer<SailorModelState>;
+    targetSailor: ImmerReducer<SailorModelState>;
   };
 }
 
@@ -77,6 +80,15 @@ const SailorModel: SailorModelType = {
         type: 'save',
         payload: response,
       });
+    },
+
+    *target({ payload, callback }, { call, put }) {
+      let sailor = yield call(infoSailor, payload);
+      yield put({
+        type: 'targetSailor',
+        payload: sailor,
+      });
+      callback && callback()
     },
 
     *remove({ payload, callback }, { call, put }) {
@@ -149,6 +161,10 @@ const SailorModel: SailorModelType = {
         ...state,
         shipListMeta: action.payload
       } as SailorModelState
+    },
+
+    targetSailor(state, action) {
+      state.target = action.payload
     }
   },
 };

@@ -113,7 +113,7 @@ class StandardTable extends Component<StandardTableProps<TableListItem>, Standar
     return (
       <div className={styles.standardTable}>
         <Table
-          rowKey={rowKey || 'key'}
+          rowKey={rowKey || 'id'}
           dataSource={list}
           pagination={paginationProps}
           onChange={this.handleTableChange}

@@ -113,11 +113,11 @@ class TableList extends Component<TableListProps, TableListState> {
   ];
 
   handleInfoSailor = (record: TableListItem) => {
-
+    this.props.dispatch(routerRedux.push(`/person/sailor/profile/${record.id}`))
   };
 
   handleUpdateSailor = (record: TableListItem) => {
-
+    this.props.dispatch(routerRedux.push(`/person/sailor/update/${record.id}`))
   };
 
   handleRemoveSailor = (record: TableListItem) => {
@@ -162,7 +162,7 @@ class TableList extends Component<TableListProps, TableListState> {
     }
 
     dispatch({
-      type: 'ship/fetch',
+      type: 'sailor/fetch',
       payload: params,
     });
   };
@@ -174,7 +174,7 @@ class TableList extends Component<TableListProps, TableListState> {
       formValues: {},
     });
     dispatch({
-      type: 'ship/fetch',
+      type: 'sailor/fetch',
       payload: {},
     });
   };
@@ -208,14 +208,14 @@ class TableList extends Component<TableListProps, TableListState> {
       });
 
       dispatch({
-        type: 'ship/fetch',
+        type: 'sailor/fetch',
         payload: values,
       });
     });
   };
 
   handleClickAdd = () => {
-    this.props.dispatch(routerRedux.push("/ship/create/"));
+    this.props.dispatch(routerRedux.push("/person/sailor/create/"));
   };
 
   renderSimpleForm() {

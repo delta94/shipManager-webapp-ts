@@ -15,7 +15,7 @@ const plugins: IPlugin[] = [
       antd: true,
       dva: {
         hmr: true,
-        immer: true
+        immer: true,
       },
       locale: {
         // default false
@@ -37,12 +37,7 @@ const plugins: IPlugin[] = [
               importWorkboxFrom: 'local',
             },
           }
-        : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
-      // dll features https://webpack.js.org/plugins/dll-plugin/
-      // dll: {
-      //   include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-      //   exclude: ['@babel/runtime', 'netlify-lambda'],
-      // },
+        : false
     },
   ],
   [
@@ -118,26 +113,35 @@ export default {
               path: '/ship/update/:id',
               component: './ship/update',
               hideInMenu: true,
-            }
-          ]
+            },
+          ],
         },
         {
           path: '/person',
           name: '人员管理',
           icon: 'profile',
           routes: [
-            { path: '/', redirect: '/person/sailor/list' },
+            {
+              path: '/',
+              redirect: '/person/sailor/list',
+            },
             {
               path: '/person/sailor/list',
               name: '船员管理',
-              component: './sailor/list'
+              component: './sailor/list',
             },
             {
               path: '/person/sailor/create',
               name: '新建船员',
-              component: './sailor/create'
-            }
-          ]
+              component: './sailor/create',
+            },
+            {
+              path: '/person/sailor/profile/:id',
+              name: '船员详情',
+              component: './sailor/profile',
+              hideInMenu: true
+            },
+          ],
         },
         {
           name: '403',
