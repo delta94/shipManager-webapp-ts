@@ -7,7 +7,8 @@ import {
   listSailor,
   deleteSailor,
   listSailorPosition,
-  infoSailor
+  infoSailor,
+  updateSailor
 } from "@/services/sailor";
 
 import {ITableListPagination} from "@/interfaces/ITableList";
@@ -35,6 +36,7 @@ export interface SailorModelType {
   effects: {
     fetch: Effect
     create: Effect
+    update: Effect
     remove: Effect
     target: Effect
     fetchShipMetaList: Effect
@@ -89,6 +91,11 @@ const SailorModel: SailorModelType = {
         payload: sailor,
       });
       callback && callback()
+    },
+
+    *update({ payload, callback }, { call }) {
+      yield call(updateSailor, payload);
+      if (callback) callback();
     },
 
     *remove({ payload, callback }, { call, put }) {

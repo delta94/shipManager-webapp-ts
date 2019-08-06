@@ -141,6 +141,12 @@ export default {
               component: './sailor/profile',
               hideInMenu: true
             },
+            {
+              name: '更新船员',
+              path: '/person/sailor/update/:id',
+              component: './sailor/update',
+              hideInMenu: true,
+            },
           ],
         },
         {

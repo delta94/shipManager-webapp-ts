@@ -72,8 +72,11 @@ const payloadColumn = [
     render: (payload: number) => `${payload} 吨`
   }
 ];
+interface ShipProfileParams {
+  id: string
+}
 
-interface ShipProfileProps extends RouteComponentProps {
+interface ShipProfileProps extends RouteComponentProps<ShipProfileParams> {
   loading: boolean;
   dispatch: Dispatch<any>;
   ship: ShipStateType;
@@ -100,9 +103,7 @@ interface ShipProfileState {
 class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
 
   componentWillMount() {
-
     if (this.props.match.params) {
-      // @ts-ignore
       let shipId = parseInt(this.props.match.params.id, 10);
       setTimeout(() => {
         this.props.dispatch({
