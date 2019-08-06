@@ -12,14 +12,14 @@ export async function listSailorPosition() {
 export async function addSailor(params: any): Promise<ISailor> {
   return request('/api/sailors', {
     method: 'POST',
-    body: params
+    data: params
   });
 }
 
 export async function updateSailor(params: any): Promise<ISailor> {
   return request('/api/sailors', {
     method: 'PUT',
-    body: params
+    data: params
   });
 }
 

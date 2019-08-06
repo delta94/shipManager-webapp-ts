@@ -106,7 +106,6 @@ const ShipModel: ShipModelType = {
     },
 
     *create({ payload, callback }, { call, put }) {
-      debugger
       const response = yield call(addShip, payload);
       yield put({
         type: 'save',

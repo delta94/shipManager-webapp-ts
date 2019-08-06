@@ -2,7 +2,9 @@ import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 
 import {
-  listSailor, listSailorPosition
+  addSailor,
+  listSailor,
+  listSailorPosition
 } from "@/services/sailor";
 
 import {ITableListPagination} from "@/interfaces/ITableList";
@@ -29,6 +31,7 @@ export interface SailorModelType {
   state: SailorModelState;
   effects: {
     fetch: Effect
+    create: Effect
     fetchShipMetaList: Effect
     fetchPositionTypes: Effect
   };
@@ -72,6 +75,10 @@ const SailorModel: SailorModelType = {
       });
     },
 
+    *create({ payload, callback }, { call }) {
+      yield call(addSailor, payload);
+      if (callback) callback();
+    },
 
     *fetchShipMetaList({ payload }, { call, put }) {
       const response = yield call(listShipMeta, payload);

@@ -54,7 +54,20 @@ class SailorCreate extends React.Component<SailorCreateProps>  {
   };
 
   handleSubmit = (e: any) => {
-
+    const { dispatch, form } = this.props;
+    e.preventDefault();
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        // if (values.certFile && values.certFile.fileList) {
+        //   values.certFile = values.certFile.fileList.map(value => value.url).join(";");
+        // }
+        dispatch({
+          type: 'sailor/create',
+          payload: values,
+          callback: this.handleSailorCreated
+        });
+      }
+    });
   };
 
   render() {
