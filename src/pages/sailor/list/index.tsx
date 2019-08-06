@@ -192,15 +192,27 @@ class TableList extends Component<TableListProps, TableListState> {
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-
       let values = {};
 
-      if (fieldsValue.typeId !== undefined) {
-        values["typeId.equals"] = fieldsValue.typeId
+      if (fieldsValue.isAdvanced !== undefined) {
+        if (fieldsValue.isAdvanced == 1) {
+          values["isAdvanced.equals"] = true
+        }
+        if (fieldsValue.isAdvanced == 2) {
+          values["isAdvanced.equals"] = false
+        }
+
+        if (fieldsValue.isAdvanced == 3) {
+          values["isAdvanced.in"] = [true, false]
+        }
       }
 
       if (fieldsValue.name !== undefined) {
         values["name.contains"] = fieldsValue.name;
+      }
+
+      if (fieldsValue.positionId !== undefined) {
+        values["positionId.equals"] = fieldsValue.positionId;
       }
 
       this.setState({
