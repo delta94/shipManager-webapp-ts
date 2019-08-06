@@ -125,6 +125,8 @@ export default {
               path: '/',
               redirect: '/person/sailor/list',
             },
+
+            // sailor
             {
               path: '/person/sailor/list',
               name: '船员管理',
@@ -147,6 +149,30 @@ export default {
               component: './sailor/update',
               hideInMenu: true,
             },
+
+            // manager
+            {
+              path: '/person/manager/list',
+              name: '管理人员列表',
+              component: './manager/list'
+            },
+            {
+              path: '/person/manager/profile/:id',
+              name: '管理人员详情',
+              hideInMenu: true,
+              component: './manager/profile'
+            },
+            {
+              path: '/person/manager/create',
+              name: '新增管理人员',
+              component: './manager/create'
+            },
+            {
+              path: '/person/manager/update/:id',
+              name: '更新管理人员',
+              hideInMenu: true,
+              component: './manager/update'
+            }
           ],
         },
         {

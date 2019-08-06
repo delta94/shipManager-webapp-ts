@@ -50,7 +50,6 @@ const Model: ModelType = {
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
-        debugger
         yield put(
           routerRedux.replace({
             pathname: '/user/login',
