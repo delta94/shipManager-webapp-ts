@@ -8,6 +8,7 @@ import {
   Input,
   Row,
   Select,
+  message
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 
@@ -102,7 +103,7 @@ class TableList extends Component<TableListProps, TableListState> {
           <a onClick={() => this.handleUpdateSailor(record)}>修改</a>
           <Divider type="vertical" />
           <span>
-             <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleRemoveSailor(record)}>
+             <Popconfirm title="是否要删除此船员？" onConfirm={() => this.handleRemoveSailor(record)}>
                 <a>删除</a>
              </Popconfirm>
           </span>
@@ -120,7 +121,13 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleRemoveSailor = (record: TableListItem) => {
-
+    this.props.dispatch({
+      type: "sailor/remove",
+      payload: record.id,
+      callback: () => {
+        message.success("船员已成功删除")
+      }
+    })
   };
 
   componentDidMount() {

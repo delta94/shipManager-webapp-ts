@@ -1,9 +1,11 @@
-import { AnyAction, Reducer } from 'redux';
+import { AnyAction } from 'redux';
 import { EffectsCommandMap } from 'dva';
+import { ImmerReducer } from './connect.d';
 
 import {
   addSailor,
   listSailor,
+  deleteSailor,
   listSailorPosition
 } from "@/services/sailor";
 
@@ -32,14 +34,16 @@ export interface SailorModelType {
   effects: {
     fetch: Effect
     create: Effect
+    remove: Effect
     fetchShipMetaList: Effect
     fetchPositionTypes: Effect
   };
   reducers: {
-    save: Reducer<SailorModelState>;
-    loadSailor: Reducer<SailorModelState>;
-    saveTypes: Reducer<SailorModelState>;
-    saveShipMeta: Reducer<SailorModelState>;
+    save: ImmerReducer<SailorModelState>;
+    loadSailor: ImmerReducer<SailorModelState>;
+    saveTypes: ImmerReducer<SailorModelState>;
+    saveShipMeta: ImmerReducer<SailorModelState>;
+    removeSailor: ImmerReducer<SailorModelState>;
   };
 }
 
@@ -73,6 +77,15 @@ const SailorModel: SailorModelType = {
         type: 'save',
         payload: response,
       });
+    },
+
+    *remove({ payload, callback }, { call, put }) {
+      yield call(deleteSailor, payload);
+      yield put({
+        type: 'removeSailor',
+        payload: payload
+      });
+      if (callback) callback();
     },
 
     *create({ payload, callback }, { call }) {
@@ -112,6 +125,16 @@ const SailorModel: SailorModelType = {
         ...state,
         target: action.payload
       } as SailorModelState
+    },
+
+    removeSailor(state, action) {
+      let { list, pagination } = state.data;
+      state.data.list = list.filter(item => item.id !== action.payload);
+      state.data.pagination = {
+        total: pagination.total - 1,
+        pageSize: pagination.pageSize,
+        current: pagination.current
+      }
     },
 
     saveTypes(state, action) {
