@@ -145,7 +145,7 @@ class ManagerList extends React.Component<ManagerListProps> {
   }
 
   handleInfoManager(record: TableListItem) {
-    this.props.dispatch(routerRedux.push(`/person/manager/details/${record.id}`))
+    this.props.dispatch(routerRedux.push(`/person/manager/profile/${record.id}`))
   }
 
   handleUpdateManager(record: TableListItem) {
