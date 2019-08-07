@@ -11,13 +11,13 @@ import {
   Select,
   Popover,
 } from 'antd';
-import FooterToolbar from './components/FooterToolbar';
+import FooterToolbar from '@/components/FooterToolbar';
 import { connect } from 'dva';
 
 import styles from './style.less';
 import {FormComponentProps} from "antd/es/form";
 import {Dispatch} from "redux";
-import PageHeaderWrapper from "@ant-design/pro-layout/es/PageHeaderWrapper";
+import {PageHeaderWrapper} from "@ant-design/pro-layout";
 import {ShipStateType} from "@/models/ship";
 import {IShipBusinessArea, IShipMaterial, IShipType} from "@/interfaces/IShip";
 import {TableForm} from "@/pages/ship/create/components/TableForm";

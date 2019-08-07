@@ -4,18 +4,32 @@ import {
   Card,
   Button,
   Form,
+  Icon,
   Input,
-  Select
+  Select,
+  Popover,
 } from 'antd';
 import { connect } from 'dva';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
 import {message} from "antd/lib/index";
 import {routerRedux} from "dva/router";
-import styles from "./style.less"
 import {Dispatch} from "redux";
 import {FormComponentProps} from "antd/es/form";
 import {IManagerAssignerPosition} from "@/interfaces/IManager";
 import {ManagerModelState} from "@/models/manager";
+import FooterToolbar from "@/components/FooterToolbar";
+import ManagerCertList from "./components/ManagerCertList";
+import styles from "./style.less"
+
+const fieldLabels = {
+  "name": "管理人员姓名",
+  "identityNumber": "身份证号码",
+  "assignerId": "指定职位",
+  "mobile": "手机号码",
+  "phone": "座机电话",
+  "dept": "部门",
+  "position": "职务"
+};
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -26,6 +40,10 @@ interface ManagerCreateProps extends FormComponentProps {
   assignerPositions: IManagerAssignerPosition[]
 }
 
+interface ShipCreateState {
+  width: string
+}
+
 @connect(({ loading, manager }: {
   manager: ManagerModelState,
   loading: { effects: { [key: string]: boolean } }
@@ -33,22 +51,86 @@ interface ManagerCreateProps extends FormComponentProps {
   submitting: loading.effects['manager/create'],
   assignerPositions: manager.assignerPositions
 }))
-class ManagerCreate extends React.Component<ManagerCreateProps> {
+class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState> {
+
+  state = {
+    width: '100%',
+  };
+
+  certList = [];
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({type: 'manager/fetchAssignerPositions'});
+    window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
+    this.resizeFooterToolbar();
   }
 
-  showModal = () => {
-
+  resizeFooterToolbar = () => {
+    requestAnimationFrame(() => {
+      const sider = document.querySelectorAll('.ant-layout-sider')[0] as HTMLDivElement;
+      if (sider) {
+        const width = `calc(100% - ${sider.style.width})`;
+        const { width: stateWidth } = this.state;
+        if (stateWidth !== width) {
+          this.setState({ width });
+        }
+      }
+    });
   };
 
-  handleSubmit = (e: React.FormEvent) => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
+  getErrorInfo = () => {
+    const { form: { getFieldsError } } = this.props;
+    const errors = getFieldsError();
+    const errorCount = Object.keys(errors).filter(key => errors[key]).length;
+    if (!errors || errorCount === 0) { return null }
+    const scrollToField = (fieldKey: string) => {
+      const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
+      if (labelNode) {
+        labelNode.scrollIntoView(true);
+      }
+    };
+    const errorList = Object.keys(errors).map(key => {
+      if (!errors[key]) {
+        return null;
+      }
+      const errorMessage = errors[key] || [];
+      return (
+        <li key={key} className={styles.errorListItem} onClick={() => scrollToField(key)}>
+          <Icon type="cross-circle-o" className={styles.errorIcon} />
+          <div className={styles.errorMessage}>{errorMessage[0]}</div>
+          <div className={styles.errorField}>{fieldLabels[key]}</div>
+        </li>
+      );
+    });
+    return (
+      <span className={styles.errorIcon}>
+        <Popover
+          title="表单校验信息"
+          content={errorList}
+          overlayClassName={styles.errorPopover}
+          trigger="click"
+          getPopupContainer={(trigger: HTMLElement) => {
+            if (trigger && trigger.parentNode) {
+              return trigger.parentNode as HTMLElement;
+            }
+            return trigger;
+          }}
+        >
+          <Icon type="exclamation-circle" />
+        </Popover>
+        {errorCount}
+      </span>
+    );
+  };
+
+  handleSubmit = () => {
+    const {
+      form: { validateFieldsAndScroll },
+      dispatch,
+    } = this.props;
+    validateFieldsAndScroll((error, values) => {
+      if (!error) {
         dispatch({
           type: 'manager/create',
           payload: values,
@@ -69,6 +151,8 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
       form: { getFieldDecorator }
     } = this.props;
 
+    const { width } = this.state;
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -81,18 +165,11 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
       },
     };
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 4 },
-      },
-    };
-
     return (
       <PageHeaderWrapper title="新管理人员信息">
         <Card title="基本信息" bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="管理人员姓名">
+            <FormItem {...formItemLayout} label={fieldLabels.name}>
               {getFieldDecorator('name', {
                 rules: [
                   {
@@ -103,7 +180,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               })(<Input placeholder="请输入姓名" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="身份证号码">
+            <FormItem {...formItemLayout} label={fieldLabels.identityNumber}>
               {getFieldDecorator('identityNumber', {
                 rules: [
                   {
@@ -114,7 +191,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               })(<Input placeholder="请输入身份证号码" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="指定职位">
+            <FormItem {...formItemLayout} label={fieldLabels.assignerId}>
               {getFieldDecorator('assignerId', {
                 rules: [
                   {
@@ -133,7 +210,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               )}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="手机号码">
+            <FormItem {...formItemLayout} label={fieldLabels.mobile}>
               {getFieldDecorator('mobile', {
                 rules: [
                   {
@@ -144,7 +221,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               })(<Input placeholder="请输入手机" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="座机电话">
+            <FormItem {...formItemLayout} label={fieldLabels.phone}>
               {getFieldDecorator('phone', {
                 rules: [
                   {
@@ -155,7 +232,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               })(<Input placeholder="请输入座机电话" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="部门">
+            <FormItem {...formItemLayout} label={fieldLabels.dept}>
               {getFieldDecorator('dept', {
                 rules: [
                   {
@@ -166,8 +243,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
               })(<Input placeholder="请输入部门" />)}
             </FormItem>
 
-
-            <FormItem {...formItemLayout} label="职务">
+            <FormItem {...formItemLayout} label={fieldLabels.position}>
               {getFieldDecorator('position', {
                 rules: [
                   {
@@ -177,25 +253,18 @@ class ManagerCreate extends React.Component<ManagerCreateProps> {
                 ],
               })(<Input placeholder="请输入职务" />)}
             </FormItem>
-
-
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                保存
-              </Button>
-            </FormItem>
           </Form>
-        </Card>
 
-        <Card className={styles.certSection} title="资格证书信息" bordered={false}>
-          <Button
-            type="dashed"
-            style={{ width: '100%', marginBottom: 8 }}
-            icon="plus"
-            onClick={this.showModal}
-          >
-            添加
-          </Button>
+          <Card title="资格证书" bordered={false}>
+            <ManagerCertList certList={this.certList}/>
+          </Card>
+
+          <FooterToolbar style={{ width }}>
+            {this.getErrorInfo()}
+            <Button type="primary" onClick={this.handleSubmit} loading={submitting}>
+              创建管理人员
+            </Button>
+          </FooterToolbar>
         </Card>
       </PageHeaderWrapper>
     )
