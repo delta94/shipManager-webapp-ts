@@ -12,15 +12,20 @@ export interface IManager {
 }
 
 export interface IManagerCert {
-  id: number;
+  id: number | string;
   name: string;
   identityNumber: string;
-  expiredAt: Date;
-  ossFile: string;
+  expiredAt: string;
+
   remark: string;
   managerId: number;
   typeName: string;
   typeId: number;
+
+  ossFile?: string;
+  icon?: string,
+  managerName?: string
+  typeRemark?: string
 }
 
 export interface IManagerCertType {

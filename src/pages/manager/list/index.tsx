@@ -73,7 +73,7 @@ class ManagerList extends React.Component<ManagerListProps> {
 
     {
       title: '操作',
-      render: (text, record: TableListItem) => (
+      render: (text: any, record: TableListItem) => (
         <Fragment>
           <a onClick={() => this.handleInfoManager(record)}>详情</a>
           <Divider type="vertical" />
@@ -209,7 +209,7 @@ class ManagerList extends React.Component<ManagerListProps> {
   };
 
   handleCreateManager = () => {
-    this.props.dispatch(routerRedux.push("/person/manager/add"))
+    this.props.dispatch(routerRedux.push("/person/manager/create"))
   };
 
   handleSelectRows = (rows: TableListItem[]) => {

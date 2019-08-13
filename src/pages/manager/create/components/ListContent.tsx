@@ -10,15 +10,12 @@ interface ListContentProps {
 const ListContent: React.FunctionComponent<ListContentProps> = ( { item }) => (
   <div className={styles.listContent}>
     <div className={styles.listContentItem}>
-      <span>Owner</span>
+      <span>证书名称</span>
       <p>{item.name}</p>
     </div>
     <div className={styles.listContentItem}>
-      <span>过期时间</span>
+      <span>证书过期时间</span>
       <p>{moment(item.expiredAt).format('YYYY-MM-DD HH:mm')}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      todo
     </div>
   </div>
 );

@@ -1,74 +1,54 @@
 @import '~antd/es/style/themes/default.less';
 
-.standardList {
-  :global {
-    .ant-card-head {
-      border-bottom: none;
-    }
-    .ant-card-head-title {
-      padding: 24px 0;
-      line-height: 32px;
-    }
-    .ant-card-extra {
-      padding: 24px 0;
-    }
-    .ant-list-pagination {
-      margin-top: 24px;
-      text-align: right;
-    }
-    .ant-avatar-lg {
-      width: 48px;
-      height: 48px;
-      line-height: 48px;
-    }
+.headerInfo {
+  position: relative;
+  text-align: center;
+  & > span {
+    display: inline-block;
+    margin-bottom: 4px;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+    line-height: 22px;
   }
-  .headerInfo {
-    position: relative;
-    text-align: center;
-    & > span {
-      display: inline-block;
-      margin-bottom: 4px;
-      color: @text-color-secondary;
-      font-size: @font-size-base;
+  & > p {
+    margin: 0;
+    color: @heading-color;
+    font-size: 24px;
+    line-height: 32px;
+  }
+  & > em {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 56px;
+    background-color: @border-color-split;
+  }
+}
+
+
+.listContent {
+  flex: 1;
+  .listContentItem {
+    display: inline-block;
+    margin-left: 40px;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+    vertical-align: middle;
+    > span {
+      line-height: 20px;
+    }
+    > p {
+      margin-top: 4px;
+      margin-bottom: 0;
       line-height: 22px;
     }
-    & > p {
-      margin: 0;
-      color: @heading-color;
-      font-size: 24px;
-      line-height: 32px;
-    }
-    & > em {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 1px;
-      height: 56px;
-      background-color: @border-color-split;
-    }
   }
-  .listContent {
-    font-size: 0;
-    .listContentItem {
-      display: inline-block;
-      margin-left: 40px;
-      color: @text-color-secondary;
-      font-size: @font-size-base;
-      vertical-align: middle;
-      > span {
-        line-height: 20px;
-      }
-      > p {
-        margin-top: 4px;
-        margin-bottom: 0;
-        line-height: 22px;
-      }
-    }
-  }
-  .extraContentSearch {
-    width: 272px;
-    margin-left: 16px;
-  }
+}
+
+.extraContentSearch {
+  width: 272px;
+  margin-left: 16px;
 }
 
 @media screen and (max-width: @screen-xs) {

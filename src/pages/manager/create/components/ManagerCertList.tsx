@@ -1,57 +1,48 @@
 import * as React from "react"
-
 import Button from "antd/es/button/button";
 import List from "antd/es/list";
-import MoreBtn from "./MoreBtn";
 import {findDOMNode} from "react-dom";
-import Avatar from "antd/es/avatar";
+import {Avatar, Popconfirm} from "antd";
 import ListContent from "./ListContent";
 import {IManagerCert} from "@/interfaces/IManager";
 
-
 interface ManagerCertListProps {
-   certList: IManagerCert[]
+  removeCertItem(value: IManagerCert): void
+  showCreateModal: (value: IManagerCert | undefined) => void
 }
 
-interface MangerCertListState {
-  visible: boolean;
-  done: boolean;
-  current?: Partial<IManagerCert>;
+interface ManagerCertListState {
+  certList: IManagerCert[]
 }
 
-class ManagerCertList extends React.Component<ManagerCertListProps, MangerCertListState> {
+class ManagerCertList extends React.Component<ManagerCertListProps, ManagerCertListState> {
+
+  static getDerivedStateFromProps(nextProps: any) {
+    // Should be a controlled component.
+    if ('value' in nextProps) {
+      return {
+        ...(nextProps.value || {}),
+      };
+    }
+    return null;
+  }
+
+  state = {
+      certList: []
+  }
 
   addBtn: HTMLButtonElement | undefined | null = undefined;
 
-  showEditModal = (item: any) => {
-
+  handleEditItem = (e: any, item: IManagerCert) => {
+    this.props.showCreateModal(item);
   };
 
-  handleEditItem = (e: React.MouseEvent, item: any) => {
-    e.preventDefault();
-    this.showEditModal(item);
-  };
-
-  handleDone = () => {
-    setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
-    this.setState({
-      done: false,
-      visible: false,
-    });
-  };
-
-  handleCancel = () => {
-    setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
-    this.setState({
-      visible: false,
-    });
+  handleRemoveItem = (e: any, item: IManagerCert) => {
+    this.props.removeCertItem(item)
   };
 
   showModal = () => {
-    this.setState({
-      visible: true,
-      current: undefined,
-    });
+    this.props.showCreateModal(undefined);
   };
 
   render() {
@@ -72,19 +63,20 @@ class ManagerCertList extends React.Component<ManagerCertListProps, MangerCertLi
         <List
           size="large"
           rowKey="id"
-
-          dataSource={this.props.certList}
+          dataSource={this.state.certList}
           renderItem={(item: IManagerCert) => (
             <List.Item
               actions={[
                 <a key="edit" onClick={(e) => this.handleEditItem(e, item)}>
                   编辑
                 </a>,
-                <MoreBtn key="more" />,
+                <Popconfirm title="是否要删除此行？" onConfirm={(e) => this.handleRemoveItem(e, item)}>
+                  <a>删除</a>
+                </Popconfirm>
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar shape="square" size="large" />}
+                avatar={<Avatar shape="square" size="large" src={ item.icon || "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png"}/>}
                 title={item.name}
                 description={item.typeName}
               />

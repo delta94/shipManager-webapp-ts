@@ -8,6 +8,7 @@ import {
   Input,
   Select,
   Popover,
+  Modal
 } from 'antd';
 import { connect } from 'dva';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
@@ -15,11 +16,13 @@ import {message} from "antd/lib/index";
 import {routerRedux} from "dva/router";
 import {Dispatch} from "redux";
 import {FormComponentProps} from "antd/es/form";
-import {IManagerAssignerPosition} from "@/interfaces/IManager";
+import {IManagerAssignerPosition, IManagerCert, IManagerCertType} from "@/interfaces/IManager";
 import {ManagerModelState} from "@/models/manager";
+import ManagerCertEditForm from "./components/ManagerCertEditForm";
 import FooterToolbar from "@/components/FooterToolbar";
 import ManagerCertList from "./components/ManagerCertList";
 import styles from "./style.less"
+import uuidv1 from "uuid/v1"
 
 const fieldLabels = {
   "name": "管理人员姓名",
@@ -36,12 +39,17 @@ const Option = Select.Option;
 
 interface ManagerCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
-  submitting: boolean;
+  submitting: boolean
+  certType: IManagerCertType[]
   assignerPositions: IManagerAssignerPosition[]
 }
 
 interface ShipCreateState {
   width: string
+  done: boolean
+  visible: boolean
+  certList: IManagerCert[]
+  current: IManagerCert | undefined
 }
 
 @connect(({ loading, manager }: {
@@ -49,19 +57,38 @@ interface ShipCreateState {
   loading: { effects: { [key: string]: boolean } }
 }) => ({
   submitting: loading.effects['manager/create'],
-  assignerPositions: manager.assignerPositions
+  assignerPositions: manager.assignerPositions,
+  certType: manager.certificateTypes
 }))
 class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState> {
 
   state = {
     width: '100%',
+    done: false,
+    visible: false,
+    certList: [{
+      "id" : 1,
+      "name" : "培训证书",
+      "identityNumber" : "44018-11994-232311",
+      "expiredAt" : "2019-02-06",
+      "ossFile" : "",
+      "remark" : "",
+      "managerId" : 1,
+      "managerName" : "张晋晋",
+      "typeId" : 1,
+      "typeName" : "安监培训证书",
+      "typeRemark" : "",
+      "icon" : "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png"
+    }],
+    current: undefined
   };
 
-  certList = [];
+  formRef: any
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({type: 'manager/fetchAssignerPositions'});
+    dispatch({type: 'manager/fetchCertificateTypes'});
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
     this.resizeFooterToolbar();
   }
@@ -124,6 +151,18 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
     );
   };
 
+  handleShowCreateModal = (current: IManagerCert | undefined) => {
+    this.setState({
+      visible: true,
+      current: current
+    });
+  };
+
+  handleRemoveCertItem = (item: IManagerCert) => {
+    let list = this.state.certList.filter(v => v.id == item.id);
+    this.setState({ certList: list })
+  };
+
   handleSubmit = () => {
     const {
       form: { validateFieldsAndScroll },
@@ -143,11 +182,51 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
     });
   };
 
-  render() {
+  handleCertSubmit = () => {
+    const { form } = this.formRef.props;
 
+    form.validateFieldsAndScroll((err: boolean, values: any) => {
+      if (err) {
+        return;
+      }
+      form.resetFields();
+
+      let item = {
+        id: uuidv1(),
+        name: values['cert_name'],
+        expiredAt: values['cert_expiredAt'] && values['cert_expiredAt'].format("YYYY-MM-DD"),
+        remark: values['cert_remark'],
+        typeId: values['cert_typeId'],
+        identityNumber: values['cert_identityNumber'],
+        ossFile: ""
+      } as IManagerCert;
+
+      let certList = [
+        ...this.state.certList,
+        item
+      ];
+
+      this.setState({ visible: false, certList });
+    });
+  };
+
+  handleCertCancel = () => {
+    this.setState({
+      visible: false,
+      current: undefined
+    })
+  };
+
+  saveFormRef = (formRef: any) => {
+    this.formRef = formRef;
+  };
+
+
+  render() {
     const {
       submitting,
       assignerPositions,
+      certType,
       form: { getFieldDecorator }
     } = this.props;
 
@@ -256,7 +335,9 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
           </Form>
 
           <Card title="资格证书" bordered={false}>
-            <ManagerCertList certList={this.certList}/>
+            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList } })(
+              <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>
+            )}
           </Card>
 
           <FooterToolbar style={{ width }}>
@@ -266,6 +347,22 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
             </Button>
           </FooterToolbar>
         </Card>
+
+        <Modal
+          title={'编辑'}
+          width={640}
+          bodyStyle={{ padding: '28px 0' }}
+          destroyOnClose
+          visible={this.state.visible}
+          onOk={this.handleCertSubmit}
+          onCancel={this.handleCertCancel}
+        >
+          <ManagerCertEditForm
+            wrappedComponentRef={this.saveFormRef}
+            certificateTypes={certType}
+            current={this.state.current} />
+        </Modal>
+
       </PageHeaderWrapper>
     )
   }
