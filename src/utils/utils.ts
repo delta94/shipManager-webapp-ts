@@ -10,13 +10,12 @@ const isAntDesignPro = (): boolean => {
   return window.location.hostname === 'preview.pro.ant.design';
 };
 
-// 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
-const isAntDesignProOrDev = (): boolean => {
-  const { NODE_ENV } = process.env;
-  if (NODE_ENV === 'development') {
-    return true;
-  }
-  return isAntDesignPro();
-};
+export { isAntDesignPro, isUrl };
 
-export { isAntDesignProOrDev, isAntDesignPro, isUrl };
+export function parseUploadedItem(item: any[]): string {
+  if (item && item.length > 0) {
+    return item.map((item: any) => item.url).join(';');
+  } else {
+    return '';
+  }
+}

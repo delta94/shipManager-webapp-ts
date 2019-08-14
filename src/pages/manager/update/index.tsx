@@ -17,6 +17,7 @@ import FooterToolbar from '@/components/FooterToolbar';
 import ManagerCertEditForm from '@/pages/manager/components/ManagerCertEditForm';
 import { routerRedux } from 'dva/router';
 import styles from './style.less';
+import { parseUploadedItem } from '@/utils/utils';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -242,8 +243,9 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
         typeId: values.cert_typeId,
         typeName: type.name,
         identityNumber: values.cert_identityNumber,
-        ossFile: '',
+        ossFile: parseUploadedItem(values.cert_fileList.fileList),
       } as IManagerCert;
+      debugger;
 
       if (this.state.current) {
         // @ts-ignore
@@ -305,7 +307,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
     };
 
     return (
-      <PageHeaderWrapper title="新管理人员信息">
+      <PageHeaderWrapper title="更新管理人员信息">
         <Card title="基本信息" bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label={fieldLabels.name}>
