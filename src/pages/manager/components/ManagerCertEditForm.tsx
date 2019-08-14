@@ -5,7 +5,7 @@ import Select from "antd/es/select";
 import TextArea from "antd/es/input/TextArea";
 import Input from "antd/es/input/Input";
 import {FormComponentProps} from "antd/es/form";
-import {IManagerCert, IManagerCertType} from "@/interfaces/IManager";
+import {IManagerCert, IManagerCertType} from "src/interfaces/IManager";
 import moment from "moment";
 import {DatePicker} from 'antd';
 

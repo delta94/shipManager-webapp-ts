@@ -28,21 +28,21 @@ export async function addManager(params: any): Promise<IManager> {
 export async function updateManager(params: any): Promise<IManager> {
   return request('/api/managers', {
     method: 'PUT',
-    body: params
+    data: params
   });
 }
 
 export async function updateManagerCert(params: any) {
   return request('/api/manager-certs', {
     method: 'PUT',
-    body: params
+    data: params
   });
 }
 
 export async function createManagerCert(params: any) {
   return request('/api/manager-certs', {
     method: 'POST',
-    body: params
+    data: params
   });
 }
 

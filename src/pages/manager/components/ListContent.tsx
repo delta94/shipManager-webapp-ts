@@ -1,5 +1,5 @@
 import * as React from "react";
-import {IManagerCert} from "@/interfaces/IManager";
+import {IManagerCert} from "src/interfaces/IManager";
 import styles from "./style.less";
 import moment from "moment";
 

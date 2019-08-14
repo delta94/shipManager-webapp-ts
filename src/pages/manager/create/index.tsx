@@ -18,9 +18,9 @@ import {Dispatch} from "redux";
 import {FormComponentProps} from "antd/es/form";
 import {IManagerAssignerPosition, IManagerCert, IManagerCertType} from "@/interfaces/IManager";
 import {ManagerModelState} from "@/models/manager";
-import ManagerCertEditForm from "./components/ManagerCertEditForm";
+import ManagerCertEditForm from "../components/ManagerCertEditForm";
 import FooterToolbar from "@/components/FooterToolbar";
-import ManagerCertList from "./components/ManagerCertList";
+import ManagerCertList from "../components/ManagerCertList";
 import styles from "./style.less"
 import uuidv1 from "uuid/v1"
 
@@ -44,7 +44,7 @@ interface ManagerCreateProps extends FormComponentProps {
   assignerPositions: IManagerAssignerPosition[]
 }
 
-interface ShipCreateState {
+interface ManagerCreateState {
   width: string
   done: boolean
   visible: boolean
@@ -60,26 +60,13 @@ interface ShipCreateState {
   assignerPositions: manager.assignerPositions,
   certType: manager.certificateTypes
 }))
-class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState> {
+class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateState> {
 
   state = {
     width: '100%',
     done: false,
     visible: false,
-    certList: [{
-      "id" : 1,
-      "name" : "培训证书",
-      "identityNumber" : "44018-11994-232311",
-      "expiredAt" : "2019-02-06",
-      "ossFile" : "",
-      "remark" : "",
-      "managerId" : 1,
-      "managerName" : "张晋晋",
-      "typeId" : 1,
-      "typeName" : "安监培训证书",
-      "typeRemark" : "",
-      "icon" : "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png"
-    }],
+    certList: [],
     current: undefined
   };
 
@@ -159,7 +146,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
   };
 
   handleRemoveCertItem = (item: IManagerCert) => {
-    let list = this.state.certList.filter(v => v.id == item.id);
+    let list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
     this.setState({ certList: list })
   };
 
@@ -170,6 +157,14 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
     } = this.props;
     validateFieldsAndScroll((error, values) => {
       if (!error) {
+        if (values.certs && values.certs.certList) {
+          values.certs = values.certs.certList
+          values.certs.forEach((cert: IManagerCert) => {
+            if (typeof cert.id !== "number") {
+              delete cert.id;
+            }
+          })
+        }
         dispatch({
           type: 'manager/create',
           payload: values,
@@ -190,6 +185,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
         return;
       }
       form.resetFields();
+      let type = this.props.certType.filter(item => item.id == values['cert_typeId'])[0];
 
       let item = {
         id: uuidv1(),
@@ -197,6 +193,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
         expiredAt: values['cert_expiredAt'] && values['cert_expiredAt'].format("YYYY-MM-DD"),
         remark: values['cert_remark'],
         typeId: values['cert_typeId'],
+        typeName: type.name,
         identityNumber: values['cert_identityNumber'],
         ossFile: ""
       } as IManagerCert;
@@ -335,7 +332,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ShipCreateState>
           </Form>
 
           <Card title="资格证书" bordered={false}>
-            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList } })(
+            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList} })(
               <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>
             )}
           </Card>

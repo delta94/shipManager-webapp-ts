@@ -4,7 +4,7 @@ import List from "antd/es/list";
 import {findDOMNode} from "react-dom";
 import {Avatar, Popconfirm} from "antd";
 import ListContent from "./ListContent";
-import {IManagerCert} from "@/interfaces/IManager";
+import {IManagerCert} from "src/interfaces/IManager";
 
 interface ManagerCertListProps {
   removeCertItem(value: IManagerCert): void
