@@ -18,15 +18,19 @@ const fieldLabels = {
   shipName: '所属船舶名',
 };
 
-interface SailorDetailsProps extends RouteComponentProps{
+interface SailorDetailsProps extends RouteComponentProps {
   loading: boolean;
   dispatch: Dispatch<any>;
-  sailor: ISailor
+  sailor: ISailor;
 }
 
-@connect(({ sailor, loading }: {
-    sailor: SailorModelState
-    loading: { effects: { [key: string]: boolean } }
+@connect(
+  ({
+    sailor,
+    loading,
+  }: {
+    sailor: SailorModelState;
+    loading: { effects: { [key: string]: boolean } };
   }) => ({
     submitting: loading.effects['sailor/target'],
     sailor: sailor.target,
@@ -43,31 +47,44 @@ class SailorDetails extends React.Component<SailorDetailsProps> {
         this.props.dispatch({
           type: 'sailor/target',
           payload: sailorId,
-        })
-      }, 10)
+        });
+      }, 10);
     }
   }
 
   render() {
     const sailor = this.props.sailor || {};
 
+    let certItems =
+      sailor.certFile &&
+      sailor.certFile.split(';').map((item, index) => {
+        return (
+          <Card hoverable bordered={false} style={{ width: 240 }} cover={<img src={item} />} />
+        );
+      });
+
     return (
       <PageHeaderWrapper title="船员详情页">
         <Card style={{ marginBottom: 24 }} bordered={false}>
-
           <Descriptions title="基本信息" bordered>
             <Descriptions.Item label={fieldLabels.name}>{sailor.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.isAdvanced}>{sailor.isAdvanced ? '是' : '否' }</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.positionName}>{sailor.positionName}</Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.isAdvanced}>
+              {sailor.isAdvanced ? '是' : '否'}
+            </Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.positionName}>
+              {sailor.positionName}
+            </Descriptions.Item>
 
             <Descriptions.Item label={fieldLabels.mobile}>{sailor.mobile}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.identityNumber} span={3}>{sailor.identityNumber}</Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.identityNumber} span={3}>
+              {sailor.identityNumber}
+            </Descriptions.Item>
             <Descriptions.Item label={fieldLabels.shipName} span={3}>
               {sailor.shipName}
             </Descriptions.Item>
 
             <Descriptions.Item label={fieldLabels.certFile} span={3}>
-              todos
+              {certItems}
             </Descriptions.Item>
 
             <Descriptions.Item label={fieldLabels.address}>

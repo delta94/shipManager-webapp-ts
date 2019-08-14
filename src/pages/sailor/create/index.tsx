@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Card,
-  Button,
-  Form,
-  Radio,
-  Input,
-  Select,
-  message,
-} from 'antd';
+import { Card, Button, Form, Radio, Input, Select, message } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 
@@ -17,6 +9,7 @@ import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
 import { IShipMeta } from '@/interfaces/IShip';
 import { SailorModelState } from '@/models/sailor';
 import { ISailorPosition } from '@/interfaces/ISailor';
+import FileUpload from '@/components/FileUpload';
 
 const FormItem = Form.Item;
 
@@ -27,13 +20,17 @@ const { Option } = Select;
 interface SailorCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   submitting: boolean;
-  positions: ISailorPosition[],
-  shipListMeta: IShipMeta[],
+  positions: ISailorPosition[];
+  shipListMeta: IShipMeta[];
 }
 
-@connect(({ sailor, loading }: {
-    sailor: SailorModelState
-    loading: { effects: { [key: string]: boolean } }
+@connect(
+  ({
+    sailor,
+    loading,
+  }: {
+    sailor: SailorModelState;
+    loading: { effects: { [key: string]: boolean } };
   }) => ({
     submitting: loading.effects['sailor/add'],
     positions: sailor.positions,
@@ -57,9 +54,9 @@ class SailorCreate extends React.Component<SailorCreateProps> {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        // if (values.certFile && values.certFile.fileList) {
-        //   values.certFile = values.certFile.fileList.map(value => value.url).join(";");
-        // }
+        if (values.certFile && values.certFile.fileList) {
+          values.certFile = values.certFile.fileList.map((value: any) => value.url).join(';');
+        }
         dispatch({
           type: 'sailor/create',
           payload: values,
@@ -132,11 +129,20 @@ class SailorCreate extends React.Component<SailorCreateProps> {
                 ],
               })(
                 <Select placeholder="请选择职位">
-                  {
-                    positions && positions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
+                  {positions &&
+                    positions.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="证书电子件">
+              {getFieldDecorator('certFile', {
+                initialValue: { fileList: [] },
+              })(<FileUpload />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="手机号码">
@@ -160,9 +166,12 @@ class SailorCreate extends React.Component<SailorCreateProps> {
                 ],
               })(
                 <Select placeholder="请选择所属船舶">
-                  {
-                    shipListMeta && shipListMeta.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
+                  {shipListMeta &&
+                    shipListMeta.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </FormItem>
@@ -170,12 +179,13 @@ class SailorCreate extends React.Component<SailorCreateProps> {
             <FormItem {...formItemLayout} label="是否为高级船员">
               {getFieldDecorator('isAdvanced')(
                 <Radio.Group>
-                  <Radio value defaultChecked>是</Radio>
+                  <Radio value defaultChecked>
+                    是
+                  </Radio>
                   <Radio value={false}>不是</Radio>
                 </Radio.Group>,
               )}
             </FormItem>
-
 
             <FormItem {...formItemLayout} label="家庭地址">
               {getFieldDecorator('address', {
@@ -188,7 +198,6 @@ class SailorCreate extends React.Component<SailorCreateProps> {
               })(<TextArea style={{ minHeight: 32 }} placeholder="请输入联系地址" rows={4} />)}
             </FormItem>
 
-
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 保存
@@ -197,7 +206,7 @@ class SailorCreate extends React.Component<SailorCreateProps> {
           </Form>
         </Card>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 

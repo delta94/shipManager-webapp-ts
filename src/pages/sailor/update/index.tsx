@@ -1,17 +1,9 @@
 import * as React from 'react';
 
-import {
-  Card,
-  Button,
-  Form,
-  Input,
-  Radio,
-  Select,
-  message
-} from 'antd';
+import { Card, Button, Form, Input, Radio, Select, message } from 'antd';
 import { connect } from 'dva';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import FileUpload from '@/components/FileUpload';
 import { routerRedux } from 'dva/router';
 import { Dispatch } from 'redux';
 import { IShipMeta } from '@/interfaces/IShip';
@@ -21,35 +13,43 @@ import { SailorModelState } from '@/models/sailor';
 import { RouteComponentProps } from 'react-router';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 const { TextArea } = Input;
 
 interface BaseUpdateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   submitting: boolean;
-  positions: ISailorPosition[],
-  shipListMeta: IShipMeta[],
-  targetSailor: ISailor
+  positions: ISailorPosition[];
+  shipListMeta: IShipMeta[];
+  targetSailor: ISailor;
 }
 
 interface SailorUpdateRouteParams {
-  id: string
+  id: string;
 }
 
-type SailorUpdateProps = BaseUpdateProps & RouteComponentProps<SailorUpdateRouteParams>
+type SailorUpdateProps = BaseUpdateProps & RouteComponentProps<SailorUpdateRouteParams>;
 
-@connect(({ loading, sailor }: {
-  sailor: SailorModelState,
-  loading: { effects: { [key: string]: boolean } }
-}) => ({
-  submitting: loading.effects['sailor/update'],
-  positions: sailor.positions,
-  shipListMeta: sailor.shipListMeta,
-  targetSailor: sailor.target,
-}))
+@connect(
+  ({
+    loading,
+    sailor,
+  }: {
+    sailor: SailorModelState;
+    loading: { effects: { [key: string]: boolean } };
+  }) => ({
+    submitting: loading.effects['sailor/update'],
+    positions: sailor.positions,
+    shipListMeta: sailor.shipListMeta,
+    targetSailor: sailor.target,
+  }),
+)
 class SailorUpdate extends React.Component<SailorUpdateProps> {
   componentDidMount() {
-    const { dispatch, match: { params } } = this.props;
+    const {
+      dispatch,
+      match: { params },
+    } = this.props;
     dispatch({ type: 'sailor/fetchPositionTypes' });
     dispatch({ type: 'sailor/fetchShipMetaList' });
 
@@ -60,8 +60,8 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
           type: 'sailor/target',
           payload: sailorId,
           callback: this.setSailorInfo,
-        })
-      }, 10)
+        });
+      }, 10);
     }
   }
 
@@ -74,14 +74,14 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
       if (key === 'certFile' && targetSailor[key]) {
         const fileStr = targetSailor[key];
         const fileList = fileStr.split(';').map((value, index) => ({
-            uid: "pre_" + index,
-            name: value,
-            status: 'done',
-            type: '',
-            result: value,
-            url: value
-          }));
-        obj[key] = { fileList }
+          uid: 'pre_' + index,
+          name: value,
+          status: 'done',
+          type: '',
+          result: value,
+          url: value,
+        }));
+        obj[key] = { fileList };
       } else {
         obj[key] = targetSailor[key] || null;
       }
@@ -177,15 +177,20 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
                 ],
               })(
                 <Select placeholder="请选择职位">
-                  {
-                    positions && positions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
+                  {positions &&
+                    positions.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </FormItem>
 
             <FormItem {...formItemLayout} label="证书电子件">
-              todo
+              {getFieldDecorator('certFile', {
+                initialValue: { fileList: [] },
+              })(<FileUpload />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="手机号码">
@@ -209,9 +214,12 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
                 ],
               })(
                 <Select placeholder="请选择所属船舶">
-                  {
-                    shipListMeta && shipListMeta.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
+                  {shipListMeta &&
+                    shipListMeta.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </FormItem>
@@ -219,12 +227,13 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
             <FormItem {...formItemLayout} label="是否为高级船员">
               {getFieldDecorator('isAdvanced')(
                 <Radio.Group>
-                  <Radio value defaultChecked>是</Radio>
+                  <Radio value defaultChecked>
+                    是
+                  </Radio>
                   <Radio value={false}>不是</Radio>
                 </Radio.Group>,
               )}
             </FormItem>
-
 
             <FormItem {...formItemLayout} label="家庭地址">
               {getFieldDecorator('address', {
@@ -245,7 +254,7 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
           </Form>
         </Card>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 

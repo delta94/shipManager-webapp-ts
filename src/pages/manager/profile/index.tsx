@@ -8,7 +8,6 @@ import { Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router';
 import { IManager } from '@/interfaces/IManager';
 
-
 const fieldLabels = {
   name: '管理人员姓名',
   identityNumber: '身份证号码',
@@ -20,18 +19,22 @@ const fieldLabels = {
 };
 
 interface Params {
-  id: string
+  id: string;
 }
 
 interface ManagerDetailsProps extends RouteComponentProps<Params> {
   loading: boolean;
   dispatch: Dispatch<any>;
-  manager: IManager
+  manager: IManager;
 }
 
-@connect(({ manager, loading }: {
-    manager: ManagerModelState
-    loading: { effects: { [key: string]: boolean } }
+@connect(
+  ({
+    manager,
+    loading,
+  }: {
+    manager: ManagerModelState;
+    loading: { effects: { [key: string]: boolean } };
   }) => ({
     loading: loading.effects['manager/target'],
     manager: manager.target,
@@ -45,8 +48,8 @@ class ManagerDetails extends React.Component<ManagerDetailsProps> {
         this.props.dispatch({
           type: 'manager/target',
           payload: managerId,
-        })
-      }, 10)
+        });
+      }, 10);
     }
   }
 
@@ -55,9 +58,9 @@ class ManagerDetails extends React.Component<ManagerDetailsProps> {
     const manager = this.props.manager || {};
 
     const renderContent = (value: any) => ({
-        children: value,
-        props: {},
-      });
+      children: value,
+      props: {},
+    });
     const certsColumns = [
       {
         title: '证书名',
@@ -90,8 +93,12 @@ class ManagerDetails extends React.Component<ManagerDetailsProps> {
         <Card style={{ marginBottom: 24 }} bordered={false}>
           <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
             <Descriptions.Item label={fieldLabels.name}>{manager.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.identityNumber}>{manager.identityNumber}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.assignerName}>{manager.assignerName}</Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.identityNumber}>
+              {manager.identityNumber}
+            </Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.assignerName}>
+              {manager.assignerName}
+            </Descriptions.Item>
             <Descriptions.Item label={fieldLabels.mobile}>{manager.mobile}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.phone}>{manager.phone}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.dept}>{manager.dept}</Descriptions.Item>
@@ -100,7 +107,7 @@ class ManagerDetails extends React.Component<ManagerDetailsProps> {
         </Card>
 
         <Card bordered={false}>
-          <Descriptions title="基本信息" />
+          <Descriptions title="证书信息" />
           <Table
             style={{ marginBottom: 24 }}
             pagination={false}
