@@ -10,7 +10,6 @@ import { FormComponentProps } from 'antd/es/form';
 import ManagerCertList from '@/pages/manager/components/ManagerCertList';
 import FooterToolbar from '@/components/FooterToolbar';
 import ManagerCertEditForm from '@/pages/manager/components/ManagerCertEditForm';
-import uuidv1 from 'uuid/v1';
 import { routerRedux } from 'dva/router';
 import styles from './style.less'
 
@@ -94,7 +93,11 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
 
     Object.keys(form.getFieldsValue()).forEach(key => {
       const obj = {};
-      obj[key] = manager[key] || null;
+      if (key == "certs") {
+        obj[key] = { certList:  manager[key] }
+      } else {
+        obj[key] = manager[key] || null;
+      }
       form.setFieldsValue(obj);
     });
   };
@@ -165,8 +168,22 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
   };
 
   handleRemoveCertItem = (item: IManagerCert) => {
-    const list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
-    this.setState({ certList: list })
+    this.props.dispatch({
+      type: "manager/removeCert",
+      payload: item.id,
+      callback: this.handleCertRemoved
+    });
+  };
+
+  handleCertRemoved = (id: number) => {
+    let { form } = this.props;
+    message.success("证书已删除")
+    let values = form.getFieldValue("certs");
+
+    if (values && values.certList) {
+      let certList: IManagerCert[] = values.certList.filter((item: IManagerCert) => item.id !== id);
+      this.props.form.setFieldsValue({ certs: { certList }})
+    }
   };
 
   handleSubmit = () => {
@@ -192,6 +209,8 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
 
   handleCertSubmit = () => {
     const { form } = this.formRef.props;
+    const { match: { params } } = this.props;
+    const managerId = parseInt(params.id);
 
     form.validateFieldsAndScroll((err: boolean, values: any) => {
       if (err) {
@@ -201,7 +220,8 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
       const type = this.props.certType.filter(item => item.id == values.cert_typeId)[0];
 
       const item = {
-        id: uuidv1(),
+        id: values.cert_id,
+        managerId: managerId,
         name: values.cert_name,
         expiredAt: values.cert_expiredAt && values.cert_expiredAt.format('YYYY-MM-DD'),
         remark: values.cert_remark,
@@ -211,13 +231,23 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
         ossFile: '',
       } as IManagerCert;
 
-      const certList = [
-        ...this.state.certList,
-        item,
-      ];
-
-      this.setState({ visible: false, certList });
+      this.props.dispatch({
+        type: item.id ? "manager/updateCert" : "manager/createCert",
+        payload: item,
+        callback: this.handleCertUpserted
+      });
     });
+  };
+
+  handleCertUpserted = (item: IManagerCert) => {
+    const obj = {
+      "certs": {
+        ...this.props.manager.certs,
+        item
+      }
+    };
+    this.props.form.setFieldsValue(obj);
+    this.setState({ visible: false });
   };
 
   handleCertCancel = () => {
@@ -343,7 +373,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
           </Form>
 
           <Card title="资格证书" bordered={false}>
-            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList } })(
+            {getFieldDecorator('certs', { initialValue: { certList: [] } })(
               <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>,
             )}
           </Card>
@@ -351,7 +381,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
           <FooterToolbar style={{ width }}>
             {this.getErrorInfo()}
             <Button type="primary" onClick={this.handleSubmit} loading={submitting}>
-              创建管理人员
+              更新管理人员信息
             </Button>
           </FooterToolbar>
         </Card>

@@ -138,7 +138,7 @@ const MangerModel: ManagerModelType = {
         type: 'removeManagerCert',
         payload,
       });
-      if (callback) callback();
+      if (callback) callback(payload);
     },
 
     *createCert({ payload, callback }, { call, put }) {
@@ -148,7 +148,7 @@ const MangerModel: ManagerModelType = {
         type: 'addManagerCert',
         payload: detailsResponse,
       });
-      if (callback) callback();
+      if (callback) callback(detailsResponse);
     },
 
     *updateCert({ payload, callback }, { call, put }) {
@@ -157,7 +157,7 @@ const MangerModel: ManagerModelType = {
         type: 'updateManagerCert',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
 
     *target({ payload, callback }, { call, put }) {
