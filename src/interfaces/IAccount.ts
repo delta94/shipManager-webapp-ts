@@ -20,7 +20,7 @@ export default interface IAccount {
 
 
 export enum IAccountRole {
-  ROLE_ANONYMOUS = "ROLE_ANONYMOUS",
-  ROLE_USER = "ROLE_USER",
-  ROLE_ADMIN = "ROLE_ADMIN"
+  ROLE_ANONYMOUS = 'ROLE_ANONYMOUS',
+  ROLE_USER = 'ROLE_USER',
+  ROLE_ADMIN = 'ROLE_ADMIN'
 }

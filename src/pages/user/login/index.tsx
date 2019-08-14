@@ -31,7 +31,7 @@ export interface FromDataType {
 }
 
 @connect(
-  ({login, loading}: {
+  ({ login, loading }: {
     login: StateType;
     loading: {
       effects: {
@@ -44,7 +44,6 @@ export interface FromDataType {
   }),
 )
 class Login extends Component<LoginProps, LoginState> {
-
   loginForm: FormComponentProps['form'] | undefined | null = undefined;
 
   state: LoginState = {
@@ -66,7 +65,7 @@ class Login extends Component<LoginProps, LoginState> {
         type: 'login/login',
         payload: {
           ...values,
-          rememberMe: autoLogin
+          rememberMe: autoLogin,
         },
       });
     }
@@ -77,7 +76,6 @@ class Login extends Component<LoginProps, LoginState> {
   );
 
   render() {
-
     const { login, submitting } = this.props;
     const { status, type: loginType } = login;
     const { type, autoLogin } = this.state;

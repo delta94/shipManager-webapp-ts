@@ -4,7 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
-import {getToken} from "@/utils/authority";
+import { getToken } from '@/utils/authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -52,17 +52,17 @@ const request = extend({
 
 // request interceptor, change url or options.
 request.interceptors.request.use((url, options) => {
-  let token = getToken();
+  const token = getToken();
   if (token) {
     options.headers = {
       ...options.headers,
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
   }
   return (
     {
-      url: url,
-      options: options
+      url,
+      options,
     }
   );
 });

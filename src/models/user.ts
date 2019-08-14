@@ -2,7 +2,7 @@ import { Effect } from 'dva';
 import { Reducer } from 'redux';
 
 import { getCurrentUser } from '@/services/user';
-import IAccount from "@/interfaces/IAccount";
+import IAccount from '@/interfaces/IAccount';
 
 export interface UserModelState {
   currentUser?: IAccount;
@@ -24,7 +24,7 @@ const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
-    currentUser: undefined
+    currentUser: undefined,
   },
 
   effects: {
@@ -43,8 +43,8 @@ const UserModel: UserModelType = {
         ...state,
         currentUser: action.payload || {},
       };
-    }
-  }
+    },
+  },
 };
 
 export default UserModel;

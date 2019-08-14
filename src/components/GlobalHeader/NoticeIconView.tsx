@@ -8,7 +8,7 @@ import NoticeIcon from '../NoticeIcon';
 
 import { ConnectProps, ConnectState } from '@/models/connect';
 import styles from './index.less';
-import IAccount from "@/interfaces/IAccount";
+import IAccount from '@/interfaces/IAccount';
 
 export interface GlobalHeaderRightProps extends ConnectProps {
   notices?: NoticeItem[];

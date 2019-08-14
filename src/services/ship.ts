@@ -1,69 +1,69 @@
-import request from "@/utils/request";
-import {stringify} from "qs";
-import IShip, {IShipBusinessArea} from "@/interfaces/IShip";
+import request from '@/utils/request';
+import { stringify } from 'qs';
+import IShip, { IShipBusinessArea } from '@/interfaces/IShip';
 
 export async function getShip(id: number): Promise<IShip> {
-  return request( `/api/ships/${id}`, {
-    method: 'GET'
+  return request(`/api/ships/${id}`, {
+    method: 'GET',
   });
 }
 
 export async function listShip(params:any): Promise<IShip[]> {
   if (params && params.page) {
-    params.page = params.page - 1
+    params.page -= 1
   }
 
-  return request( `/api/ships-list?${stringify(params)}`, {
-    method: 'GET'
+  return request(`/api/ships-list?${stringify(params)}`, {
+    method: 'GET',
   });
 }
 
 export async function listShipMeta() {
-  return request( '/api/ships-meta-list', {
-    method: 'GET'
+  return request('/api/ships-meta-list', {
+    method: 'GET',
   });
 }
 
 export async function addShip(params: any) {
   return request('/api/ships', {
     method: 'POST',
-    data: params
+    data: params,
   });
 }
 
 export async function infoShip(id: number): Promise<IShip> {
-  return request( `/api/ships/${id}`, {
-    method: 'GET'
+  return request(`/api/ships/${id}`, {
+    method: 'GET',
   });
 }
 
 export async function deleteShip(id: number) {
   return request(`/api/ships/${id}`, {
-    method: 'DELETE'
+    method: 'DELETE',
   });
 }
 
 export async function updateShip(params: any) {
   return request(`/api/ships/${params.id}`, {
     method: 'UPDATE',
-    body: params
+    body: params,
   });
 }
 
 export async function listShipTypes() {
-  return request( `/api/ship-types`, {
-    method: 'GET'
+  return request('/api/ship-types', {
+    method: 'GET',
   });
 }
 
 export async function listShipMaterial() {
-  return request( `/api/ship-materials`, {
-    method: 'GET'
+  return request('/api/ship-materials', {
+    method: 'GET',
   });
 }
 
 export async function listShipBusinessAreas(): Promise<IShipBusinessArea[]> {
-  return request( `/api/ship-business-areas`, {
-    method: 'GET'
+  return request('/api/ship-business-areas', {
+    method: 'GET',
   });
 }

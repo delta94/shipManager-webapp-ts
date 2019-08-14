@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import {
   Row,
   Col,
@@ -11,16 +11,17 @@ import {
   Select,
   Button,
   Divider,
-  message
+  message,
 } from 'antd';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import StandardTable  from './components/StandardTable';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Dispatch } from 'redux';
+import { FormComponentProps } from 'antd/es/form';
+import { SorterResult } from 'antd/es/table';
+import StandardTable from './components/StandardTable';
 import styles from './style.less';
-import {Dispatch} from "redux";
-import {FormComponentProps} from "antd/es/form";
-import {ManagerModelState} from "@/models/manager";
-import {TableListItem, TableListData,TableListPagination} from "./manager.d";
-import {SorterResult} from "antd/es/table";
+import { ManagerModelState } from '@/models/manager';
+import { TableListItem, TableListData, TableListPagination } from './manager.d';
+
 const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key => obj[key]).join(',');
 
 const FormItem = Form.Item;
@@ -40,7 +41,6 @@ interface ManagerListProps extends FormComponentProps {
   loading: loading.effects['manager/fetch'],
 }))
 class ManagerList extends React.Component<ManagerListProps> {
-
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -56,7 +56,7 @@ class ManagerList extends React.Component<ManagerListProps> {
     },
     {
       title: '职务',
-      dataIndex: 'position'
+      dataIndex: 'position',
     },
     {
       title: '手机号码',
@@ -64,11 +64,11 @@ class ManagerList extends React.Component<ManagerListProps> {
     },
     {
       title: '身份证',
-      dataIndex: 'identityNumber'
+      dataIndex: 'identityNumber',
     },
     {
       title: '指定职位',
-      dataIndex: 'assignerName'
+      dataIndex: 'assignerName',
     },
 
     {
@@ -92,13 +92,13 @@ class ManagerList extends React.Component<ManagerListProps> {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({ type: 'manager/fetchAssignerPositions' });
-    dispatch({ type: 'manager/fetch'});
+    dispatch({ type: 'manager/fetch' });
   }
 
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
-      manager: { assignerPositions }
+      manager: { assignerPositions },
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -115,17 +115,15 @@ class ManagerList extends React.Component<ManagerListProps> {
                   {
                     required: false,
                     message: '请输入指定职位',
-                  }
+                  },
                 ],
               })(
                 <Select placeholder="请选择指定职位">
                   <Option value={undefined} key={99}>不限职位</Option>
                   {
-                    assignerPositions && assignerPositions.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    assignerPositions && assignerPositions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
           </Col>
@@ -154,14 +152,14 @@ class ManagerList extends React.Component<ManagerListProps> {
 
   handleRemoveManagerCert(key: number) {
     this.props.dispatch({
-      type: "manager/remove",
+      type: 'manager/remove',
       payload: key,
-      callback: this.handleManagerRemoved
+      callback: this.handleManagerRemoved,
     })
   }
 
   handleManagerRemoved = () => {
-    message.success("管理人员已成功删除")
+    message.success('管理人员已成功删除')
   };
 
   handleSearch = (e: React.FormEvent) => {
@@ -171,18 +169,18 @@ class ManagerList extends React.Component<ManagerListProps> {
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      let values = {};
+      const values = {};
 
       if (fieldsValue.isAdvanced !== undefined) {
-        values["isAdvanced.equals"] = fieldsValue.isAdvanced;
+        values['isAdvanced.equals'] = fieldsValue.isAdvanced;
       }
 
       if (fieldsValue.name !== undefined) {
-        values["name.contains"] = fieldsValue.name;
+        values['name.contains'] = fieldsValue.name;
       }
 
       if (fieldsValue.assignerId !== undefined) {
-        values["assignerId.equals"] = fieldsValue.assignerId;
+        values['assignerId.equals'] = fieldsValue.assignerId;
       }
 
       this.setState({
@@ -209,7 +207,7 @@ class ManagerList extends React.Component<ManagerListProps> {
   };
 
   handleCreateManager = () => {
-    this.props.dispatch(routerRedux.push("/person/manager/create"))
+    this.props.dispatch(routerRedux.push('/person/manager/create'))
   };
 
   handleSelectRows = (rows: TableListItem[]) => {
@@ -240,8 +238,8 @@ class ManagerList extends React.Component<ManagerListProps> {
     };
 
     if (sorter.field) {
-      //@ts-ignore
-      params.sort = `${sorter.field},${sorter.order === "ascend" ? "asc" : "desc"}`;
+      // @ts-ignore
+      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
     }
 
     dispatch({

@@ -8,22 +8,22 @@ import {
   Input,
   Row,
   Select,
-  message
+  message,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 
 import { Dispatch } from 'redux';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import { FormComponentProps } from 'antd/es/form';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import {TableListData, TableListItem, TableListPagination} from './sailor.d';
+import { TableListData, TableListItem, TableListPagination } from './sailor.d';
 
 import styles from './style.less';
-import {SailorModelState} from "@/models/sailor";
+import { SailorModelState } from '@/models/sailor';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -78,7 +78,7 @@ class TableList extends Component<TableListProps, TableListState> {
     },
     {
       title: '常任职位',
-      dataIndex: 'positionName'
+      dataIndex: 'positionName',
     },
     {
       title: '手机号码',
@@ -86,12 +86,12 @@ class TableList extends Component<TableListProps, TableListState> {
     },
     {
       title: '身份证',
-      dataIndex: 'identityNumber'
+      dataIndex: 'identityNumber',
     },
     {
       title: '是否高级船员',
       dataIndex: 'isAdvanced',
-      render: val => val ? "是" : "否",
+      render: val => (val ? '是' : '否'),
     },
 
     {
@@ -122,17 +122,17 @@ class TableList extends Component<TableListProps, TableListState> {
 
   handleRemoveSailor = (record: TableListItem) => {
     this.props.dispatch({
-      type: "sailor/remove",
+      type: 'sailor/remove',
       payload: record.id,
       callback: () => {
-        message.success("船员已成功删除")
-      }
+        message.success('船员已成功删除')
+      },
     })
   };
 
   componentDidMount() {
     this.props.dispatch({ type: 'sailor/fetchPositionTypes' });
-    this.props.dispatch({ type: 'sailor/fetch'});
+    this.props.dispatch({ type: 'sailor/fetch' });
   }
 
   handleStandardTableChange = (
@@ -157,8 +157,8 @@ class TableList extends Component<TableListProps, TableListState> {
     };
 
     if (sorter.field) {
-      //@ts-ignore
-      params.sort = `${sorter.field},${sorter.order === "ascend" ? "asc" : "desc"}`;
+      // @ts-ignore
+      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
     }
 
     dispatch({
@@ -185,34 +185,34 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  handleSearch = (e: React.FormEvent)  => {
+  handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      let values = {};
+      const values = {};
 
       if (fieldsValue.isAdvanced !== undefined) {
         if (fieldsValue.isAdvanced == 1) {
-          values["isAdvanced.equals"] = true
+          values['isAdvanced.equals'] = true
         }
         if (fieldsValue.isAdvanced == 2) {
-          values["isAdvanced.equals"] = false
+          values['isAdvanced.equals'] = false
         }
 
         if (fieldsValue.isAdvanced == 3) {
-          values["isAdvanced.in"] = [true, false]
+          values['isAdvanced.in'] = [true, false]
         }
       }
 
       if (fieldsValue.name !== undefined) {
-        values["name.contains"] = fieldsValue.name;
+        values['name.contains'] = fieldsValue.name;
       }
 
       if (fieldsValue.positionId !== undefined) {
-        values["positionId.equals"] = fieldsValue.positionId;
+        values['positionId.equals'] = fieldsValue.positionId;
       }
 
       this.setState({
@@ -227,13 +227,13 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleClickAdd = () => {
-    this.props.dispatch(routerRedux.push("/person/sailor/create/"));
+    this.props.dispatch(routerRedux.push('/person/sailor/create/'));
   };
 
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
-      sailor: { positions }
+      sailor: { positions },
     } = this.props;
 
     return (
@@ -251,16 +251,14 @@ class TableList extends Component<TableListProps, TableListState> {
                   {
                     required: false,
                     message: '请输入职位',
-                  }
+                  },
                 ],
               })(
                 <Select placeholder="请选择职位">
                   {
-                    positions && positions.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    positions && positions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
           </Col>
@@ -271,7 +269,7 @@ class TableList extends Component<TableListProps, TableListState> {
                   <Option value={1} key={1}>是</Option>
                   <Option value={2} key={2}>否</Option>
                   <Option value={3} key={3}>不限</Option>
-                </Select>
+                </Select>,
               )}
             </FormItem>
           </Col>

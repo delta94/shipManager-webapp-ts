@@ -1,4 +1,4 @@
-import IShip from "@/interfaces/IShip";
+import IShip from '@/interfaces/IShip';
 
 export interface TableListItem extends IShip {
   key: number;

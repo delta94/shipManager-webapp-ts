@@ -1,8 +1,7 @@
 // use localStorage to store the authority info, which might be sent from server in actual project.
-import {parse} from "qs";
+import { parse } from 'qs';
 
 export function getAuthority(str?: string): string | string[] {
-
   const authorityString =
     typeof str === 'undefined' ? localStorage.getItem('ship-manager-authority') : str;
 
@@ -32,12 +31,12 @@ export function setAuthority(authority: string | string[]): void {
 
 export function updateToken(token: string) {
   if (token === null) {
-    localStorage.removeItem("ship-manager-token")
+    localStorage.removeItem('ship-manager-token')
   } else {
     localStorage.setItem('ship-manager-token', token);
   }
 }
 
 export function getToken() {
-  return localStorage.getItem("ship-manager-token");
+  return localStorage.getItem('ship-manager-token');
 }

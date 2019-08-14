@@ -1,11 +1,11 @@
 import { Button, Divider, Input, InputNumber, Select, Popconfirm, Table, message } from 'antd';
 import React, { PureComponent, Fragment } from 'react';
 
-const Option = Select.Option;
-
 import { isEqual } from 'lodash';
 import styles from '../../style.less';
-import {IShipBusinessArea} from "@/interfaces/IShip";
+import { IShipBusinessArea } from '@/interfaces/IShip';
+
+const { Option } = Select;
 
 interface TableFormDateType {
   key: string;
@@ -17,7 +17,7 @@ interface TableFormDateType {
 }
 
 interface TableFormProps {
-  areaList:  IShipBusinessArea[]
+  areaList: IShipBusinessArea[]
   loading?: boolean;
   value?: TableFormDateType[];
   onChange?: (value: TableFormDateType[]) => void;
@@ -31,7 +31,6 @@ interface TableFormState {
 }
 
 export class TableForm extends PureComponent<TableFormProps, TableFormState> {
-
   static getDerivedStateFromProps(nextProps: TableFormProps, preState: TableFormState) {
     if (isEqual(nextProps.value, preState.value)) return null;
 
@@ -44,7 +43,7 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
     }
 
     return {
-      areaListMap: areaListMap,
+      areaListMap,
       data: nextProps.value,
       value: nextProps.value,
     };
@@ -67,13 +66,11 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
           return (
             <Select placeholder="请选择航区名"
                     onChange={value => this.handleFieldChange(value, 'area', record.key)}>
-              {this.props.areaList && this.props.areaList.map((val) => {
-                return <Option value={val.id} key={val.id}>{val.name}</Option>
-              })}
+              {this.props.areaList && this.props.areaList.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
             </Select>
           );
         }
-        let item = this.props.areaList.filter(item => item.id.toString() == text);
+        const item = this.props.areaList.filter(item => item.id.toString() == text);
         return item.length > 0 ? item[0].name : text;
       },
     },
@@ -104,7 +101,7 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
           return (
             <Input
               value={text}
-              defaultValue={"无"}
+              defaultValue="无"
               onChange={e => this.handleFieldChange(e, 'remark', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
               placeholder="备注"
@@ -162,7 +159,7 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
       data: props.value,
       loading: false,
       value: props.value,
-      areaListMap: {}
+      areaListMap: {},
     };
 
     if (props.areaList && props.areaList.length > 0) {
@@ -229,7 +226,7 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
     const target = this.getRowByKey(key, newData);
     if (target) {
       // number => payload
-      target[fieldName] = typeof e === "number" ? e : e.target.value;
+      target[fieldName] = typeof e === 'number' ? e : e.target.value;
       this.setState({ data: newData });
     }
   }

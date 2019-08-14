@@ -6,7 +6,7 @@
 import ProLayout, {
   MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
-  Settings
+  Settings,
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
@@ -15,6 +15,7 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState, Dispatch } from '@/models/connect';
 import logo from '../assets/logo.png';
+
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -37,9 +38,7 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
-const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
-
-  return (
+const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => (
     <>
       <div
         style={{
@@ -51,7 +50,6 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
       </div>
     </>
   );
-};
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
   const { dispatch, children, settings } = props;

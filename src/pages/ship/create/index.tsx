@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import {
   Card,
   Button,
@@ -15,27 +15,27 @@ import FooterToolbar from '@/components/FooterToolbar';
 import { connect } from 'dva';
 
 import styles from './style.less';
-import {FormComponentProps} from "antd/es/form";
-import {Dispatch} from "redux";
-import {PageHeaderWrapper} from "@ant-design/pro-layout";
-import {ShipStateType} from "@/models/ship";
-import {IShipBusinessArea, IShipMaterial, IShipType} from "@/interfaces/IShip";
-import {TableForm} from "@/pages/ship/create/components/TableForm";
+import { FormComponentProps } from 'antd/es/form';
+import { Dispatch } from 'redux';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { ShipStateType } from '@/models/ship';
+import { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
+import { TableForm } from '@/pages/ship/create/components/TableForm';
 
 const { Option } = Select;
 
 const fieldLabels = {
   name: '船舶名',
-  carrierIdentifier: "船舶识别号",
-  owner: "船舶所有人",
-  shareInfo: "船舶共有情况",
-  harbor: "船籍港",
-  formerName: "曾用名",
-  registerIdentifier: "初次登记号",
-  examineIdentifier: "船检登记号",
-  material: "船舶材质",
-  buildAt: "建造完工日期",
-  assembleAt:"安放龙骨日期",
+  carrierIdentifier: '船舶识别号',
+  owner: '船舶所有人',
+  shareInfo: '船舶共有情况',
+  harbor: '船籍港',
+  formerName: '曾用名',
+  registerIdentifier: '初次登记号',
+  examineIdentifier: '船检登记号',
+  material: '船舶材质',
+  buildAt: '建造完工日期',
+  assembleAt: '安放龙骨日期',
   type: '船舶类型',
   power: '发动机功率',
   grossTone: '总吨位 (吨)',
@@ -43,7 +43,7 @@ const fieldLabels = {
   length: '船身长 (米)',
   width: '船身宽 (米)',
   depth: '船身深 (米)',
-  height: '船身高 (米)'
+  height: '船身高 (米)',
 };
 
 // const mockData = {
@@ -78,7 +78,7 @@ interface ShipCreateProps extends FormComponentProps {
 }
 
 
-@connect(({ ship, loading}: {
+@connect(({ ship, loading }: {
     ship: ShipStateType
     loading: { effects: { [key: string]: boolean } }
   }) => ({
@@ -88,8 +88,7 @@ interface ShipCreateProps extends FormComponentProps {
     loading: loading.effects['ship/create'],
   }),
 )
-class ShipCreate extends React.Component<ShipCreateProps>  {
-
+class ShipCreate extends React.Component<ShipCreateProps> {
   state = {
     width: '100%',
   };
@@ -99,9 +98,9 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
 
     this.resizeFooterToolbar();
 
-    this.props.dispatch({type: 'ship/fetchTypes'});
-    this.props.dispatch({type: 'ship/fetchBusinessAreas'});
-    this.props.dispatch({type: 'ship/fetchMaterial'});
+    this.props.dispatch({ type: 'ship/fetchTypes' });
+    this.props.dispatch({ type: 'ship/fetchBusinessAreas' });
+    this.props.dispatch({ type: 'ship/fetchMaterial' });
   }
 
   componentWillUnmount() {
@@ -173,8 +172,8 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
     } = this.props;
     validateFieldsAndScroll((error, values) => {
       if (!error) {
-        values.assembleAt = values.assembleAt.format("YYYY-MM-DD");
-        values.buildAt = values.buildAt.format("YYYY-MM-DD");
+        values.assembleAt = values.assembleAt.format('YYYY-MM-DD');
+        values.buildAt = values.buildAt.format('YYYY-MM-DD');
         dispatch({ type: 'ship/create', payload: values });
       }
     });
@@ -186,7 +185,7 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
       submitting,
       types,
       materials,
-      businessAreas
+      businessAreas,
     } = this.props;
     const { width } = this.state;
 
@@ -222,10 +221,8 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
                     rules: [{ required: true, message: '请选择船舶类型' }],
                   })(
                     <Select placeholder="请选择船舶类型">
-                      {types && types.map((val) => {
-                        return <Option value={val.id} key={val.id}>{val.name}</Option>
-                      })}
-                    </Select>
+                      {types && types.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                    </Select>,
                   )}
                 </Form.Item>
               </Col>
@@ -259,10 +256,8 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
                     rules: [{ required: true, message: '请选择船舶材质' }],
                   })(
                     <Select placeholder="请选择船舶材质">
-                      {materials && materials.map((val) => {
-                        return <Option value={val.id} key={val.id}>{val.name}</Option>
-                      })}
-                    </Select>
+                      {materials && materials.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                    </Select>,
                   )}
                 </Form.Item>
               </Col>
@@ -286,14 +281,14 @@ class ShipCreate extends React.Component<ShipCreateProps>  {
                 <Form.Item label={fieldLabels.buildAt}>
                   {getFieldDecorator('buildAt', {
                     rules: [{ required: true, type: 'object', message: '请输入建造完工日期' }],
-                  })(<DatePicker  format="YYYY-MM-DD" placeholder="请输入建造完工日期" style={{ width: '100%' }}  />)}
+                  })(<DatePicker format="YYYY-MM-DD" placeholder="请输入建造完工日期" style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
               <Col lg={6} md={12} sm={24}>
                 <Form.Item label={fieldLabels.assembleAt}>
                   {getFieldDecorator('assembleAt', {
                     rules: [{ required: true, type: 'object', message: '请输入安放龙骨日期' }],
-                  })(<DatePicker  format="YYYY-MM-DD" placeholder="请输入安放龙骨日期" style={{ width: '100%' }}  />)}
+                  })(<DatePicker format="YYYY-MM-DD" placeholder="请输入安放龙骨日期" style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
             </Row>

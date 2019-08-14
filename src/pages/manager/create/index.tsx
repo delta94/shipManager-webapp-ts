@@ -8,34 +8,35 @@ import {
   Input,
   Select,
   Popover,
-  Modal
+  Modal,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {message} from "antd/lib/index";
-import {routerRedux} from "dva/router";
-import {Dispatch} from "redux";
-import {FormComponentProps} from "antd/es/form";
-import {IManagerAssignerPosition, IManagerCert, IManagerCertType} from "@/interfaces/IManager";
-import {ManagerModelState} from "@/models/manager";
+
+import { routerRedux } from 'dva/router';
+import { Dispatch } from 'redux';
+import { FormComponentProps } from 'antd/es/form';
+import { IManagerAssignerPosition, IManagerCert, IManagerCertType } from '@/interfaces/IManager';
+import { ManagerModelState } from '@/models/manager';
+import uuidv1 from "uuid/v1"
 import ManagerCertEditForm from "../components/ManagerCertEditForm";
 import FooterToolbar from "@/components/FooterToolbar";
 import ManagerCertList from "../components/ManagerCertList";
 import styles from "./style.less"
-import uuidv1 from "uuid/v1"
 
 const fieldLabels = {
-  "name": "管理人员姓名",
-  "identityNumber": "身份证号码",
-  "assignerId": "指定职位",
-  "mobile": "手机号码",
-  "phone": "座机电话",
-  "dept": "部门",
-  "position": "职务"
+  name: '管理人员姓名',
+  identityNumber: '身份证号码',
+  assignerId: '指定职位',
+  mobile: '手机号码',
+  phone: '座机电话',
+  dept: '部门',
+  position: '职务'
 };
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const {Option} = Select;
 
 interface ManagerCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -58,24 +59,23 @@ interface ManagerCreateState {
 }) => ({
   submitting: loading.effects['manager/create'],
   assignerPositions: manager.assignerPositions,
-  certType: manager.certificateTypes
+  certType: manager.certificateTypes,
 }))
 class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateState> {
-
   state = {
     width: '100%',
     done: false,
     visible: false,
     certList: [],
-    current: undefined
+    current: undefined,
   };
 
   formRef: any
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({type: 'manager/fetchAssignerPositions'});
-    dispatch({type: 'manager/fetchCertificateTypes'});
+    dispatch({ type: 'manager/fetchAssignerPositions' });
+    dispatch({ type: 'manager/fetchCertificateTypes' });
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
     this.resizeFooterToolbar();
   }
@@ -141,12 +141,12 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
   handleShowCreateModal = (current: IManagerCert | undefined) => {
     this.setState({
       visible: true,
-      current: current
+      current
     });
   };
 
   handleRemoveCertItem = (item: IManagerCert) => {
-    let list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
+    const list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
     this.setState({ certList: list })
   };
 
@@ -160,7 +160,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
         if (values.certs && values.certs.certList) {
           values.certs = values.certs.certList
           values.certs.forEach((cert: IManagerCert) => {
-            if (typeof cert.id !== "number") {
+            if (typeof cert.id !== 'number') {
               delete cert.id;
             }
           })
@@ -171,7 +171,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
           callback: () => {
             message.success('管理人员信息已录入');
             this.props.dispatch(routerRedux.push('/person/manager/list'));
-          }
+          },
         });
       }
     });
@@ -185,22 +185,22 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
         return;
       }
       form.resetFields();
-      let type = this.props.certType.filter(item => item.id == values['cert_typeId'])[0];
+      const type = this.props.certType.filter(item => item.id == values.cert_typeId)[0];
 
-      let item = {
+      const item = {
         id: uuidv1(),
-        name: values['cert_name'],
-        expiredAt: values['cert_expiredAt'] && values['cert_expiredAt'].format("YYYY-MM-DD"),
-        remark: values['cert_remark'],
-        typeId: values['cert_typeId'],
+        name: values.cert_name,
+        expiredAt: values.cert_expiredAt && values.cert_expiredAt.format('YYYY-MM-DD'),
+        remark: values.cert_remark,
+        typeId: values.cert_typeId,
         typeName: type.name,
-        identityNumber: values['cert_identityNumber'],
-        ossFile: ""
+        identityNumber: values.cert_identityNumber,
+        ossFile: ''
       } as IManagerCert;
 
-      let certList = [
+      const certList = [
         ...this.state.certList,
-        item
+        item,
       ];
 
       this.setState({ visible: false, certList });
@@ -210,7 +210,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
   handleCertCancel = () => {
     this.setState({
       visible: false,
-      current: undefined
+      current: undefined,
     })
   };
 
@@ -224,7 +224,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
       submitting,
       assignerPositions,
       certType,
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
     } = this.props;
 
     const { width } = this.state;
@@ -273,16 +273,14 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
                   {
                     required: true,
                     message: '请输入指定职位',
-                  }
+                  },
                 ],
               })(
                 <Select placeholder="请选择职位">
                   {
-                    assignerPositions && assignerPositions.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    assignerPositions && assignerPositions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
 
@@ -332,8 +330,8 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
           </Form>
 
           <Card title="资格证书" bordered={false}>
-            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList} })(
-              <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>
+            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList } })(
+              <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>,
             )}
           </Card>
 
@@ -346,7 +344,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
         </Card>
 
         <Modal
-          title={'编辑'}
+          title="编辑"
           width={640}
           bodyStyle={{ padding: '28px 0' }}
           destroyOnClose

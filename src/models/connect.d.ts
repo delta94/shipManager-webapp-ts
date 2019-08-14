@@ -5,8 +5,8 @@ import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { UserModelState } from './user';
-import {ShipModelType} from "@/models/ship";
-import {SailorModelType} from "@/models/sailor";
+import { ShipModelType } from '@/models/ship';
+import { SailorModelType } from '@/models/sailor';
 
 export { GlobalModelState, SettingModelState, UserModelState };
 

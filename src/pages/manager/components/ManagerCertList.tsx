@@ -1,10 +1,10 @@
-import * as React from "react"
-import Button from "antd/es/button/button";
-import List from "antd/es/list";
-import {findDOMNode} from "react-dom";
-import {Avatar, Popconfirm} from "antd";
-import ListContent from "./ListContent";
-import {IManagerCert} from "src/interfaces/IManager";
+import * as React from 'react'
+import Button from 'antd/es/button/button';
+import List from 'antd/es/list';
+import { findDOMNode } from 'react-dom';
+import { Avatar, Popconfirm } from 'antd';
+import { IManagerCert } from 'src/interfaces/IManager';
+import ListContent from './ListContent';
 
 interface ManagerCertListProps {
   removeCertItem(value: IManagerCert): void
@@ -16,7 +16,6 @@ interface ManagerCertListState {
 }
 
 class ManagerCertList extends React.Component<ManagerCertListProps, ManagerCertListState> {
-
   static getDerivedStateFromProps(nextProps: any) {
     // Should be a controlled component.
     if ('value' in nextProps) {
@@ -28,7 +27,7 @@ class ManagerCertList extends React.Component<ManagerCertListProps, ManagerCertL
   }
 
   state = {
-      certList: []
+      certList: [],
   }
 
   addBtn: HTMLButtonElement | undefined | null = undefined;
@@ -67,16 +66,16 @@ class ManagerCertList extends React.Component<ManagerCertListProps, ManagerCertL
           renderItem={(item: IManagerCert) => (
             <List.Item
               actions={[
-                <a key="edit" onClick={(e) => this.handleEditItem(e, item)}>
+                <a key="edit" onClick={e => this.handleEditItem(e, item)}>
                   编辑
                 </a>,
-                <Popconfirm title="是否要删除此行？" onConfirm={(e) => this.handleRemoveItem(e, item)}>
+                <Popconfirm title="是否要删除此行？" onConfirm={e => this.handleRemoveItem(e, item)}>
                   <a>删除</a>
-                </Popconfirm>
+                </Popconfirm>,
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar shape="square" size="large" src={ item.icon || "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png"}/>}
+                avatar={<Avatar shape="square" size="large" src={ item.icon || 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png'}/>}
                 title={item.name}
                 description={item.typeName}
               />

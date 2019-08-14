@@ -3,11 +3,11 @@ import { parse, stringify } from 'qs';
 
 import { EffectsCommandMap } from 'dva';
 import { routerRedux } from 'dva/router';
-import {accountLogin, getCurrentUser} from "@/services/user";
-import {LoginResult} from "@/interfaces/ILogin";
-import IAccount, {IAccountRole} from "@/interfaces/IAccount";
-import {setAuthority, updateToken} from "@/utils/authority";
-import {reloadAuthorized} from "@/utils/Authorized";
+import { accountLogin, getCurrentUser } from '@/services/user';
+import { LoginResult } from '@/interfaces/ILogin';
+import IAccount, { IAccountRole } from '@/interfaces/IAccount';
+import { setAuthority, updateToken } from '@/utils/authority';
+import { reloadAuthorized } from '@/utils/Authorized';
 
 export function getPageQuery(): {
   [key: string]: string;
@@ -61,7 +61,6 @@ const Model: ModelType = {
       }
     },
     *login({ payload }, { call, put }) {
-
       const resp1: LoginResult = yield call(accountLogin, payload);
 
       updateToken(resp1.id_token);
@@ -72,7 +71,7 @@ const Model: ModelType = {
         type: 'changeLoginStatus',
         payload: {
           status: 'ok',
-          currentAuthority: resp2.authorities
+          currentAuthority: resp2.authorities,
         },
       });
 
@@ -81,8 +80,8 @@ const Model: ModelType = {
       reloadAuthorized();
 
       yield put({
-        type: "user/saveCurrentUser",
-        payload: resp2
+        type: 'user/saveCurrentUser',
+        payload: resp2,
       });
 
 
@@ -103,7 +102,7 @@ const Model: ModelType = {
         }
       }
       yield put(routerRedux.replace(redirect || '/'));
-    }
+    },
   },
 
   reducers: {

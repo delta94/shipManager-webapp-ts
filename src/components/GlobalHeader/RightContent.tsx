@@ -6,6 +6,7 @@ import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 import NoticeIconView from './NoticeIconView';
+
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends ConnectProps {
   theme?: SiderTheme;

@@ -1,4 +1,4 @@
-import {IManager, IManagerAssignerPosition, IManagerCertType} from "@/interfaces/IManager";
+import { IManager, IManagerAssignerPosition, IManagerCertType } from '@/interfaces/IManager';
 
 import {
   listManagerAssignerPosition,
@@ -11,13 +11,13 @@ import {
   deleteManagerCert,
   infoManager,
   updateManager,
-  updateManagerCert
+  updateManagerCert,
 } from '@/services/manager';
 
-import {ImmerReducer} from "@/models/connect";
-import {AnyAction} from "redux";
-import {EffectsCommandMap} from "dva";
-import {ITableListPagination} from "@/interfaces/ITableList";
+import { ImmerReducer } from '@/models/connect';
+import { AnyAction } from 'redux';
+import { EffectsCommandMap } from 'dva';
+import { ITableListPagination } from '@/interfaces/ITableList';
 
 export interface ManagerModelState {
   data: {
@@ -71,17 +71,17 @@ const MangerModel: ManagerModelType = {
       pagination: {
         total: 0,
         current: 0,
-        pageSize: 0
-      }
+        pageSize: 0,
+      },
     },
     assignerPositions: [],
     certificateTypes: [],
-    target: undefined
+    target: undefined,
   },
 
   effects: {
-    *fetch({payload}, {call, put}) {
-      let response = yield call(listManager, payload);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(listManager, payload);
       if (response.pagination) {
         response.pagination.current = response.pagination.current + 1
       }
@@ -91,7 +91,7 @@ const MangerModel: ManagerModelType = {
       });
     },
 
-    *fetchAssignerPositions({payload}, {call, put}) {
+    *fetchAssignerPositions({ payload }, { call, put }) {
       const response = yield call(listManagerAssignerPosition, payload);
 
       yield put({
@@ -100,7 +100,7 @@ const MangerModel: ManagerModelType = {
       });
     },
 
-    *fetchCertificateTypes({payload}, {call, put}) {
+    *fetchCertificateTypes({ payload }, { call, put }) {
       const response = yield call(listManagerCertType, payload);
 
       yield put({
@@ -109,7 +109,7 @@ const MangerModel: ManagerModelType = {
       });
     },
 
-    *create({payload, callback}, {call, put}) {
+    *create({ payload, callback }, { call, put }) {
       const response = yield call(addManager, payload);
       yield put({
         type: 'save',
@@ -118,30 +118,30 @@ const MangerModel: ManagerModelType = {
       if (callback) callback();
     },
 
-    *remove({payload, callback}, {call, put}) {
+    *remove({ payload, callback }, { call, put }) {
       yield call(deleteManager, payload);
       yield put({
         type: 'removeManager',
-        payload: payload,
+        payload,
       });
       if (callback) callback();
     },
 
-    *update({payload, callback}, {call}) {
+    *update({ payload, callback }, { call }) {
       yield call(updateManager, payload);
       if (callback) callback();
     },
 
-    *removeCert({payload, callback}, {call, put}) {
+    *removeCert({ payload, callback }, { call, put }) {
       yield call(deleteManagerCert, payload);
       yield put({
         type: 'removeManagerCert',
-        payload: payload,
+        payload,
       });
       if (callback) callback();
     },
 
-    *createCert({payload, callback}, {call, put}) {
+    *createCert({ payload, callback }, { call, put }) {
       const response = yield call(createManagerCert, payload);
       const detailsResponse = yield call(infoManagerCert, response.id);
       yield put({
@@ -151,7 +151,7 @@ const MangerModel: ManagerModelType = {
       if (callback) callback();
     },
 
-    *updateCert({payload, callback}, {call, put}) {
+    *updateCert({ payload, callback }, { call, put }) {
       const response = yield call(updateManagerCert, payload);
       yield put({
         type: 'updateManagerCert',
@@ -160,8 +160,8 @@ const MangerModel: ManagerModelType = {
       if (callback) callback();
     },
 
-    *target({payload, callback}, {call, put}) {
-      let manager = yield call(infoManager, payload);
+    *target({ payload, callback }, { call, put }) {
+      const manager = yield call(infoManager, payload);
       yield put({
         type: 'loadManager',
         payload: manager,
@@ -176,28 +176,28 @@ const MangerModel: ManagerModelType = {
     },
 
     removeManager(state, action) {
-      let { list, pagination } = state.data;
+      const { list, pagination } = state.data;
       state.data.list = list.filter(item => item.id !== action.payload);
       state.data.pagination.total = pagination.total - 1;
     },
 
     removeManagerCert(state, action) {
-      let { target } = state;
-      let certId = action.payload;
+      const { target } = state;
+      const certId = action.payload;
       state.target!.certs = target!.certs.filter(item => item.id !== certId);
     },
 
     updateManagerCert(state, action) {
-      let { target } = state;
-      let updatedCert = action.payload;
-      let certs = target!.certs.filter(item => item.id !== updatedCert.id);
+      const { target } = state;
+      const updatedCert = action.payload;
+      const certs = target!.certs.filter(item => item.id !== updatedCert.id);
       certs.push(updatedCert);
       state.target!.certs = certs;
     },
 
     addManagerCert(state, action) {
-      let { target } = state;
-      let newCert = action.payload;
+      const { target } = state;
+      const newCert = action.payload;
       state.target!.certs = target!.certs.concat(newCert);
     },
 
@@ -211,8 +211,8 @@ const MangerModel: ManagerModelType = {
 
     saveCertificateTypes(state, action) {
       state.certificateTypes = action.payload;
-    }
-  }
+    },
+  },
 };
 
 export default MangerModel;

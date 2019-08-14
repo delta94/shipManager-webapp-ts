@@ -1,4 +1,4 @@
-import ISailor from "@/interfaces/ISailor";
+import ISailor from '@/interfaces/ISailor';
 
 export interface TableListItem extends ISailor {
   key: number;

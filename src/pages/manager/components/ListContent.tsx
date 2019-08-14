@@ -1,13 +1,13 @@
-import * as React from "react";
-import {IManagerCert} from "src/interfaces/IManager";
-import styles from "./style.less";
-import moment from "moment";
+import * as React from 'react';
+import { IManagerCert } from 'src/interfaces/IManager';
+import moment from 'moment';
+import styles from './style.less';
 
 interface ListContentProps {
   item: IManagerCert
 }
 
-const ListContent: React.FunctionComponent<ListContentProps> = ( { item }) => (
+const ListContent: React.FunctionComponent<ListContentProps> = ({ item }) => (
   <div className={styles.listContent}>
     <div className={styles.listContentItem}>
       <span>证书名称</span>

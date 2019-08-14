@@ -1,30 +1,30 @@
-import * as React from "react"
-import {ManagerModelState} from "@/models/manager";
-import {connect} from "dva";
-import {Dispatch} from "redux";
-import { PageHeaderWrapper } from "@ant-design/pro-layout";
-import {RouteComponentProps} from "react-router";
-import {IManager, IManagerAssignerPosition, IManagerCert, IManagerCertType} from "@/interfaces/IManager";
-import {Form, Card, Input, Button, Icon, Modal, Select, Popover, message} from "antd";
-import {FormComponentProps} from "antd/es/form";
-import ManagerCertList from "@/pages/manager/components/ManagerCertList";
-import FooterToolbar from "@/components/FooterToolbar";
-import ManagerCertEditForm from "@/pages/manager/components/ManagerCertEditForm";
-import styles from "./style.less"
-import uuidv1 from "uuid/v1";
-import {routerRedux} from "dva/router";
+import * as React from 'react'
+import { ManagerModelState } from '@/models/manager';
+import { connect } from 'dva';
+import { Dispatch } from 'redux';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { RouteComponentProps } from 'react-router';
+import { IManager, IManagerAssignerPosition, IManagerCert, IManagerCertType } from '@/interfaces/IManager';
+import { Form, Card, Input, Button, Icon, Modal, Select, Popover, message } from 'antd';
+import { FormComponentProps } from 'antd/es/form';
+import ManagerCertList from '@/pages/manager/components/ManagerCertList';
+import FooterToolbar from '@/components/FooterToolbar';
+import ManagerCertEditForm from '@/pages/manager/components/ManagerCertEditForm';
+import uuidv1 from 'uuid/v1';
+import { routerRedux } from 'dva/router';
+import styles from './style.less'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 const fieldLabels = {
-  "name": "管理人员姓名",
-  "identityNumber": "身份证号码",
-  "assignerId": "指定职位",
-  "mobile": "手机号码",
-  "phone": "座机电话",
-  "dept": "部门",
-  "position": "职务"
+  name: '管理人员姓名',
+  identityNumber: '身份证号码',
+  assignerId: '指定职位',
+  mobile: '手机号码',
+  phone: '座机电话',
+  dept: '部门',
+  position: '职务',
 };
 
 interface Params {
@@ -48,7 +48,7 @@ interface ManagerUpdateState {
   current: IManagerCert | undefined
 }
 
-@connect(({ manager, loading}: {
+@connect(({ manager, loading }: {
     manager: ManagerModelState
     loading: { effects: { [key: string]: boolean } }
   }) => ({
@@ -56,36 +56,37 @@ interface ManagerUpdateState {
     submitting: loading.effects['manager/update'],
     manager: manager.target,
     certType: manager.certificateTypes,
-    assignerPositions: manager.assignerPositions
+    assignerPositions: manager.assignerPositions,
   }),
 )
 class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateState> {
-
   state = {
     width: '100%',
     done: false,
     visible: false,
     certList: [],
-    current: undefined
+    current: undefined,
   };
 
-
-  formRef: any
+  formRef: any;
 
   componentWillMount() {
-    this.props.dispatch({type: 'manager/fetchAssignerPositions'});
-    this.props.dispatch({type: 'manager/fetchCertificateTypes'});
+    this.props.dispatch({ type: 'manager/fetchAssignerPositions' });
+    this.props.dispatch({ type: 'manager/fetchCertificateTypes' });
 
     if (this.props.match.params.id) {
-      let managerId = parseInt(this.props.match.params.id);
+      const managerId = parseInt(this.props.match.params.id);
       setTimeout(() => {
         this.props.dispatch({
-          type: "manager/target",
+          type: 'manager/target',
           payload: managerId,
-          callback: this.fillManagerInfo
+          callback: this.fillManagerInfo,
         });
       }, 10)
     }
+
+    window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
+    this.resizeFooterToolbar();
   }
 
   fillManagerInfo = () => {
@@ -96,7 +97,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
       obj[key] = manager[key] || null;
       form.setFieldsValue(obj);
     });
-  }
+  };
 
   resizeFooterToolbar = () => {
     requestAnimationFrame(() => {
@@ -159,12 +160,12 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
   handleShowCreateModal = (current: IManagerCert | undefined) => {
     this.setState({
       visible: true,
-      current: current
+      current,
     });
   };
 
   handleRemoveCertItem = (item: IManagerCert) => {
-    let list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
+    const list = this.state.certList.filter((v: IManagerCert) => v.id == item.id);
     this.setState({ certList: list })
   };
 
@@ -172,18 +173,18 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
     const {
       form: { validateFieldsAndScroll },
       dispatch,
-      match: { params }
+      match: { params },
     } = this.props;
     validateFieldsAndScroll((error, values) => {
       if (!error) {
-        values["id"] = parseInt(params.id);
+        values.id = parseInt(params.id);
         dispatch({
           type: 'manager/update',
           payload: values,
           callback: () => {
             message.success('管理人员信息已更新');
             this.props.dispatch(routerRedux.push('/person/manager/list'));
-          }
+          },
         });
       }
     });
@@ -197,22 +198,22 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
         return;
       }
       form.resetFields();
-      let type = this.props.certType.filter(item => item.id == values['cert_typeId'])[0];
+      const type = this.props.certType.filter(item => item.id == values.cert_typeId)[0];
 
-      let item = {
+      const item = {
         id: uuidv1(),
-        name: values['cert_name'],
-        expiredAt: values['cert_expiredAt'] && values['cert_expiredAt'].format("YYYY-MM-DD"),
-        remark: values['cert_remark'],
-        typeId: values['cert_typeId'],
+        name: values.cert_name,
+        expiredAt: values.cert_expiredAt && values.cert_expiredAt.format('YYYY-MM-DD'),
+        remark: values.cert_remark,
+        typeId: values.cert_typeId,
         typeName: type.name,
-        identityNumber: values['cert_identityNumber'],
-        ossFile: ""
+        identityNumber: values.cert_identityNumber,
+        ossFile: '',
       } as IManagerCert;
 
-      let certList = [
+      const certList = [
         ...this.state.certList,
-        item
+        item,
       ];
 
       this.setState({ visible: false, certList });
@@ -222,7 +223,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
   handleCertCancel = () => {
     this.setState({
       visible: false,
-      current: undefined
+      current: undefined,
     })
   };
 
@@ -232,12 +233,11 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
 
 
   render() {
-
     const {
       submitting,
       assignerPositions,
       certType,
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
     } = this.props;
 
     const { width } = this.state;
@@ -286,16 +286,14 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
                   {
                     required: true,
                     message: '请输入指定职位',
-                  }
+                  },
                 ],
               })(
                 <Select placeholder="请选择职位">
                   {
-                    assignerPositions && assignerPositions.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    assignerPositions && assignerPositions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
 
@@ -345,8 +343,8 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
           </Form>
 
           <Card title="资格证书" bordered={false}>
-            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList} })(
-              <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>
+            {getFieldDecorator('certs', { initialValue: { certList: this.state.certList } })(
+              <ManagerCertList removeCertItem={this.handleRemoveCertItem} showCreateModal={this.handleShowCreateModal}/>,
             )}
           </Card>
 
@@ -359,7 +357,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
         </Card>
 
         <Modal
-          title={'编辑'}
+          title="编辑"
           width={640}
           bodyStyle={{ padding: '28px 0' }}
           destroyOnClose

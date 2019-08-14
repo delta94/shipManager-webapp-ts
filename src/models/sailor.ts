@@ -8,13 +8,13 @@ import {
   deleteSailor,
   listSailorPosition,
   infoSailor,
-  updateSailor
-} from "@/services/sailor";
+  updateSailor,
+} from '@/services/sailor';
 
-import {ITableListPagination} from "@/interfaces/ITableList";
-import ISailor, {ISailorPosition} from "@/interfaces/ISailor";
-import {IShipMeta} from "@/interfaces/IShip";
-import {listShipMeta} from "@/services/ship";
+import { ITableListPagination } from '@/interfaces/ITableList';
+import ISailor, { ISailorPosition } from '@/interfaces/ISailor';
+import { IShipMeta } from '@/interfaces/IShip';
+import { listShipMeta } from '@/services/ship';
 
 export interface SailorModelState {
   data: {
@@ -23,7 +23,7 @@ export interface SailorModelState {
   },
   positions: ISailorPosition[],
   shipListMeta: IShipMeta[],
-  target?: ISailor ,
+  target?: ISailor,
 }
 export type Effect = (
   action: AnyAction,
@@ -62,17 +62,17 @@ const SailorModel: SailorModelType = {
       pagination: {
         total: 0,
         current: 0,
-        pageSize: 0
-      }
+        pageSize: 0,
+      },
     },
     shipListMeta: [],
     positions: [],
-    target: undefined
+    target: undefined,
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      let response = yield call(listSailor, payload);
+      const response = yield call(listSailor, payload);
 
       if (response.pagination) {
         response.pagination.current = response.pagination.current + 1
@@ -85,7 +85,7 @@ const SailorModel: SailorModelType = {
     },
 
     *target({ payload, callback }, { call, put }) {
-      let sailor = yield call(infoSailor, payload);
+      const sailor = yield call(infoSailor, payload);
       yield put({
         type: 'targetSailor',
         payload: sailor,
@@ -102,7 +102,7 @@ const SailorModel: SailorModelType = {
       yield call(deleteSailor, payload);
       yield put({
         type: 'removeSailor',
-        payload: payload
+        payload,
       });
       if (callback) callback();
     },
@@ -142,17 +142,17 @@ const SailorModel: SailorModelType = {
     loadSailor(state, action) {
       return {
         ...state,
-        target: action.payload
+        target: action.payload,
       } as SailorModelState
     },
 
     removeSailor(state, action) {
-      let { list, pagination } = state.data;
+      const { list, pagination } = state.data;
       state.data.list = list.filter(item => item.id !== action.payload);
       state.data.pagination = {
         total: pagination.total - 1,
         pageSize: pagination.pageSize,
-        current: pagination.current
+        current: pagination.current,
       }
     },
 
@@ -166,13 +166,13 @@ const SailorModel: SailorModelType = {
     saveShipMeta(state, action) {
       return {
         ...state,
-        shipListMeta: action.payload
+        shipListMeta: action.payload,
       } as SailorModelState
     },
 
     targetSailor(state, action) {
       state.target = action.payload
-    }
+    },
   },
 };
 

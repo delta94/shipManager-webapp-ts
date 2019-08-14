@@ -2,21 +2,21 @@ import * as React from 'react';
 import { connect } from 'dva';
 
 import { Card, Table, Descriptions } from 'antd';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {ManagerModelState} from "@/models/manager";
-import {Dispatch} from "redux";
-import {RouteComponentProps} from "react-router";
-import {IManager} from "@/interfaces/IManager";
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { ManagerModelState } from '@/models/manager';
+import { Dispatch } from 'redux';
+import { RouteComponentProps } from 'react-router';
+import { IManager } from '@/interfaces/IManager';
 
 
 const fieldLabels = {
   name: '管理人员姓名',
-  identityNumber: "身份证号码",
-  assignerName: "指定职位",
-  mobile: "手机号码",
-  phone: "座机电话",
-  dept: "部门",
-  position: "职务"
+  identityNumber: '身份证号码',
+  assignerName: '指定职位',
+  mobile: '手机号码',
+  phone: '座机电话',
+  dept: '部门',
+  position: '职务',
 };
 
 interface Params {
@@ -29,38 +29,35 @@ interface ManagerDetailsProps extends RouteComponentProps<Params> {
   manager: IManager
 }
 
-@connect(({ manager, loading}: {
+@connect(({ manager, loading }: {
     manager: ManagerModelState
     loading: { effects: { [key: string]: boolean } }
   }) => ({
     loading: loading.effects['manager/target'],
-    manager: manager.target
+    manager: manager.target,
   }),
 )
 class ManagerDetails extends React.Component<ManagerDetailsProps> {
-
   componentWillMount() {
     if (this.props.match.params.id) {
-      let managerId = parseInt(this.props.match.params.id, 10);
+      const managerId = parseInt(this.props.match.params.id, 10);
       setTimeout(() => {
         this.props.dispatch({
-          type: "manager/target",
-          payload: managerId
+          type: 'manager/target',
+          payload: managerId,
         })
       }, 10)
     }
   }
 
   render() {
-    let { loading } = this.props;
-    let manager = this.props.manager || {};
+    const { loading } = this.props;
+    const manager = this.props.manager || {};
 
-    const renderContent = (value: any) => {
-      return {
+    const renderContent = (value: any) => ({
         children: value,
         props: {},
-      }
-    };
+      });
     const certsColumns = [
       {
         title: '证书名',
@@ -84,7 +81,7 @@ class ManagerDetails extends React.Component<ManagerDetailsProps> {
         title: '到期时间',
         dataIndex: 'expiredAt',
         key: 'expiredAt',
-        render: renderContent
+        render: renderContent,
       },
     ];
 

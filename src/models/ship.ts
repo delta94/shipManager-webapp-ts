@@ -3,10 +3,10 @@ import { EffectsCommandMap } from 'dva';
 
 import {
   addShip, infoShip, listShip, deleteShip, listShipMaterial, listShipTypes,
-  listShipBusinessAreas
-} from "@/services/ship";
-import IShip, {IShipBusinessArea, IShipMaterial, IShipType} from "@/interfaces/IShip";
-import {ITableListPagination} from "@/interfaces/ITableList";
+  listShipBusinessAreas,
+} from '@/services/ship';
+import IShip, { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
+import { ITableListPagination } from '@/interfaces/ITableList';
 
 export interface ShipStateType {
   data: {
@@ -55,8 +55,8 @@ const ShipModel: ShipModelType = {
       pagination: {
         total: 0,
         current: 0,
-        pageSize: 0
-      }
+        pageSize: 0,
+      },
     },
     target: undefined,
     types: [],
@@ -78,7 +78,7 @@ const ShipModel: ShipModelType = {
       });
     },
 
-    *fetchTypes({ payload }, { call , put }) {
+    *fetchTypes({ payload }, { call, put }) {
       const response = yield call(listShipTypes, payload);
 
       yield put({
@@ -118,20 +118,20 @@ const ShipModel: ShipModelType = {
       const response = yield call(deleteShip, payload);
       yield put({
         type: 'removeShip',
-        payload: response
+        payload: response,
       });
       if (callback) callback();
     },
 
     *target({ payload, callback }, { call, put }) {
-      let ship = yield call(infoShip, payload);
+      const ship = yield call(infoShip, payload);
       yield put({
         type: 'loadShip',
         payload: ship,
       });
 
       callback && callback()
-    }
+    },
   },
 
   reducers: {
@@ -166,13 +166,13 @@ const ShipModel: ShipModelType = {
     loadShip(state, action) {
       return {
         ...state,
-        target: action.payload
+        target: action.payload,
       } as ShipStateType
     },
 
     removeShip(state, action) {
       // @ts-ignore
-      let { list: ship, pagination } = state.data;
+      const { list: ship, pagination } = state.data;
       return {
         ...state,
         data: {
@@ -180,11 +180,11 @@ const ShipModel: ShipModelType = {
           pagination: {
             total: pagination.total - 1,
             pageSize: pagination.pageSize,
-            current: pagination.current
-          }
-        }
+            current: pagination.current,
+          },
+        },
       } as ShipStateType
-    }
+    },
   },
 };
 

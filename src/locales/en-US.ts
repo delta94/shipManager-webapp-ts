@@ -18,5 +18,5 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...userLogin
+  ...userLogin,
 };

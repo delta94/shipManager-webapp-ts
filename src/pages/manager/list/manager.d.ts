@@ -1,4 +1,4 @@
-import { IManager } from "@/interfaces/IManager";
+import { IManager } from '@/interfaces/IManager';
 
 export interface TableListItem extends IManager {
   key: number;

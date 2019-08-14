@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import {
   Card,
   Button,
@@ -9,18 +9,18 @@ import {
   message,
 } from 'antd';
 import { connect } from 'dva';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 
-import {FormComponentProps} from "antd/es/form";
-import {Dispatch} from "redux";
-import PageHeaderWrapper from "@ant-design/pro-layout/es/PageHeaderWrapper";
-import { IShipMeta } from "@/interfaces/IShip";
-import {SailorModelState} from "@/models/sailor";
-import {ISailorPosition} from "@/interfaces/ISailor";
+import { FormComponentProps } from 'antd/es/form';
+import { Dispatch } from 'redux';
+import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
+import { IShipMeta } from '@/interfaces/IShip';
+import { SailorModelState } from '@/models/sailor';
+import { ISailorPosition } from '@/interfaces/ISailor';
 
 const FormItem = Form.Item;
 
-const TextArea = Input.TextArea;
+const { TextArea } = Input;
 
 const { Option } = Select;
 
@@ -31,21 +31,20 @@ interface SailorCreateProps extends FormComponentProps {
   shipListMeta: IShipMeta[],
 }
 
-@connect(({ sailor, loading}: {
+@connect(({ sailor, loading }: {
     sailor: SailorModelState
     loading: { effects: { [key: string]: boolean } }
   }) => ({
     submitting: loading.effects['sailor/add'],
     positions: sailor.positions,
-    shipListMeta: sailor.shipListMeta
+    shipListMeta: sailor.shipListMeta,
   }),
 )
-class SailorCreate extends React.Component<SailorCreateProps>  {
-
+class SailorCreate extends React.Component<SailorCreateProps> {
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({type: 'sailor/fetchPositionTypes'});
-    dispatch({type: 'sailor/fetchShipMetaList'});
+    dispatch({ type: 'sailor/fetchPositionTypes' });
+    dispatch({ type: 'sailor/fetchShipMetaList' });
   }
 
   handleSailorCreated = () => {
@@ -64,7 +63,7 @@ class SailorCreate extends React.Component<SailorCreateProps>  {
         dispatch({
           type: 'sailor/create',
           payload: values,
-          callback: this.handleSailorCreated
+          callback: this.handleSailorCreated,
         });
       }
     });
@@ -75,7 +74,7 @@ class SailorCreate extends React.Component<SailorCreateProps>  {
       submitting,
       positions,
       shipListMeta,
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
     } = this.props;
 
     const formItemLayout = {
@@ -129,16 +128,14 @@ class SailorCreate extends React.Component<SailorCreateProps>  {
                   {
                     required: true,
                     message: '请输入职位',
-                  }
+                  },
                 ],
               })(
                 <Select placeholder="请选择职位">
                   {
-                    positions && positions.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    positions && positions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
 
@@ -164,20 +161,18 @@ class SailorCreate extends React.Component<SailorCreateProps>  {
               })(
                 <Select placeholder="请选择所属船舶">
                   {
-                    shipListMeta && shipListMeta.map((item, index) => {
-                      return <Option value={item.id} key={index}>{item.name}</Option>
-                    })
+                    shipListMeta && shipListMeta.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
                   }
-                </Select>
+                </Select>,
               )}
             </FormItem>
 
             <FormItem {...formItemLayout} label="是否为高级船员">
               {getFieldDecorator('isAdvanced')(
                 <Radio.Group>
-                  <Radio value={true} defaultChecked>是</Radio>
+                  <Radio value defaultChecked>是</Radio>
                   <Radio value={false}>不是</Radio>
-                </Radio.Group>
+                </Radio.Group>,
               )}
             </FormItem>
 

@@ -13,17 +13,17 @@ import {
 import React, { Component, Fragment } from 'react';
 
 import { Dispatch } from 'redux';
-import {routerRedux} from "dva/router";
+import { routerRedux } from 'dva/router';
 import { FormComponentProps } from 'antd/es/form';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import {TableListData, TableListItem, TableListPagination} from './ship.d';
+import { TableListData, TableListItem, TableListPagination } from './ship.d';
 
 import styles from './style.less';
-import {ShipStateType} from "@/models/ship";
+import { ShipStateType } from '@/models/ship';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -78,11 +78,11 @@ class TableList extends Component<TableListProps, TableListState> {
     },
     {
       title: '类型',
-      dataIndex: 'typeName'
+      dataIndex: 'typeName',
     },
     {
       title: '船舶共有情况',
-      dataIndex: 'shareInfo'
+      dataIndex: 'shareInfo',
     },
     {
       title: '总吨数',
@@ -123,11 +123,11 @@ class TableList extends Component<TableListProps, TableListState> {
   handleDeleteShip = (record: TableListItem) => {
     const { dispatch } = this.props;
     dispatch({
-      type: "ship/remove",
+      type: 'ship/remove',
       payload: record.id,
       callback: () => {
-        message.success("船舶删除成功")
-      }
+        message.success('船舶删除成功')
+      },
     })
   };
 
@@ -158,8 +158,8 @@ class TableList extends Component<TableListProps, TableListState> {
     };
 
     if (sorter.field) {
-      //@ts-ignore
-      params.sort = `${sorter.field},${sorter.order === "ascend" ? "asc" : "desc"}`;
+      // @ts-ignore
+      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
     }
 
     dispatch({
@@ -186,7 +186,7 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  handleSearch = (e: React.FormEvent)  => {
+  handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { dispatch, form } = this.props;
@@ -194,14 +194,14 @@ class TableList extends Component<TableListProps, TableListState> {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      let values = {};
+      const values = {};
 
       if (fieldsValue.typeId !== undefined) {
-        values["typeId.equals"] = fieldsValue.typeId
+        values['typeId.equals'] = fieldsValue.typeId
       }
 
       if (fieldsValue.name !== undefined) {
-        values["name.contains"] = fieldsValue.name;
+        values['name.contains'] = fieldsValue.name;
       }
 
       this.setState({
@@ -216,7 +216,7 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleClickAdd = () => {
-    this.props.dispatch(routerRedux.push("/ship/create/"));
+    this.props.dispatch(routerRedux.push('/ship/create/'));
   };
 
   renderSimpleForm() {
@@ -236,10 +236,8 @@ class TableList extends Component<TableListProps, TableListState> {
             <FormItem label="船舶类型">
               {getFieldDecorator('typeId')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {types && types.map((val) => {
-                    return <Option value={val.id} key={val.id}>{val.name}</Option>
-                  })}
-                </Select>
+                  {types && types.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                </Select>,
               )}
             </FormItem>
           </Col>

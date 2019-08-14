@@ -1,5 +1,5 @@
-import ISailor from "./ISailor";
-import IShipPayload from "./IShipPayload";
+import ISailor from './ISailor';
+import IShipPayload from './IShipPayload';
 
 export default interface IShip {
   id: number;
@@ -50,4 +50,3 @@ export interface IShipMeta {
   id: number
   name: string
 }
-
