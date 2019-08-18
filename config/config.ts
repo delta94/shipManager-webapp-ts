@@ -37,7 +37,7 @@ const plugins: IPlugin[] = [
               importWorkboxFrom: 'local',
             },
           }
-        : false
+        : false,
     },
   ],
   [
@@ -55,7 +55,11 @@ export default {
   block: {
     defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
   },
+
   hash: true,
+
+  history: 'hash',
+
   targets: {
     ie: 11,
   },
@@ -141,7 +145,7 @@ export default {
               path: '/person/sailor/profile/:id',
               name: '船员详情',
               component: './sailor/profile',
-              hideInMenu: true
+              hideInMenu: true,
             },
             {
               name: '更新船员',
@@ -154,25 +158,25 @@ export default {
             {
               path: '/person/manager/list',
               name: '管理人员列表',
-              component: './manager/list'
+              component: './manager/list',
             },
             {
               path: '/person/manager/profile/:id',
               name: '管理人员详情',
               hideInMenu: true,
-              component: './manager/profile'
+              component: './manager/profile',
             },
             {
               path: '/person/manager/create',
               name: '新增管理人员',
-              component: './manager/create'
+              component: './manager/create',
             },
             {
               path: '/person/manager/update/:id',
               name: '更新管理人员',
               hideInMenu: true,
-              component: './manager/update'
-            }
+              component: './manager/update',
+            },
           ],
         },
         {
@@ -180,7 +184,7 @@ export default {
           path: '/exception/403',
           component: './exception/403',
           hideInMenu: true,
-        }
+        },
       ],
     },
     {
@@ -207,7 +211,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
