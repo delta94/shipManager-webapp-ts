@@ -32,7 +32,6 @@ class ManagerCertEditForm extends React.Component<ManagerCertEditFormProps> {
     let fileList: any[] = [];
 
     if (current && current.ossFile) {
-      debugger;
       const fileStr = current.ossFile;
       fileList = fileStr.split(';').map((value, index) => ({
         uid: 'pre_' + index,

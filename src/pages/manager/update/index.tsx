@@ -245,7 +245,6 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
         identityNumber: values.cert_identityNumber,
         ossFile: parseUploadedItem(values.cert_fileList.fileList),
       } as IManagerCert;
-      debugger;
 
       if (this.state.current) {
         // @ts-ignore

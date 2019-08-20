@@ -85,7 +85,6 @@ export default {
       path: '/',
       component: '../layouts/BasicLayout',
       Routes: ['src/pages/Authorized'],
-      authority: ['ROLE_USER', 'ROLE_ADMIN'],
       routes: [
         {
           path: '/',
@@ -99,22 +98,26 @@ export default {
             {
               name: '船舶列表',
               path: '/ship/list',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './ship/list',
             },
             {
               name: '新建船舶',
               path: '/ship/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './ship/create',
             },
             {
               name: '船舶详情',
               path: '/ship/profile/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './ship/profile',
               hideInMenu: true,
             },
             {
               name: '更新船舶',
               path: '/ship/update/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './ship/update',
               hideInMenu: true,
             },
@@ -134,23 +137,27 @@ export default {
             {
               path: '/person/sailor/list',
               name: '船员管理',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './sailor/list',
             },
             {
               path: '/person/sailor/create',
               name: '新建船员',
               component: './sailor/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
             },
             {
               path: '/person/sailor/profile/:id',
               name: '船员详情',
               component: './sailor/profile',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               hideInMenu: true,
             },
             {
               name: '更新船员',
               path: '/person/sailor/update/:id',
               component: './sailor/update',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               hideInMenu: true,
             },
 
@@ -159,22 +166,26 @@ export default {
               path: '/person/manager/list',
               name: '管理人员列表',
               component: './manager/list',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
             },
             {
               path: '/person/manager/profile/:id',
               name: '管理人员详情',
               hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './manager/profile',
             },
             {
               path: '/person/manager/create',
               name: '新增管理人员',
               component: './manager/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
             },
             {
               path: '/person/manager/update/:id',
               name: '更新管理人员',
               hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './manager/update',
             },
           ],

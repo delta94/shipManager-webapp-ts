@@ -39,6 +39,7 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
 }) => {
   const { currentUser } = user;
   const { routes = [] } = route;
+
   const isLogin = currentUser && currentUser.login;
   return (
     <Authorized
