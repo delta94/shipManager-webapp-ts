@@ -37,4 +37,8 @@ screenshot
 .firebase
 .eslintcache
 
+# secret
+
+secret.config.js
+
 build

@@ -18,7 +18,7 @@ export function getPageQuery(): {
 export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
-  currentAuthority?: IAccountRole[]
+  currentAuthority?: IAccountRole[];
 }
 
 export type Effect = (
@@ -28,7 +28,7 @@ export type Effect = (
 
 export interface ModelType {
   namespace: string;
-  state: StateType
+  state: StateType;
   effects: {
     logout: Effect;
     login: Effect;
@@ -58,6 +58,9 @@ const Model: ModelType = {
             }),
           }),
         );
+
+        reloadAuthorized();
+        updateToken('');
       }
     },
     *login({ payload }, { call, put }) {
@@ -83,7 +86,6 @@ const Model: ModelType = {
         type: 'user/saveCurrentUser',
         payload: resp2,
       });
-
 
       const urlParams = new URL(window.location.href);
       const params = getPageQuery();

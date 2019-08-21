@@ -30,8 +30,8 @@ export function setAuthority(authority: string | string[]): void {
 }
 
 export function updateToken(token: string) {
-  if (token === null) {
-    localStorage.removeItem('ship-manager-token')
+  if (token === '') {
+    localStorage.removeItem('ship-manager-token');
   } else {
     localStorage.setItem('ship-manager-token', token);
   }
