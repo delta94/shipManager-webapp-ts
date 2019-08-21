@@ -52,7 +52,9 @@ export default {
   block: {
     defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
   },
+
   hash: true,
+
   history: 'hash',
   publicPath:
     process.env.NODE_ENV === 'production'
@@ -64,99 +66,139 @@ export default {
   devtool: false,
   routes: [
     {
-      path: '/',
-      component: '../layouts/BlankLayout',
+      path: '/user',
+      component: '../layouts/UserLayout',
       routes: [
         {
           path: '/user',
-          component: '../layouts/UserLayout',
+          redirect: '/user/login',
+        },
+        {
+          name: 'login',
+          path: '/user/login',
+          component: './user/login',
+        },
+      ],
+    },
+    {
+      path: '/',
+      component: '../layouts/BasicLayout',
+      Routes: ['src/pages/Authorized'],
+      routes: [
+        {
+          path: '/',
+          redirect: '/ship/list',
+        },
+        {
+          path: '/ship',
+          name: '船舶管理',
+          icon: 'book',
           routes: [
             {
-              path: '/user',
-              redirect: '/user/login',
+              name: '船舶列表',
+              path: '/ship/list',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './ship/list',
             },
             {
-              component: '404',
+              name: '新建船舶',
+              path: '/ship/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './ship/create',
+            },
+            {
+              name: '船舶详情',
+              path: '/ship/profile/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './ship/profile',
+              hideInMenu: true,
+            },
+            {
+              name: '更新船舶',
+              path: '/ship/update/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './ship/update',
+              hideInMenu: true,
             },
           ],
         },
         {
-          path: '/',
-          component: '../layouts/BasicLayout',
-          Routes: ['src/pages/Authorized'],
-          authority: ['admin', 'user'],
+          path: '/person',
+          name: '人员管理',
+          icon: 'profile',
           routes: [
             {
-              path: '/dashboard',
-              name: 'dashboard',
-              icon: 'dashboard',
-              routes: [],
-            },
-            {
-              path: '/form',
-              icon: 'form',
-              name: 'form',
-              routes: [],
-            },
-            {
-              path: '/list',
-              icon: 'table',
-              name: 'list',
-              routes: [
-                {
-                  path: '/list/search',
-                  name: 'search-list',
-                  component: './list/search',
-                  routes: [
-                    {
-                      path: '/list/search',
-                      redirect: '/list/search/articles',
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              path: '/profile',
-              name: 'profile',
-              icon: 'profile',
-              routes: [],
-            },
-            {
-              name: 'result',
-              icon: 'check-circle-o',
-              path: '/result',
-              routes: [],
-            },
-            {
-              name: 'exception',
-              icon: 'warning',
-              path: '/exception',
-              routes: [],
-            },
-            {
-              name: 'account',
-              icon: 'user',
-              path: '/account',
-              routes: [],
-            },
-            {
-              name: 'editor',
-              icon: 'highlight',
-              path: '/editor',
-              routes: [],
-            },
-            {
               path: '/',
-              redirect: '/dashboard/analysis',
-              authority: ['admin', 'user'],
+              redirect: '/person/sailor/list',
+            },
+
+            // sailor
+            {
+              path: '/person/sailor/list',
+              name: '船员管理',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './sailor/list',
             },
             {
-              component: '404',
+              path: '/person/sailor/create',
+              name: '新建船员',
+              component: './sailor/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            },
+            {
+              path: '/person/sailor/profile/:id',
+              name: '船员详情',
+              component: './sailor/profile',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              hideInMenu: true,
+            },
+            {
+              name: '更新船员',
+              path: '/person/sailor/update/:id',
+              component: './sailor/update',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              hideInMenu: true,
+            },
+
+            // manager
+            {
+              path: '/person/manager/list',
+              name: '管理人员列表',
+              component: './manager/list',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            },
+            {
+              path: '/person/manager/profile/:id',
+              name: '管理人员详情',
+              hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './manager/profile',
+            },
+            {
+              path: '/person/manager/create',
+              name: '新增管理人员',
+              component: './manager/create',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            },
+            {
+              path: '/person/manager/update/:id',
+              name: '更新管理人员',
+              hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './manager/update',
             },
           ],
         },
+        {
+          name: '403',
+          path: '/exception/403',
+          component: './exception/403',
+          hideInMenu: true,
+        },
       ],
+    },
+    {
+      component: './404',
     },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
