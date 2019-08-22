@@ -1,7 +1,13 @@
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component, Fragment } from 'react';
+import { Form, List, message } from 'antd';
+import { Dispatch } from 'redux';
+import { connect } from 'dva';
+import EditPasswordForm from '@/pages/setting/personal/components/EditPasswordForm';
+import IAccount from '@/interfaces/IAccount';
+import { UserModelState } from '@/models/user';
 
-import { List } from 'antd';
+const FormItem = Form.Item;
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
@@ -24,7 +30,56 @@ const passwordStrength = {
   ),
 };
 
-class SecurityView extends Component {
+interface SecurityViewProps {
+  currentUser?: IAccount;
+  dispatch: Dispatch<any>;
+}
+
+interface SecurityViewState {
+  visible: boolean;
+}
+
+@connect(({ user }: { user: UserModelState }) => ({
+  currentUser: user.currentUser,
+}))
+class SecurityView extends Component<SecurityViewProps, SecurityViewState> {
+  formRef: any;
+
+  state = {
+    visible: false,
+  };
+
+  showModal = () => {
+    this.setState({ visible: true });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  handleCreate = () => {
+    const { form } = this.formRef.props;
+    form.validateFields((err: any, values: any) => {
+      if (err) {
+        return;
+      }
+      if (values.newPassword !== values.newPasswordRepeated) {
+        return;
+      }
+
+      this.props.dispatch({
+        type: 'user/updateCurrentPassword',
+        payload: values,
+        callback: () => {
+          message.success('密码修改成功');
+        },
+      });
+
+      form.resetFields();
+      this.setState({ visible: false });
+    });
+  };
+
   getData = () => [
     {
       title: formatMessage({ id: 'app.settings.security.password' }, {}),
@@ -35,29 +90,21 @@ class SecurityView extends Component {
         </Fragment>
       ),
       actions: [
-        <a key="Modify">
-          <FormattedMessage id="app.settings.security.modify" defaultMessage="Modify" />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'app.settings.security.phone' }, {}),
-      description: `${formatMessage(
-        { id: 'app.settings.security.phone-description' },
-        {},
-      )}：138****8293`,
-      actions: [
-        <a key="Modify">
+        <a key="Modify" onClick={this.showModal}>
           <FormattedMessage id="app.settings.security.modify" defaultMessage="Modify" />
         </a>,
       ],
     },
   ];
 
+  saveFormRef = (formRef: any) => {
+    this.formRef = formRef;
+  };
+
   render() {
     const data = this.getData();
     return (
-      <Fragment>
+      <div>
         <List<Unpacked<typeof data>>
           itemLayout="horizontal"
           dataSource={data}
@@ -67,7 +114,13 @@ class SecurityView extends Component {
             </List.Item>
           )}
         />
-      </Fragment>
+        <EditPasswordForm
+          wrappedComponentRef={this.saveFormRef}
+          visible={this.state.visible}
+          onCancel={this.handleCancel}
+          onCreate={this.handleCreate}
+        />
+      </div>
     );
   }
 }

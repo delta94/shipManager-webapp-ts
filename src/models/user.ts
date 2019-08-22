@@ -1,6 +1,6 @@
 import { Effect } from 'dva';
 
-import { getCurrentUser } from '@/services/user';
+import { getCurrentUser, updateCurrentPassword, updateCurrentUser } from '@/services/user';
 import IAccount from '@/interfaces/IAccount';
 import { ImmerReducer } from '@/models/connect';
 
@@ -13,6 +13,8 @@ export interface UserModelType {
   state: UserModelState;
   effects: {
     fetchCurrent: Effect;
+    updateCurrent: Effect;
+    updateCurrentPassword: Effect;
   };
   reducers: {
     saveCurrentUser: ImmerReducer<UserModelState>;
@@ -33,6 +35,23 @@ const UserModel: UserModelType = {
         type: 'saveCurrentUser',
         payload: response,
       });
+    },
+    *updateCurrent({ payload, callback }, { call, put }) {
+      yield call(updateCurrentUser, payload);
+      const response: IAccount = yield call(getCurrentUser);
+      yield put({
+        type: 'saveCurrentUser',
+        payload: response,
+      });
+      if (callback) {
+        callback();
+      }
+    },
+    *updateCurrentPassword({ payload, callback }, { call }) {
+      yield call(updateCurrentPassword, payload);
+      if (callback) {
+        callback();
+      }
     },
   },
 

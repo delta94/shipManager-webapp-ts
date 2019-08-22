@@ -3,9 +3,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import { Card, Descriptions } from 'antd';
 import { Dispatch } from 'redux';
+import { RouteComponentProps } from 'react-router';
 import ISailor from '@/interfaces/ISailor';
 import { SailorModelState } from '@/models/sailor';
-import { RouteComponentProps } from 'react-router';
 
 const fieldLabels = {
   name: '船员名',
@@ -55,13 +55,13 @@ class SailorDetails extends React.Component<SailorDetailsProps> {
   render() {
     const sailor = this.props.sailor || {};
 
-    let certItems =
+    const certItems =
       sailor.certFile &&
-      sailor.certFile.split(';').map((item, index) => {
-        return (
+      sailor.certFile
+        .split(';')
+        .map((item, index) => (
           <Card hoverable bordered={false} style={{ width: 240 }} cover={<img src={item} />} />
-        );
-      });
+        ));
 
     return (
       <PageHeaderWrapper title="船员详情页">

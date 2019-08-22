@@ -24,7 +24,7 @@ export default class OssClient extends OSS {
   }
 
   public static async createInstance(): Promise<OssClient> {
-    let data = await getStsToken();
+    const data = await getStsToken();
     if (data) {
       return new OssClient(
         {
@@ -36,16 +36,15 @@ export default class OssClient extends OSS {
         },
         data.expiration,
       );
-    } else {
-      throw new Error('STS token get error');
     }
+    throw new Error('STS token get error');
   }
 }
 
 export function generateOSSKey(file: File) {
-  let fileType = file.name.split('.').pop();
-  let fileName = file.name.split('.').unshift();
-  let uuid = Math.random()
+  const fileType = file.name.split('.').pop();
+  const fileName = file.name.split('.').unshift();
+  const uuid = Math.random()
     .toString(36)
     .substring(2);
   return `${moment().format('YYYYMMDD')}/${fileName}_${uuid}.${fileType}`;

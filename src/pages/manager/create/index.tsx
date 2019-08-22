@@ -7,9 +7,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { routerRedux } from 'dva/router';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
+import uuidv1 from 'uuid/v1';
 import { IManagerAssignerPosition, IManagerCert, IManagerCertType } from '@/interfaces/IManager';
 import { ManagerModelState } from '@/models/manager';
-import uuidv1 from 'uuid/v1';
 import ManagerCertEditForm from '../components/ManagerCertEditForm';
 import FooterToolbar from '@/components/FooterToolbar';
 import ManagerCertList from '../components/ManagerCertList';
@@ -202,7 +202,7 @@ class ManagerCreate extends React.Component<ManagerCreateProps, ManagerCreateSta
 
       if (this.state.current) {
         // @ts-ignore
-        let id = this.state.current.id;
+        const { id } = this.state.current;
         // @ts-ignore
         certList = this.state.certList.filter(item => item.id != id);
         // @ts-ignore

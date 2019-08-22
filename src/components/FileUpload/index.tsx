@@ -1,6 +1,6 @@
-import { Upload, Icon, Modal } from 'antd';
+import { Upload, Icon, Modal, message } from 'antd';
 import React from 'react';
-import { message } from 'antd/lib/index';
+
 import OssClient, { generateOSSKey, resolveOSSPath } from '@/utils/OSSClient';
 
 interface FileUploadState {
@@ -47,11 +47,9 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
   handleRemove = (file: any) => {
     // @ts-ignore
-    let newValues = this.state.fileList.filter(item => item.url != file.url);
+    const newValues = this.state.fileList.filter(item => item.url != file.url);
 
-    this.setState(({ fileList }) => {
-      return { fileList: newValues };
-    });
+    this.setState(({ fileList }) => ({ fileList: newValues }));
 
     const { onChange } = this.props;
 
@@ -62,28 +60,28 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
   // 参考链接：https://www.jianshu.com/p/f356f050b3c9
   handleBeforeUpload = (file: any) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
-      let ossClient = await OssClient.getInstance();
-      let key = generateOSSKey(file);
+      const ossClient = await OssClient.getInstance();
+      const key = generateOSSKey(file);
 
       ossClient
         .multipartUpload(key, file, {})
         .then(({ bucket, name }) => {
           message.success('文件上传成功');
-          let url = resolveOSSPath(bucket, name);
+          const url = resolveOSSPath(bucket, name);
 
-          let newImage = {
+          const newImage = {
             uid: file.uid,
             name: file.name,
             status: file.status,
             type: file.type,
             result: name,
-            url: url,
+            url,
           };
 
-          let newValues = [...this.state.fileList, newImage];
+          const newValues = [...this.state.fileList, newImage];
 
           const { onChange } = this.props;
 
@@ -91,9 +89,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             onChange({ fileList: newValues });
           }
 
-          this.setState(({ fileList }) => {
-            return { fileList: newValues };
-          });
+          this.setState(({ fileList }) => ({ fileList: newValues }));
         })
         .catch(error => {
           message.error('文件上传失败');

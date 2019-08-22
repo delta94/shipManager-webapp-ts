@@ -3,9 +3,9 @@ import { connect } from 'dva';
 
 import { Card, Table, Descriptions } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { ManagerModelState } from '@/models/manager';
 import { Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router';
+import { ManagerModelState } from '@/models/manager';
 import { IManager } from '@/interfaces/IManager';
 
 const fieldLabels = {

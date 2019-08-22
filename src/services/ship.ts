@@ -1,5 +1,5 @@
-import request from '@/utils/request';
 import { stringify } from 'qs';
+import request from '@/utils/request';
 import IShip, { IShipBusinessArea } from '@/interfaces/IShip';
 
 export async function getShip(id: number): Promise<IShip> {
@@ -8,9 +8,9 @@ export async function getShip(id: number): Promise<IShip> {
   });
 }
 
-export async function listShip(params:any): Promise<IShip[]> {
+export async function listShip(params: any): Promise<IShip[]> {
   if (params && params.page) {
-    params.page -= 1
+    params.page -= 1;
   }
 
   return request(`/api/ships-list?${stringify(params)}`, {

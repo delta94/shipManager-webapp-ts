@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { ManagerModelState } from '@/models/manager';
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { RouteComponentProps } from 'react-router';
+import { Form, Card, Input, Button, Icon, Modal, Select, Popover, message } from 'antd';
+import { FormComponentProps } from 'antd/es/form';
+import { routerRedux } from 'dva/router';
 import {
   IManager,
   IManagerAssignerPosition,
   IManagerCert,
   IManagerCertType,
 } from '@/interfaces/IManager';
-import { Form, Card, Input, Button, Icon, Modal, Select, Popover, message } from 'antd';
-import { FormComponentProps } from 'antd/es/form';
 import ManagerCertList from '@/pages/manager/components/ManagerCertList';
 import FooterToolbar from '@/components/FooterToolbar';
 import ManagerCertEditForm from '@/pages/manager/components/ManagerCertEditForm';
-import { routerRedux } from 'dva/router';
+import { ManagerModelState } from '@/models/manager';
 import styles from './style.less';
 import { parseUploadedItem } from '@/utils/utils';
 
@@ -190,12 +190,14 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
   };
 
   handleCertRemoved = (id: number) => {
-    let { form } = this.props;
+    const { form } = this.props;
     message.success('证书已删除');
-    let values = form.getFieldValue('certs');
+    const values = form.getFieldValue('certs');
 
     if (values && values.certList) {
-      let certList: IManagerCert[] = values.certList.filter((item: IManagerCert) => item.id !== id);
+      const certList: IManagerCert[] = values.certList.filter(
+        (item: IManagerCert) => item.id !== id,
+      );
       this.props.form.setFieldsValue({ certs: { certList } });
     }
   };
@@ -236,7 +238,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
       }
       const type = this.props.certType.filter(item => item.id == values.cert_typeId)[0];
       const item = {
-        managerId: managerId,
+        managerId,
         name: values.cert_name,
         expiredAt: values.cert_expiredAt && values.cert_expiredAt.format('YYYY-MM-DD'),
         remark: values.cert_remark,

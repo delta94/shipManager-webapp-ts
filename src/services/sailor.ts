@@ -1,7 +1,6 @@
+import { stringify } from 'qs';
 import request from '@/utils/request';
 import ISailor from '@/interfaces/ISailor';
-
-import { stringify } from 'qs';
 
 export async function listSailorPosition() {
   return request('/api/sailor-positions', {
@@ -37,7 +36,7 @@ export async function infoSailor(id: number): Promise<ISailor> {
 
 export async function listSailor(params: any): Promise<ISailor[]> {
   if (params && params.page) {
-    params.page -= 1
+    params.page -= 1;
   }
 
   return request(`/api/sailors-list?${stringify(params)}`, {

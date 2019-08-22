@@ -3,14 +3,14 @@ import * as React from 'react';
 import { Card, Button, Form, Input, Radio, Select, message } from 'antd';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import FileUpload from '@/components/FileUpload';
 import { routerRedux } from 'dva/router';
 import { Dispatch } from 'redux';
+import { FormComponentProps } from 'antd/es/form';
+import { RouteComponentProps } from 'react-router';
+import FileUpload from '@/components/FileUpload';
 import { IShipMeta } from '@/interfaces/IShip';
 import { default as ISailor, ISailorPosition } from '@/interfaces/ISailor';
-import { FormComponentProps } from 'antd/es/form';
 import { SailorModelState } from '@/models/sailor';
-import { RouteComponentProps } from 'react-router';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -74,7 +74,7 @@ class SailorUpdate extends React.Component<SailorUpdateProps> {
       if (key === 'certFile' && targetSailor[key]) {
         const fileStr = targetSailor[key];
         const fileList = fileStr.split(';').map((value, index) => ({
-          uid: 'pre_' + index,
+          uid: `pre_${index}`,
           name: value,
           status: 'done',
           type: '',

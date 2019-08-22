@@ -1,3 +1,5 @@
+import { AnyAction } from 'redux';
+import { EffectsCommandMap } from 'dva';
 import { IManager, IManagerAssignerPosition, IManagerCertType } from '@/interfaces/IManager';
 
 import {
@@ -15,18 +17,16 @@ import {
 } from '@/services/manager';
 
 import { ImmerReducer } from '@/models/connect';
-import { AnyAction } from 'redux';
-import { EffectsCommandMap } from 'dva';
 import { ITableListPagination } from '@/interfaces/ITableList';
 
 export interface ManagerModelState {
   data: {
-    list: IManager[],
-    pagination: ITableListPagination
-  },
-  assignerPositions: IManagerAssignerPosition[],
-  certificateTypes: IManagerCertType[],
-  target: IManager | undefined
+    list: IManager[];
+    pagination: ITableListPagination;
+  };
+  assignerPositions: IManagerAssignerPosition[];
+  certificateTypes: IManagerCertType[];
+  target: IManager | undefined;
 }
 export type Effect = (
   action: AnyAction,
@@ -37,17 +37,16 @@ export interface ManagerModelType {
   namespace: string;
   state: ManagerModelState;
   effects: {
-    fetch: Effect
-    fetchCertificateTypes: Effect
-    fetchAssignerPositions: Effect
-    create: Effect
-    remove: Effect
-    update: Effect
-    target: Effect
-    removeCert: Effect
-    updateCert: Effect
-    createCert: Effect
-
+    fetch: Effect;
+    fetchCertificateTypes: Effect;
+    fetchAssignerPositions: Effect;
+    create: Effect;
+    remove: Effect;
+    update: Effect;
+    target: Effect;
+    removeCert: Effect;
+    updateCert: Effect;
+    createCert: Effect;
   };
   reducers: {
     save: ImmerReducer<ManagerModelState>;
@@ -62,7 +61,6 @@ export interface ManagerModelType {
 }
 
 const MangerModel: ManagerModelType = {
-
   namespace: 'manager',
 
   state: {
@@ -83,7 +81,7 @@ const MangerModel: ManagerModelType = {
     *fetch({ payload }, { call, put }) {
       const response = yield call(listManager, payload);
       if (response.pagination) {
-        response.pagination.current = response.pagination.current + 1
+        response.pagination.current = response.pagination.current + 1;
       }
       yield put({
         type: 'save',
@@ -167,12 +165,12 @@ const MangerModel: ManagerModelType = {
         payload: manager,
       });
 
-      callback && callback()
+      callback && callback();
     },
   },
   reducers: {
     save(state, action) {
-      state.data = action.payload
+      state.data = action.payload;
     },
 
     removeManager(state, action) {

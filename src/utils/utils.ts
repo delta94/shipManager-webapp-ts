@@ -14,8 +14,7 @@ export { isAntDesignPro, isUrl };
 
 export function parseUploadedItem(item: any[]): string {
   if (item && item.length > 0) {
-    return item.map((item: any) => item.url).join(';');
-  } else {
-    return '';
+    return item.map((v: any) => v.url).join(';');
   }
+  return '';
 }

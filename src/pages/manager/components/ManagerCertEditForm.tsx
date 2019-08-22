@@ -34,7 +34,7 @@ class ManagerCertEditForm extends React.Component<ManagerCertEditFormProps> {
     if (current && current.ossFile) {
       const fileStr = current.ossFile;
       fileList = fileStr.split(';').map((value, index) => ({
-        uid: 'pre_' + index,
+        uid: `pre_${index}`,
         name: value,
         status: 'done',
         type: '',
@@ -87,7 +87,7 @@ class ManagerCertEditForm extends React.Component<ManagerCertEditFormProps> {
 
         <FormItem label="证书电子件" {...this.formLayout}>
           {getFieldDecorator('cert_fileList', {
-            initialValue: { fileList: fileList },
+            initialValue: { fileList },
           })(<FileUpload />)}
         </FormItem>
 

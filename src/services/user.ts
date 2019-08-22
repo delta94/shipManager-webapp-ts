@@ -22,3 +22,17 @@ export async function getCurrentUser(): Promise<IAccount> {
     method: 'GET',
   });
 }
+
+export async function updateCurrentUser(params: Partial<IAccount>): Promise<IAccount> {
+  return request('/api/account', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export async function updateCurrentPassword(params: any): Promise<void> {
+  return request('/api/account/change-password', {
+    method: 'POST',
+    data: params,
+  });
+}

@@ -1,23 +1,12 @@
 import React from 'react';
-import {
-  Card,
-  Button,
-  Form,
-  Icon,
-  Col,
-  Row,
-  DatePicker,
-  Input,
-  Select,
-  Popover,
-} from 'antd';
-import FooterToolbar from '@/components/FooterToolbar';
+import { Card, Button, Form, Icon, Col, Row, DatePicker, Input, Select, Popover } from 'antd';
 import { connect } from 'dva';
 
-import styles from './style.less';
 import { FormComponentProps } from 'antd/es/form';
 import { Dispatch } from 'redux';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import styles from './style.less';
+import FooterToolbar from '@/components/FooterToolbar';
 import { ShipStateType } from '@/models/ship';
 import { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
 import { TableForm } from '@/pages/ship/create/components/TableForm';
@@ -72,15 +61,18 @@ const fieldLabels = {
 interface ShipCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   submitting: boolean;
-  types: IShipType[],
-  materials: IShipMaterial[]
-  businessAreas: IShipBusinessArea[]
+  types: IShipType[];
+  materials: IShipMaterial[];
+  businessAreas: IShipBusinessArea[];
 }
 
-
-@connect(({ ship, loading }: {
-    ship: ShipStateType
-    loading: { effects: { [key: string]: boolean } }
+@connect(
+  ({
+    ship,
+    loading,
+  }: {
+    ship: ShipStateType;
+    loading: { effects: { [key: string]: boolean } };
   }) => ({
     types: ship.types,
     materials: ship.materials,
@@ -108,10 +100,14 @@ class ShipCreate extends React.Component<ShipCreateProps> {
   }
 
   getErrorInfo = () => {
-    const { form: { getFieldsError } } = this.props;
+    const {
+      form: { getFieldsError },
+    } = this.props;
     const errors = getFieldsError();
     const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-    if (!errors || errorCount === 0) { return null }
+    if (!errors || errorCount === 0) {
+      return null;
+    }
     const scrollToField = (fieldKey: string) => {
       const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
       if (labelNode) {
@@ -221,7 +217,12 @@ class ShipCreate extends React.Component<ShipCreateProps> {
                     rules: [{ required: true, message: '请选择船舶类型' }],
                   })(
                     <Select placeholder="请选择船舶类型">
-                      {types && types.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                      {types &&
+                        types.map(val => (
+                          <Option value={val.id} key={val.id}>
+                            {val.name}
+                          </Option>
+                        ))}
                     </Select>,
                   )}
                 </Form.Item>
@@ -256,7 +257,12 @@ class ShipCreate extends React.Component<ShipCreateProps> {
                     rules: [{ required: true, message: '请选择船舶材质' }],
                   })(
                     <Select placeholder="请选择船舶材质">
-                      {materials && materials.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                      {materials &&
+                        materials.map(val => (
+                          <Option value={val.id} key={val.id}>
+                            {val.name}
+                          </Option>
+                        ))}
                     </Select>,
                   )}
                 </Form.Item>
@@ -281,14 +287,26 @@ class ShipCreate extends React.Component<ShipCreateProps> {
                 <Form.Item label={fieldLabels.buildAt}>
                   {getFieldDecorator('buildAt', {
                     rules: [{ required: true, type: 'object', message: '请输入建造完工日期' }],
-                  })(<DatePicker format="YYYY-MM-DD" placeholder="请输入建造完工日期" style={{ width: '100%' }} />)}
+                  })(
+                    <DatePicker
+                      format="YYYY-MM-DD"
+                      placeholder="请输入建造完工日期"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
               <Col lg={6} md={12} sm={24}>
                 <Form.Item label={fieldLabels.assembleAt}>
                   {getFieldDecorator('assembleAt', {
                     rules: [{ required: true, type: 'object', message: '请输入安放龙骨日期' }],
-                  })(<DatePicker format="YYYY-MM-DD" placeholder="请输入安放龙骨日期" style={{ width: '100%' }} />)}
+                  })(
+                    <DatePicker
+                      format="YYYY-MM-DD"
+                      placeholder="请输入安放龙骨日期"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
             </Row>

@@ -74,8 +74,10 @@ class Settings extends Component<SettingsProps, SettingsState> {
     const { selectKey } = this.state;
     switch (selectKey) {
       case 'base':
+        // @ts-ignore
         return <BaseView />;
       case 'security':
+        // @ts-ignore
         return <SecurityView />;
       default:
         break;

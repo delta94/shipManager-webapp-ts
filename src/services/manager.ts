@@ -1,10 +1,6 @@
-import request from '@/utils/request';
 import { stringify } from 'qs';
-import {
-  IManager,
-  IManagerAssignerPosition,
-  IManagerCertType,
-} from '@/interfaces/IManager';
+import request from '@/utils/request';
+import { IManager, IManagerAssignerPosition, IManagerCertType } from '@/interfaces/IManager';
 
 export async function listManagerAssignerPosition(): Promise<IManagerAssignerPosition[]> {
   return request('/api/manager-assigner-positions', {
@@ -72,7 +68,7 @@ export async function infoManager(id: number) {
 
 export async function listManager(params: any) {
   if (params && params.page) {
-    params.page -= 1
+    params.page -= 1;
   }
   return request(`/api/managers-list?${stringify(params)}`, {
     method: 'GET',
