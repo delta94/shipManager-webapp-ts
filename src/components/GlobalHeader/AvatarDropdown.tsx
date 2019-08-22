@@ -29,13 +29,13 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       return;
     }
 
-    router.push(`/account/${key}`);
+    router.push(`/setting/${key}`);
   };
 
-  render(): React.ReactNode {
-    const { currentUser = {} as IAccount, menu } = this.props;
+  render() {
+    const { currentUser, menu } = this.props;
 
-    if (!menu) {
+    if (!menu && currentUser) {
       return (
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.imageUrl} alt="avatar" />
@@ -46,11 +46,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        <Menu.Item key="center">
-          <Icon type="user" />
-          个人中心
-        </Menu.Item>
-        <Menu.Item key="settings">
+        <Menu.Item key="personal">
           <Icon type="setting" />
           个人设置
         </Menu.Item>
@@ -61,13 +57,16 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.login ? (
+    return currentUser && currentUser.id ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small"
-                  icon="user"
-                  className={styles.avatar}
-                  src={currentUser.imageUrl} alt="avatar" />
+          <Avatar
+            size="small"
+            icon="user"
+            className={styles.avatar}
+            src={currentUser.imageUrl}
+            alt="avatar"
+          />
         </span>
       </HeaderDropdown>
     ) : (

@@ -1,8 +1,8 @@
 import { Effect } from 'dva';
-import { Reducer } from 'redux';
 
 import { getCurrentUser } from '@/services/user';
 import IAccount from '@/interfaces/IAccount';
+import { ImmerReducer } from '@/models/connect';
 
 export interface UserModelState {
   currentUser?: IAccount;
@@ -15,10 +15,9 @@ export interface UserModelType {
     fetchCurrent: Effect;
   };
   reducers: {
-    saveCurrentUser: Reducer<UserModelState>;
+    saveCurrentUser: ImmerReducer<UserModelState>;
   };
 }
-
 
 const UserModel: UserModelType = {
   namespace: 'user',
@@ -39,10 +38,7 @@ const UserModel: UserModelType = {
 
   reducers: {
     saveCurrentUser(state, action) {
-      return {
-        ...state,
-        currentUser: action.payload || {},
-      };
+      state.currentUser = action.payload;
     },
   },
 };

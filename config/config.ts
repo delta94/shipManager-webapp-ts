@@ -52,9 +52,7 @@ export default {
   block: {
     defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
   },
-
   hash: true,
-
   history: 'hash',
   publicPath:
     process.env.NODE_ENV === 'production'
@@ -191,9 +189,7 @@ export default {
             {
               path: '/',
               redirect: '/person/sailor/list',
-            },
-
-            // sailor
+            }, // sailor
             {
               path: '/person/sailor/list',
               name: '船员管理',
@@ -219,9 +215,7 @@ export default {
               component: './sailor/update',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               hideInMenu: true,
-            },
-
-            // manager
+            }, // manager
             {
               path: '/person/manager/list',
               name: '管理人员列表',
@@ -258,9 +252,7 @@ export default {
             {
               path: '/',
               redirect: '/setting/personal',
-            },
-
-            // sailor
+            }, // sailor
             {
               path: '/setting/personal',
               name: '用户管理',

@@ -5,7 +5,6 @@ import { ConnectProps, ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
-import NoticeIconView from './NoticeIconView';
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends ConnectProps {
@@ -35,16 +34,10 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
         }}
       />
       <Tooltip title="使用文档">
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
+        <a rel="noopener noreferrer" className={styles.action}>
           <Icon type="question-circle-o" />
         </a>
       </Tooltip>
-      <NoticeIconView />
       <Avatar menu />
     </div>
   );
