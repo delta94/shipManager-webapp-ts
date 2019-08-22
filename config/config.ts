@@ -87,7 +87,45 @@ export default {
       routes: [
         {
           path: '/',
-          redirect: '/ship/list',
+          redirect: '/dashboard',
+        },
+        {
+          path: '/dashboard',
+          name: '工作台',
+          icon: 'dashboard',
+          authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          component: './dashboard',
+        },
+        {
+          path: '/company',
+          name: '企业信息管理',
+          icon: 'home',
+          routes: [
+            {
+              name: '证照列表',
+              path: '/company/listCert',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './company/listCert',
+            },
+            {
+              name: '新增证照',
+              path: '/company/addCert',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './company/addCert',
+            },
+            {
+              name: '批文列表',
+              path: '/company/listLicense',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './company/listLicense',
+            },
+            {
+              name: '新增批文',
+              path: '/company/addLicense',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './company/addLicense',
+            },
+          ],
         },
         {
           path: '/ship',
@@ -119,6 +157,29 @@ export default {
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './ship/update',
               hideInMenu: true,
+            },
+          ],
+        },
+        {
+          path: '/document',
+          name: '表单管理',
+          icon: 'file-search',
+          routes: [
+            {
+              path: '/',
+              redirect: '/document/listPreset',
+            },
+            {
+              path: '/document/listPreset',
+              name: '固定表单',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './document/listPreset',
+            },
+            {
+              path: '/document/listCustom',
+              name: '自定义表单',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './document/listCustom',
             },
           ],
         },
@@ -186,6 +247,37 @@ export default {
               hideInMenu: true,
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './manager/update',
+            },
+          ],
+        },
+        {
+          path: '/setting',
+          name: '设置',
+          icon: 'setting',
+          routes: [
+            {
+              path: '/',
+              redirect: '/setting/personal',
+            },
+
+            // sailor
+            {
+              path: '/setting/personal',
+              name: '用户管理',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './setting/personal',
+            },
+            {
+              path: '/setting/outline',
+              name: '大纲管理',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './setting/outline',
+            },
+            {
+              path: '/setting/system',
+              name: '系统管理',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './setting/system',
             },
           ],
         },
