@@ -1,24 +1,4 @@
 import React from 'react';
-import {
-  Card,
-  Button,
-  Form,
-  Icon,
-  Col,
-  Row,
-  DatePicker,
-  Input,
-  Select,
-  Popover,
-} from 'antd';
-import { connect } from 'dva';
-import moment from 'moment'
-
-import { extend } from 'umi-request';
-import styles from './style.less';
-import FooterToolbar from './components/FooterToolbar';
-
-const { Option } = Select;
 
 const fieldLabels = {
   name: '船舶名',
@@ -67,12 +47,8 @@ const mockData = {
 
 class ShipUpdate extends React.Component {
   render() {
-    return (
-      <div>
-        ShipUpdate
-      </div>
-    )
+    return <div>ShipUpdate</div>;
   }
 }
 
-export default ShipUpdate
+export default ShipUpdate;

@@ -119,6 +119,13 @@ export default {
               component: './company/updateCert',
             },
             {
+              name: '证照详情',
+              path: '/company/infoCert/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              hideInMenu: true,
+              component: './company/infoCert',
+            },
+            {
               name: '批文列表',
               path: '/company/listLicense',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
@@ -129,6 +136,13 @@ export default {
               path: '/company/addLicense',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './company/addLicense',
+            },
+            {
+              name: '批文详情',
+              path: '/company/infoLicense/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              hideInMenu: true,
+              component: './company/infoLicense',
             },
             {
               name: '更新批文',
