@@ -8,7 +8,7 @@ import {
   deleteCompanyCert,
   infoCompanyCert,
   updateCompanyCert,
-  listCompanyCertType
+  listCompanyCertType,
 } from '@/services/company';
 
 import { ImmerReducer } from '@/models/connect';
@@ -49,7 +49,6 @@ export interface CompanyCertModelType {
 }
 
 const CompanyCertModel: CompanyCertModelType = {
-
   namespace: 'companyCert',
 
   state: {
@@ -89,7 +88,7 @@ const CompanyCertModel: CompanyCertModelType = {
     *create({ payload, callback }, { call, put }) {
       const response = yield call(addCompanyCert, payload);
       yield put({
-        type: 'save',
+        type: 'addCompanyCert',
         payload: response,
       });
       if (callback) callback();
