@@ -112,6 +112,13 @@ export default {
               component: './company/addCert',
             },
             {
+              name: '更新证照',
+              path: '/company/updateCert/:id',
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              hideInMenu: true,
+              component: './company/updateCert',
+            },
+            {
               name: '批文列表',
               path: '/company/listLicense',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
@@ -122,6 +129,13 @@ export default {
               path: '/company/addLicense',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './company/addLicense',
+            },
+            {
+              name: '更新批文',
+              path: '/company/updateLicense/:id',
+              hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './company/updateLicense',
             },
           ],
         },

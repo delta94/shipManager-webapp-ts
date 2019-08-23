@@ -1,18 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Popconfirm,
-  Input,
-  Select,
-  Button,
-  Divider,
-  message,
-} from 'antd';
+import { Row, Col, Card, Form, Popconfirm, Input, Select, Button, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -22,7 +11,10 @@ import styles from './style.less';
 import { CompanyCertModelState } from '@/models/companyCert';
 import { TableListItem, TableListData, TableListPagination } from './companyCert.d';
 
-const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key => obj[key]).join(',');
+const getValue = (obj: { [x: string]: string[] }) =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -33,13 +25,18 @@ interface CompanyCertListProps extends FormComponentProps {
   companyCert: CompanyCertModelState;
 }
 
-@connect(({ companyCert, loading }: {
-  companyCert: CompanyCertModelState,
-  loading: { effects: { [key: string]: boolean } }
-}) => ({
-  companyCert,
-  loading: loading.effects['companyCert/fetch'],
-}))
+@connect(
+  ({
+    companyCert,
+    loading,
+  }: {
+    companyCert: CompanyCertModelState;
+    loading: { effects: { [key: string]: boolean } };
+  }) => ({
+    companyCert,
+    loading: loading.effects['companyCert/fetch'],
+  }),
+)
 class CompanyCertList extends React.Component<CompanyCertListProps> {
   state = {
     modalVisible: false,
@@ -75,9 +72,12 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
           <a onClick={() => this.handleUpdateCompanyCert(record)}>修改</a>
           <Divider type="vertical" />
           <span>
-             <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleRemoveCompanyCert(record.id)}>
-                <a>删除</a>
-             </Popconfirm>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => this.handleRemoveCompanyCert(record.id)}
+            >
+              <a>删除</a>
+            </Popconfirm>
           </span>
         </Fragment>
       ),
@@ -114,10 +114,15 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
                 ],
               })(
                 <Select placeholder="请选择证书类型">
-                  <Option value={undefined} key={99}>不限证书类型</Option>
-                  {
-                    certificateTypes && certificateTypes.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
+                  <Option value={undefined} key={99}>
+                    不限证书类型
+                  </Option>
+                  {certificateTypes &&
+                    certificateTypes.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </FormItem>
@@ -138,19 +143,19 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
   }
 
   handleInfoCompanyCert(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/person/manager/profile/${record.id}`))
+    this.props.dispatch(routerRedux.push(`/company/infoCert/${record.id}`));
   }
 
   handleUpdateCompanyCert(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/person/manager/update/${record.id}`))
+    this.props.dispatch(routerRedux.push(`/company/updateCert/${record.id}`));
   }
 
   handleRemoveCompanyCert(key: number) {
     this.props.dispatch({
       type: 'companyCert/remove',
       payload: key,
-      callback: () => message.success('证书已成功删除')
-    })
+      callback: () => message.success('证书已成功删除'),
+    });
   }
 
   handleSearch = (e: React.FormEvent) => {
@@ -159,7 +164,6 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
-
       if (err) return;
       const values = {};
 
@@ -193,7 +197,7 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
   };
 
   handleCreateManager = () => {
-    this.props.dispatch(routerRedux.push('/company/addCert'))
+    this.props.dispatch(routerRedux.push('/company/addCert'));
   };
 
   handleSelectRows = (rows: TableListItem[]) => {
@@ -263,7 +267,7 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
           />
         </Card>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 

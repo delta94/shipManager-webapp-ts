@@ -109,10 +109,10 @@ const CompanyCertModel: CompanyCertModelType = {
     },
 
     *target({ payload, callback }, { call, put }) {
-      const manager = yield call(infoCompanyCert, payload);
+      const cert = yield call(infoCompanyCert, payload);
       yield put({
-        type: 'loadManager',
-        payload: manager,
+        type: 'loadCompanyCert',
+        payload: cert,
       });
 
       callback && callback();
