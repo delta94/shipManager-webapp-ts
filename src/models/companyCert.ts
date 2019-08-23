@@ -97,7 +97,7 @@ const CompanyCertModel: CompanyCertModelType = {
     *remove({ payload, callback }, { call, put }) {
       yield call(deleteCompanyCert, payload);
       yield put({
-        type: 'removeManager',
+        type: 'removeCompanyCert',
         payload,
       });
       if (callback) callback();
