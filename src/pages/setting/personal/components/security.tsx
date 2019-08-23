@@ -1,15 +1,11 @@
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component, Fragment } from 'react';
-import { Form, List, message } from 'antd';
+import { List, message } from 'antd';
 import { Dispatch } from 'redux';
 import { connect } from 'dva';
 import EditPasswordForm from '@/pages/setting/personal/components/EditPasswordForm';
 import IAccount from '@/interfaces/IAccount';
 import { UserModelState } from '@/models/user';
-
-const FormItem = Form.Item;
-
-type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const passwordStrength = {
   strong: (
@@ -105,10 +101,10 @@ class SecurityView extends Component<SecurityViewProps, SecurityViewState> {
     const data = this.getData();
     return (
       <div>
-        <List<Unpacked<typeof data>>
+        <List
           itemLayout="horizontal"
           dataSource={data}
-          renderItem={item => (
+          renderItem={(item: any) => (
             <List.Item actions={item.actions}>
               <List.Item.Meta title={item.title} description={item.description} />
             </List.Item>
