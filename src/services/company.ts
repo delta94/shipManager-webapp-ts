@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
-import { ICompanyCert, ICompanyCertType, ICompanyLicense } from '@/interfaces/ICompany'
+import { ICompanyCert, ICompanyCertType, ICompanyLicense } from '@/interfaces/ICompany';
 
 export async function listCompanyCertType(): Promise<ICompanyCertType[]> {
   return request('/api/company-cert-types', {
@@ -12,7 +12,7 @@ export async function addCompanyCert(params: Partial<ICompanyCert>): Promise<ICo
   return request('/api/company-certs', {
     method: 'POST',
     data: params,
-  })
+  });
 }
 
 export async function updateCompanyCert(params: Partial<ICompanyCert>): Promise<ICompanyCert> {
@@ -45,14 +45,18 @@ export async function listCompanyCert(params: any) {
 
 /* Company License*/
 
-export async function addCompanyLicense(params: Partial<ICompanyLicense>): Promise<ICompanyLicense> {
+export async function addCompanyLicense(
+  params: Partial<ICompanyLicense>,
+): Promise<ICompanyLicense> {
   return request('/api/company-licenses', {
     method: 'POST',
     data: params,
-  })
+  });
 }
 
-export async function updateCompanyLicense(params: Partial<ICompanyLicense>): Promise<ICompanyLicense> {
+export async function updateCompanyLicense(
+  params: Partial<ICompanyLicense>,
+): Promise<ICompanyLicense> {
   return request('/api/company-licenses', {
     method: 'PUT',
     data: params,
@@ -75,9 +79,7 @@ export async function listCompanyLicense(params: any) {
   if (params && params.page) {
     params.page -= 1;
   }
-  return request(`/api/company-licenses?${stringify(params)}`, {
+  return request(`/api/company-licenses-list?${stringify(params)}`, {
     method: 'GET',
   });
 }
-
-

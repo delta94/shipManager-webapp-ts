@@ -196,7 +196,7 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
     });
   };
 
-  handleCreateManager = () => {
+  handleCreateCert = () => {
     this.props.dispatch(routerRedux.push('/company/addCert'));
   };
 
@@ -253,7 +253,7 @@ class CompanyCertList extends React.Component<CompanyCertListProps> {
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
           </div>
           <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleCreateManager()}>
+            <Button icon="plus" type="primary" onClick={this.handleCreateCert}>
               新建公司证书
             </Button>
           </div>

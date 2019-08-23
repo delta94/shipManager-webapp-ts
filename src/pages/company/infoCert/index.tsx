@@ -57,13 +57,15 @@ class CompanyCertProfile extends React.Component<CompanyCertProfileProps> {
   render() {
     const cert = this.props.companyCert || ({} as ICompanyCert);
 
-    const ossItems =
-      cert.ossFile &&
-      cert.ossFile
+    let ossItems: React.ReactNode = <div>暂未上传任何文件</div>;
+
+    if (cert.ossFile) {
+      ossItems = cert.ossFile
         .split(';')
-        .map((item, index) => (
+        .map(item => (
           <Card hoverable bordered={false} style={{ width: 240 }} cover={<img src={item} />} />
         ));
+    }
 
     return (
       <PageHeaderWrapper title="公司证书详情页">
