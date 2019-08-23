@@ -134,7 +134,7 @@ class CompanyCertCreate extends React.Component<CompanyCertCreateProps> {
 
             <FormItem {...formItemLayout} label={'证书过期日期'}>
               {getFieldDecorator('expiredAt', {
-                rules: [{ required: true, type: 'object', message: '请输入建造完工日期' }],
+                rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
               })(
                 <DatePicker
                   format="YYYY-MM-DD"
