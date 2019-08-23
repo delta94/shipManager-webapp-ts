@@ -28,6 +28,7 @@ export interface ICompanyCertType {
 export interface ICompanyLicense {
   id: number;
   name: string;
+  identityNumber: string;
   remark: string;
   ossFile: string;
   expireAt: string;
