@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
-import IShip, { IShipBusinessArea } from '@/interfaces/IShip';
+import IShip, { IShipBusinessArea, IShipCertType } from '@/interfaces/IShip';
 
 export async function getShip(id: number): Promise<IShip> {
   return request(`/api/ships/${id}`, {
@@ -64,6 +64,12 @@ export async function listShipMaterial() {
 
 export async function listShipBusinessAreas(): Promise<IShipBusinessArea[]> {
   return request('/api/ship-business-areas', {
+    method: 'GET',
+  });
+}
+
+export async function listShipCertificateTypes(): Promise<IShipCertType[]> {
+  return request('/api/ship-cert-types', {
     method: 'GET',
   });
 }

@@ -19,8 +19,9 @@ export default interface IShip {
   depth: number;
   grossTone: number;
   netTone: number;
-  sailors: ISailor[];
-  payloads: IShipPayload[];
+  sailors: Partial<ISailor>[];
+  payloads: Partial<IShipPayload>[];
+  certificates: Partial<IShipCertificate>[];
   sailorCount: number;
   typeName: string;
   typeId: number;
@@ -47,6 +48,25 @@ export interface IShipBusinessArea {
 }
 
 export interface IShipMeta {
-  id: number
-  name: string
+  id: number;
+  name: string;
+}
+
+export interface IShipCertType {
+  id: number;
+  name: string;
+  remark: string;
+  icon: string;
+}
+
+export interface IShipCertificate {
+  id: number;
+  identityNumber: number;
+  expiredAt: string;
+  ossFile: string;
+  remark: string;
+  issueBy: string;
+  shipId: number;
+  typeId: number;
+  typeName: string;
 }

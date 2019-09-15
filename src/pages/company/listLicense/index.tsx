@@ -38,8 +38,6 @@ interface CompanyLicenseListProps extends FormComponentProps {
 )
 class CompanyLicenseList extends React.Component<CompanyLicenseListProps> {
   state = {
-    modalVisible: false,
-    updateModalVisible: false,
     expandForm: false,
     selectedRows: [],
     formValues: {},

@@ -2,21 +2,33 @@ import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
 
 import {
-  addShip, infoShip, listShip, deleteShip, listShipMaterial, listShipTypes,
+  addShip,
+  infoShip,
+  listShip,
+  deleteShip,
+  listShipMaterial,
+  listShipTypes,
   listShipBusinessAreas,
+  listShipCertificateTypes,
 } from '@/services/ship';
-import IShip, { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
+import IShip, {
+  IShipBusinessArea,
+  IShipCertType,
+  IShipMaterial,
+  IShipType,
+} from '@/interfaces/IShip';
 import { ITableListPagination } from '@/interfaces/ITableList';
 
 export interface ShipStateType {
   data: {
-    list: IShip[],
-    pagination: ITableListPagination
-  },
-  target?: IShip,
-  types: IShipType[],
-  businessAreas: IShipBusinessArea[],
-  materials: IShipMaterial[]
+    list: IShip[];
+    pagination: ITableListPagination;
+  };
+  target?: IShip;
+  types: IShipType[];
+  businessAreas: IShipBusinessArea[];
+  materials: IShipMaterial[];
+  certificateTypes: IShipCertType[];
 }
 
 export type Effect = (
@@ -28,21 +40,23 @@ export interface ShipModelType {
   namespace: string;
   state: ShipStateType;
   effects: {
-    fetch: Effect
-    fetchTypes: Effect
-    fetchBusinessAreas: Effect
-    fetchMaterial: Effect
-    create: Effect
-    remove: Effect
-    target: Effect
+    fetch: Effect;
+    fetchTypes: Effect;
+    fetchBusinessAreas: Effect;
+    fetchMaterial: Effect;
+    fetchCertificateType: Effect;
+    create: Effect;
+    remove: Effect;
+    target: Effect;
   };
   reducers: {
     save: Reducer<ShipStateType>;
     saveTypes: Reducer<ShipStateType>;
-    saveBusinessAreas: Reducer<ShipStateType>
+    saveBusinessAreas: Reducer<ShipStateType>;
     saveMaterial: Reducer<ShipStateType>;
+    saveCertificateType: Reducer<ShipStateType>;
     loadShip: Reducer<ShipStateType>;
-    removeShip: Reducer<ShipStateType>
+    removeShip: Reducer<ShipStateType>;
   };
 }
 
@@ -62,6 +76,7 @@ const ShipModel: ShipModelType = {
     types: [],
     materials: [],
     businessAreas: [],
+    certificateTypes: [],
   },
 
   effects: {
@@ -69,7 +84,7 @@ const ShipModel: ShipModelType = {
       const response = yield call(listShip, payload);
 
       if (response.pagination) {
-        response.pagination.current = response.pagination.current + 1
+        response.pagination.current = response.pagination.current + 1;
       }
 
       yield put({
@@ -92,6 +107,15 @@ const ShipModel: ShipModelType = {
 
       yield put({
         type: 'saveMaterial',
+        payload: response,
+      });
+    },
+
+    *fetchCertificateType({ payload }, { call, put }) {
+      const response = yield call(listShipCertificateTypes, payload);
+
+      yield put({
+        type: 'saveCertificateType',
         payload: response,
       });
     },
@@ -130,7 +154,7 @@ const ShipModel: ShipModelType = {
         payload: ship,
       });
 
-      callback && callback()
+      callback && callback();
     },
   },
 
@@ -139,35 +163,42 @@ const ShipModel: ShipModelType = {
       return {
         ...state,
         data: action.payload,
-      } as ShipStateType
+      } as ShipStateType;
     },
 
     saveTypes(state, action) {
       return {
         ...state,
         types: action.payload,
-      } as ShipStateType
+      } as ShipStateType;
     },
 
     saveMaterial(state, action) {
       return {
         ...state,
         materials: action.payload,
-      } as ShipStateType
+      } as ShipStateType;
+    },
+
+    saveCertificateType(state, action) {
+      return {
+        ...state,
+        certificateTypes: action.payload,
+      } as ShipStateType;
     },
 
     saveBusinessAreas(state, action) {
       return {
         ...state,
         businessAreas: action.payload,
-      } as ShipStateType
+      } as ShipStateType;
     },
 
     loadShip(state, action) {
       return {
         ...state,
         target: action.payload,
-      } as ShipStateType
+      } as ShipStateType;
     },
 
     removeShip(state, action) {
@@ -183,7 +214,7 @@ const ShipModel: ShipModelType = {
             current: pagination.current,
           },
         },
-      } as ShipStateType
+      } as ShipStateType;
     },
   },
 };
