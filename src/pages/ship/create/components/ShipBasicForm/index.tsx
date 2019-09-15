@@ -3,6 +3,7 @@ import { Card, Col, Row, Form, Select, DatePicker, Input, Button } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import IShip, { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
 import styles from '../../style.less';
+import { ShipCreateStep } from '@/pages/ship/create';
 const Option = Select.Option;
 
 interface ShipCreateProps extends FormComponentProps {
@@ -10,7 +11,7 @@ interface ShipCreateProps extends FormComponentProps {
   types: IShipType[];
   materials: IShipMaterial[];
   businessAreas: IShipBusinessArea[];
-  switchToStep(index: number, ship: Partial<IShip>): void;
+  switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
 }
 
 const fieldLabels = {
@@ -44,7 +45,7 @@ class ShipBasicForm extends React.Component<ShipCreateProps> {
       if (!error) {
         //this.props.switchToStep(1, {})
       }
-      this.props.switchToStep(1, values);
+      this.props.switchToStep(ShipCreateStep.Payload, values);
     });
   };
 

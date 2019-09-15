@@ -10,9 +10,10 @@ import { Fragment } from 'react';
 import produce from 'immer';
 import IShipPayload from '@/interfaces/IShipPayload';
 import uuidv1 from 'uuid/v1';
+import { ShipCreateStep } from '@/pages/ship/create';
 
 interface ShipPayloadCreateProps extends FormComponentProps {
-  switchToStep(index: number, ship: Partial<IShip>): void;
+  switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
   ship: Partial<IShip>;
   businessArea: IShipBusinessArea[];
 }
@@ -81,11 +82,11 @@ class ShipPayloadForm extends React.Component<ShipPayloadCreateProps, ShipPayloa
   };
 
   onPrev = () => {
-    this.props.switchToStep(0, { payloads: this.state.data });
+    this.props.switchToStep(ShipCreateStep.Basic, { payloads: this.state.data });
   };
 
   onNext = () => {
-    this.props.switchToStep(2, { payloads: this.state.data });
+    this.props.switchToStep(ShipCreateStep.Certificate, { payloads: this.state.data });
   };
 
   onSelectRow = () => {};

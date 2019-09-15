@@ -26,6 +26,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
     if (this.props.current) {
       let item = this.props.current;
       if (item.ossFile) {
+        debugger;
         const fileList = item.ossFile.split(';').map((value, index) => ({
           uid: `pre_${index}`,
           name: value,
@@ -52,9 +53,9 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
 
     return (
       <Form>
-        <FormItem label="航区类型" {...this.formLayout}>
+        <FormItem label="证书类型" {...this.formLayout}>
           {getFieldDecorator('typeId', {
-            rules: [{ required: true, message: '请选择航区类型' }],
+            rules: [{ required: true, message: '请选择证书类型' }],
             initialValue: current ? current.typeId : '',
           })(
             <Select placeholder="请选择证书类型">
@@ -76,7 +77,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
         </FormItem>
 
         <FormItem label="证书颁发机构" {...this.formLayout}>
-          {getFieldDecorator('tone', {
+          {getFieldDecorator('issueBy', {
             rules: [{ required: true, message: '请输入证书颁发机构' }],
             initialValue: current ? current.issueBy : '',
           })(<Input placeholder="请输入" />)}
@@ -89,7 +90,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
         </FormItem>
 
         <FormItem label={'证书过期日期'} {...this.formLayout}>
-          {getFieldDecorator('expireAt', {
+          {getFieldDecorator('expiredAt', {
             rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
           })(
             <DatePicker

@@ -1,13 +1,14 @@
 import * as React from 'react';
 import IShip, { IShipCertificate, IShipCertType } from '@/interfaces/IShip';
-import { Avatar, Button, Card, Form, List } from 'antd';
+import { Avatar, Button, Card, Form, List, Popconfirm, Row } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
-import styles from '@/pages/list/basic-list/style.less';
+import styles from './styles.less';
 import ListContent from './ListContent';
 import { Modal } from 'antd/es';
 import ShipEditCertForm from './EditCertForm';
 import produce from 'immer';
 import uuidv1 from 'uuid/v1';
+import { ShipCreateStep } from '@/pages/ship/create';
 
 interface ShipCertCreateProps extends FormComponentProps {
   switchToStep(index: number, ship: Partial<IShip>): void;
@@ -71,12 +72,26 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
     });
   };
 
+  onPrev = () => {
+    this.props.switchToStep(ShipCreateStep.Payload, { certificates: this.state.data });
+  };
+
+  onNext = () => {
+    this.props.switchToStep(ShipCreateStep.Result, { certificates: this.state.data });
+  };
+
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { form } = this.formRef.props;
-    form.validateFields((err: any, values: Partial<IShipCertificate>) => {
+    form.validateFields((err: any, values: any) => {
       if (err) return;
+
+      if (values.ossFile && values.ossFile.fileList) {
+        values.ossFile = values.ossFile.fileList.map((value: any) => value.url).join(';');
+      } else {
+        values.ossFile = '';
+      }
 
       const newState = produce(this.state, (draft: ShipCertCreateState) => {
         if (this.state.current) {
@@ -89,7 +104,6 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
           values.id = uuidv1();
           draft.data.unshift(values);
         }
-
         draft.visible = false;
         draft.current = undefined;
       });
@@ -99,7 +113,12 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
     });
   };
 
-  deleteItem = (id: string) => {};
+  deleteItem = (id: number) => {
+    const newState = produce(this.state, (draft: ShipCertCreateState) => {
+      draft.data = draft.data.filter(item => item.id != id);
+    });
+    this.setState(newState);
+  };
 
   render() {
     return (
@@ -137,15 +156,10 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
                     >
                       编辑
                     </a>,
-                    <a
-                      key="edit"
-                      onClick={e => {
-                        e.preventDefault();
-                        this.deleteItem(item);
-                      }}
-                    >
-                      删除
-                    </a>,
+
+                    <Popconfirm title="是否要删除此行？" onConfirm={() => this.deleteItem(item.id)}>
+                      <a>删除</a>
+                    </Popconfirm>,
                   ]}
                 >
                   <List.Item.Meta
@@ -158,6 +172,15 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
               );
             }}
           />
+
+          <Row style={{ marginTop: 12 }}>
+            <Button type="primary" onClick={this.onNext} style={{ float: 'right' }}>
+              下一步
+            </Button>
+            <Button onClick={this.onPrev} style={{ marginRight: 8, float: 'right' }}>
+              上一步
+            </Button>
+          </Row>
         </Card>
         <Modal
           title="编辑"

@@ -6,6 +6,8 @@ import { connect } from 'dva';
 
 import ShipBasicForm from './components/ShipBasicForm';
 import ShipPayloadForm from './components/ShipPayloadForm';
+import ShipCertForm from './components/ShipCertForm';
+import ShipCreateResultPage from './components/ShipCreatedPage';
 
 import { ShipStateType } from '@/models/ship';
 import { FormComponentProps } from 'antd/es/form';
@@ -17,18 +19,18 @@ import IShip, {
   IShipType,
 } from '@/interfaces/IShip';
 import styles from './style.less';
-import ShipCertForm from '@/pages/ship/create/components/ShipCertForm';
 
 const { Step } = Steps;
 
-enum ShipCreateStep {
+export enum ShipCreateStep {
   Basic,
   Payload,
   Certificate,
+  Result,
 }
 
 interface ShipCreateState {
-  current: number;
+  current: ShipCreateStep;
   ship: Partial<IShip>;
 }
 
@@ -120,9 +122,16 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
     this.props.dispatch({ type: 'ship/fetchCertificateType' });
   }
 
-  switchToStep = (index: number, shipData: Partial<IShip>) => {
+  switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
     let ship = { ...this.state.ship, ...shipData };
     this.setState({ current: index, ship });
+  };
+
+  resetStepForm = () => {
+    this.setState({
+      current: ShipCreateStep.Basic,
+      ship: {},
+    });
   };
 
   render() {
@@ -153,6 +162,14 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           ship={this.state.ship}
           certificateTypes={certificateTypes}
           switchToStep={this.switchToStep}
+        />
+      );
+    } else if (this.state.current === ShipCreateStep.Result) {
+      stepComponent = (
+        <ShipCreateResultPage
+          ship={this.state.ship}
+          onReset={this.resetStepForm}
+          dispatch={this.props.dispatch}
         />
       );
     }

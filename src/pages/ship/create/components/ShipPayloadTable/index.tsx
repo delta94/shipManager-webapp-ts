@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import { ColumnProps, TableRowSelection, TableProps } from 'antd/es/table';
+import { ColumnProps, TableProps } from 'antd/es/table';
 import React, { Component } from 'react';
 
 import { TableListItem } from './ShipCert.d';
