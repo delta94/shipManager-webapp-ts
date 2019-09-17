@@ -77,7 +77,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
   };
 
   onNext = () => {
-    this.props.switchToStep(ShipCreateStep.Result, { certificates: this.state.data });
+    this.props.switchToStep(ShipCreateStep.Sailor, { certificates: this.state.data });
   };
 
   handleSubmit = (e: React.FormEvent) => {
@@ -144,6 +144,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
             dataSource={this.state.data}
             renderItem={(item: IShipCertificate) => {
               let type = this.props.certificateTypes.filter(v => v.id == item.typeId)[0];
+              if (!type) return (<div>empty</div>)
               return (
                 <List.Item
                   actions={[

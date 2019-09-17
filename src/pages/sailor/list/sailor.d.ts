@@ -24,5 +24,5 @@ export interface TableListPagination {
 
 export interface TableListData {
   list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+  pagination: Partial<TableListPagination> | boolean
 }

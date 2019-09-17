@@ -19,6 +19,9 @@ import IShip, {
   IShipType,
 } from '@/interfaces/IShip';
 import styles from './style.less';
+import ShipSailorForm from "@/pages/ship/create/components/ShipSailorForm";
+import {SailorModelState} from "@/models/sailor";
+import {ISailorPosition} from "@/interfaces/ISailor";
 
 const { Step } = Steps;
 
@@ -26,6 +29,7 @@ export enum ShipCreateStep {
   Basic,
   Payload,
   Certificate,
+  Sailor,
   Result,
 }
 
@@ -41,26 +45,30 @@ interface ShipCreateProps extends FormComponentProps {
   materials: IShipMaterial[];
   businessAreas: IShipBusinessArea[];
   certificateTypes: IShipCertType[];
+  sailorPosition: ISailorPosition[],
 }
 
 @connect(
   ({
     ship,
+    sailor,
     loading,
   }: {
     ship: ShipStateType;
+    sailor: SailorModelState,
     loading: { effects: { [key: string]: boolean } };
   }) => ({
     types: ship.types,
     materials: ship.materials,
     businessAreas: ship.businessAreas,
     certificateTypes: ship.certificateTypes,
+    sailorPosition: sailor.positions,
     loading: loading.effects['ship/create'],
   }),
 )
 class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   state = {
-    current: ShipCreateStep.Basic,
+    current: ShipCreateStep.Certificate,
     ship: {
       carrierIdentifier: '3242MIII',
       examineIdentifier: '432423',
@@ -92,6 +100,21 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           areaId: 2,
         },
       ],
+      sailors: [{
+        id: 1,
+        name: "AAA",
+        identityNumber: "34234242424",
+        isAdvanced: true,
+        mobile: "1387747878788",
+        positionId: 1,
+      }, {
+        id: 2,
+        name: "BBBB",
+        identityNumber: "231332423423",
+        isAdvanced: true,
+        mobile: "1892882365469",
+        positionId: 2,
+      }],
       certificates: [
         {
           id: 1,
@@ -120,6 +143,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
     this.props.dispatch({ type: 'ship/fetchBusinessAreas' });
     this.props.dispatch({ type: 'ship/fetchMaterial' });
     this.props.dispatch({ type: 'ship/fetchCertificateType' });
+    this.props.dispatch({ type: 'sailor/fetchPositionTypes' })
   }
 
   switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
@@ -135,7 +159,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   };
 
   render() {
-    let { materials, types, businessAreas, certificateTypes } = this.props;
+    let { materials, types, businessAreas, certificateTypes, sailorPosition } = this.props;
     let stepComponent;
 
     if (this.state.current === ShipCreateStep.Basic) {
@@ -164,6 +188,14 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           switchToStep={this.switchToStep}
         />
       );
+    } else if (this.state.current === ShipCreateStep.Sailor) {
+      stepComponent = (
+        <ShipSailorForm
+          ship={this.state.ship}
+          sailorPosition={sailorPosition}
+          switchToStep={this.switchToStep}
+        />
+      );
     } else if (this.state.current === ShipCreateStep.Result) {
       stepComponent = (
         <ShipCreateResultPage
@@ -182,6 +214,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
               <Step title="基本信息" />
               <Step title="载重吨信息" />
               <Step title="证书信息" />
+              <Step title="船员信息" />
               <Step title="完成" />
             </Steps>
             {stepComponent}

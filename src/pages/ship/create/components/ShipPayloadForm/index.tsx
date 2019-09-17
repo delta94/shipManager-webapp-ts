@@ -156,7 +156,7 @@ class ShipPayloadForm extends React.Component<ShipPayloadCreateProps, ShipPayloa
           onSelectRow={this.onSelectRow}
           selectedRows={[]}
           columns={this.columns}
-          data={{ list: this.state.data, pagination: false }}
+          data={{ list: this.state.data as TableListItem[], pagination: false }}
         />
 
         <Row style={{ marginTop: 12 }}>
