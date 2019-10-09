@@ -1,5 +1,6 @@
 import { Card, Steps } from 'antd';
 import React, { Component } from 'react';
+import { omit } from 'lodash';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -19,9 +20,10 @@ import IShip, {
   IShipType,
 } from '@/interfaces/IShip';
 import styles from './style.less';
-import ShipSailorForm from "@/pages/ship/create/components/ShipSailorForm";
-import {SailorModelState} from "@/models/sailor";
-import {ISailorPosition} from "@/interfaces/ISailor";
+import ShipSailorForm from '@/pages/ship/create/components/ShipSailorForm';
+import { SailorModelState } from '@/models/sailor';
+import { ISailorPosition } from '@/interfaces/ISailor';
+import { Moment } from 'moment';
 
 const { Step } = Steps;
 
@@ -45,7 +47,7 @@ interface ShipCreateProps extends FormComponentProps {
   materials: IShipMaterial[];
   businessAreas: IShipBusinessArea[];
   certificateTypes: IShipCertType[];
-  sailorPosition: ISailorPosition[],
+  sailorPosition: ISailorPosition[];
 }
 
 @connect(
@@ -55,7 +57,7 @@ interface ShipCreateProps extends FormComponentProps {
     loading,
   }: {
     ship: ShipStateType;
-    sailor: SailorModelState,
+    sailor: SailorModelState;
     loading: { effects: { [key: string]: boolean } };
   }) => ({
     types: ship.types,
@@ -100,21 +102,24 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           areaId: 2,
         },
       ],
-      sailors: [{
-        id: 1,
-        name: "AAA",
-        identityNumber: "34234242424",
-        isAdvanced: true,
-        mobile: "1387747878788",
-        positionId: 1,
-      }, {
-        id: 2,
-        name: "BBBB",
-        identityNumber: "231332423423",
-        isAdvanced: true,
-        mobile: "1892882365469",
-        positionId: 2,
-      }],
+      sailors: [
+        {
+          id: 1,
+          name: 'AAA',
+          identityNumber: '34234242424',
+          isAdvanced: true,
+          mobile: '1387747878788',
+          positionId: 1,
+        },
+        {
+          id: 2,
+          name: 'BBBB',
+          identityNumber: '231332423423',
+          isAdvanced: true,
+          mobile: '1892882365469',
+          positionId: 2,
+        },
+      ],
       certificates: [
         {
           id: 1,
@@ -143,12 +148,42 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
     this.props.dispatch({ type: 'ship/fetchBusinessAreas' });
     this.props.dispatch({ type: 'ship/fetchMaterial' });
     this.props.dispatch({ type: 'ship/fetchCertificateType' });
-    this.props.dispatch({ type: 'sailor/fetchPositionTypes' })
+    this.props.dispatch({ type: 'sailor/fetchPositionTypes' });
   }
 
   switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
     let ship = { ...this.state.ship, ...shipData };
     this.setState({ current: index, ship });
+  };
+
+  handleCreateShip = (shipData: Partial<IShip>) => {
+    let finalShipData = { ...this.state.ship, ...shipData };
+
+    if (finalShipData.assembleAt) {
+      finalShipData.assembleAt = (finalShipData.assembleAt as Moment).format('YYYY-MM-DD');
+    }
+
+    if (finalShipData.assembleAt) {
+      finalShipData.buildAt = (finalShipData.buildAt as Moment).format('YYYY-MM-DD');
+    }
+
+    if (finalShipData.certificates) {
+      // @ts-ignore
+      finalShipData.certificates = finalShipData.certificates.map(item => omit(item, 'id'));
+    }
+
+    if (finalShipData.payloads) {
+      // @ts-ignore
+      finalShipData.payloads = finalShipData.payloads.map(item => omit(item, 'id'));
+    }
+
+    this.props.dispatch({
+      type: 'ship/create',
+      payload: finalShipData,
+      callback: () => {
+        this.setState({ current: ShipCreateStep.Result, ship: {} });
+      },
+    });
   };
 
   resetStepForm = () => {
@@ -194,6 +229,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           ship={this.state.ship}
           sailorPosition={sailorPosition}
           switchToStep={this.switchToStep}
+          onCreateShip={this.handleCreateShip}
         />
       );
     } else if (this.state.current === ShipCreateStep.Result) {

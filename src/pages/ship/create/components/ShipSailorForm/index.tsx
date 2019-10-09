@@ -1,31 +1,31 @@
 import * as React from 'react';
-import {Button, Card, Form, Modal, Popconfirm, Row} from "antd";
-import styles from "@/pages/ship/create/style.less";
-import StandardTable from "@/pages/sailor/list/components/StandardTable";
-import {TableListItem} from "@/pages/sailor/list/sailor";
-import {Fragment} from "react";
-import {ShipCreateStep} from "@/pages/ship/create";
-import {FormComponentProps} from "antd/es/form";
-import IShip from "@/interfaces/IShip";
-import ISailor, {ISailorPosition} from "@/interfaces/ISailor";
-import produce from "immer";
-import SailorListTable from "@/pages/ship/create/components/ShipSailorForm/SailorListTable";
+import { Button, Card, Form, Modal, Popconfirm, Row } from 'antd';
+import styles from '@/pages/ship/create/style.less';
+import StandardTable from '@/pages/sailor/list/components/StandardTable';
+import { TableListItem } from '@/pages/sailor/list/sailor';
+import { Fragment } from 'react';
+import { ShipCreateStep } from '@/pages/ship/create';
+import { FormComponentProps } from 'antd/es/form';
+import IShip from '@/interfaces/IShip';
+import ISailor, { ISailorPosition } from '@/interfaces/ISailor';
+import produce from 'immer';
+import SailorListTable from '@/pages/ship/create/components/ShipSailorForm/SailorListTable';
 
 interface ShipSailorFormProps extends FormComponentProps {
   switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
+  onCreateShip(shipData: Partial<IShip>): void;
   ship: Partial<IShip>;
   sailorPosition: ISailorPosition[];
- }
+}
 
 interface ShipSailorFormState {
-  visible: boolean
-  selectedRow: TableListItem[]
-  data: Partial<ISailor>[]
-  selectedSailorRows: Partial<ISailor>[]
+  visible: boolean;
+  selectedRow: TableListItem[];
+  data: Partial<ISailor>[];
+  selectedSailorRows: Partial<ISailor>[];
 }
 
 class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorFormState> {
-
   constructor(props: ShipSailorFormProps) {
     super(props);
 
@@ -34,15 +34,15 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
         visible: false,
         data: props.ship.sailors,
         selectedSailorRows: [],
-        selectedRow: []
-      }
+        selectedRow: [],
+      };
     } else {
       this.state = {
         visible: false,
         data: [],
         selectedSailorRows: [],
-        selectedRow: []
-      }
+        selectedRow: [],
+      };
     }
   }
 
@@ -57,7 +57,7 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
       render: (val: number) => {
         const item = this.props.sailorPosition.filter(item => item.id == val);
         return item.length > 0 ? item[0].name : val;
-      }
+      },
     },
     {
       title: '手机号码',
@@ -89,7 +89,7 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
   };
 
   onNext = () => {
-    this.props.switchToStep(ShipCreateStep.Result, { sailors: this.state.data });
+    this.props.onCreateShip({ sailors: this.state.data });
   };
 
   onSelectRow = () => {};
@@ -99,16 +99,16 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
   };
 
   handleSelectSailor = () => {
-    let selectedSailorRows = this.state.selectedSailorRows
+    let selectedSailorRows = this.state.selectedSailorRows;
 
     const newState = produce(this.state, (draft: ShipSailorFormState) => {
       if (selectedSailorRows.length == 0) {
-        draft.data = []
+        draft.data = [];
       } else {
-        draft.data = selectedSailorRows
+        draft.data = selectedSailorRows;
       }
-      draft.selectedSailorRows = []
-      draft.visible = false
+      draft.selectedSailorRows = [];
+      draft.visible = false;
     });
     this.setState(newState);
   };
@@ -116,7 +116,7 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
   handleModalCancel = () => {
     this.setState({
       visible: false,
-      selectedSailorRows: []
+      selectedSailorRows: [],
     });
   };
 
@@ -128,19 +128,16 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
   };
 
   handleUpdateSelectedSailor = (sailors: Partial<ISailor>[]) => {
-    this.setState({ selectedSailorRows: sailors})
-  }
-
-  handleSelectRows = (rows: TableListItem[]) => {
-
+    this.setState({ selectedSailorRows: sailors });
   };
 
-  render() {
+  handleSelectRows = (rows: TableListItem[]) => {};
 
+  render() {
     let previousSelectedKeys: any[] = [];
 
     if (this.state.data.length > 0) {
-      previousSelectedKeys = this.state.data.map(item => item.id)
+      previousSelectedKeys = this.state.data.map(item => item.id);
     }
 
     return (
@@ -156,14 +153,14 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
 
         <StandardTable
           columns={this.columns}
-          data={{ list: this.state.data as TableListItem[], pagination: false}}
+          data={{ list: this.state.data as TableListItem[], pagination: false }}
           selectedRows={this.state.selectedRow}
           onSelectRow={this.handleSelectRows}
         />
 
         <Row style={{ marginTop: 12 }}>
           <Button type="primary" onClick={this.onNext} style={{ float: 'right' }}>
-            下一步
+            录入船舶
           </Button>
           <Button onClick={this.onPrev} style={{ marginRight: 8, float: 'right' }}>
             上一步
@@ -190,4 +187,3 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
 }
 
 export default Form.create<ShipSailorFormProps>()(ShipSailorForm);
-

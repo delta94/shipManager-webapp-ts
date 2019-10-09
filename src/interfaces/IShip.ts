@@ -1,5 +1,6 @@
 import ISailor from './ISailor';
 import IShipPayload from './IShipPayload';
+import { Moment } from 'moment';
 
 export default interface IShip {
   id: number;
@@ -11,8 +12,8 @@ export default interface IShip {
   registerIdentifier: string;
   shareInfo: string;
   harbor: string;
-  buildAt: Date;
-  assembleAt: Date;
+  buildAt: Date | Moment | string;
+  assembleAt: Date | Moment | string;
   length: number;
   width: number;
   height: number;
