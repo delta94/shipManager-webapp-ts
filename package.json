@@ -8,6 +8,7 @@
     "build": "cross-env umi build",
     "upload-oss": "ts-node  scripts/uploadToOSS.ts",
     "upload-server": "ts-node  scripts/uploadToServer.ts",
+    "upload-dev-server": "ts-node  scripts/uploadToDevServer.ts",
     "fetch:blocks": "pro fetch-blocks",
     "format-imports": "import-sort --write '**/*.{js,jsx,ts,tsx}'",
     "gh-pages": "cp CNAME ./dist/ && gh-pages -d dist",
