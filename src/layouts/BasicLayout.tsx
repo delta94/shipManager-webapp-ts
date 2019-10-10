@@ -15,6 +15,8 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState, Dispatch } from '@/models/connect';
 import logo from '../assets/logo.png';
+import { routerRedux } from 'dva/router';
+import { setAuthority, updateToken } from '@/utils/authority';
 
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -39,17 +41,17 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   });
 
 const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => (
-    <>
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        © 2019 船务管理系统.
-      </div>
-    </>
-  );
+  <>
+    <div
+      style={{
+        padding: '0px 24px 24px',
+        textAlign: 'center',
+      }}
+    >
+      © 2019 船务管理系统.
+    </div>
+  </>
+);
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
   const { dispatch, children, settings } = props;
@@ -57,10 +59,19 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
    * constructor
    */
 
+  const handleAfterFetchAccount = (data: any) => {
+    if (data instanceof Error) {
+      dispatch(routerRedux.push('/user/login'));
+      updateToken('');
+      setAuthority([]);
+    }
+  };
+
   useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
+        callback: handleAfterFetchAccount,
       });
       dispatch({
         type: 'settings/getSetting',

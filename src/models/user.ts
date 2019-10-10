@@ -29,12 +29,17 @@ const UserModel: UserModelType = {
   },
 
   effects: {
-    *fetchCurrent(_, { call, put }) {
-      const response: IAccount = yield call(getCurrentUser);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+    *fetchCurrent({ callback }, { call, put }) {
+      try {
+        const response: IAccount = yield call(getCurrentUser);
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
+        callback(response);
+      } catch (e) {
+        callback(e);
+      }
     },
     *updateCurrent({ payload, callback }, { call, put }) {
       yield call(updateCurrentUser, payload);
