@@ -6,11 +6,11 @@ import { routerRedux } from 'dva/router';
 import { FormComponentProps } from 'antd/es/form';
 import { Dispatch } from 'redux';
 import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
+import { RouteComponentProps } from 'react-router';
+import moment from 'moment';
 import { ICompanyLicense } from '@/interfaces/ICompany';
 import FileUpload from '@/components/FileUpload';
 import { CompanyLicenseModelState } from '@/models/companyLicense';
-import { RouteComponentProps } from 'react-router';
-import moment from 'moment';
 
 const FormItem = Form.Item;
 
@@ -35,7 +35,7 @@ interface CompanyLicenseUpdateProps
     loading: { effects: { [key: string]: boolean } };
   }) => ({
     companyLicense: companyLicense.target,
-    submitting: loading.effects['companyLicense/update']
+    submitting: loading.effects['companyLicense/update'],
   }),
 )
 class CompanyLicenseUpdate extends React.Component<CompanyLicenseUpdateProps> {
@@ -154,7 +154,7 @@ class CompanyLicenseUpdate extends React.Component<CompanyLicenseUpdateProps> {
               })(<Input placeholder="请输入批文编号" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label={'批文过期日期'}>
+            <FormItem {...formItemLayout} label="批文过期日期">
               {getFieldDecorator('expireAt', {
                 rules: [{ required: true, type: 'object', message: '请输入建造完工日期' }],
               })(

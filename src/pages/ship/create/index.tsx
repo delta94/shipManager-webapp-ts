@@ -5,14 +5,15 @@ import { omit } from 'lodash';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 
+import { FormComponentProps } from 'antd/es/form';
+import { Dispatch } from 'redux';
+import { Moment } from 'moment';
 import ShipBasicForm from './components/ShipBasicForm';
 import ShipPayloadForm from './components/ShipPayloadForm';
 import ShipCertForm from './components/ShipCertForm';
 import ShipCreateResultPage from './components/ShipCreatedPage';
 
 import { ShipStateType } from '@/models/ship';
-import { FormComponentProps } from 'antd/es/form';
-import { Dispatch } from 'redux';
 import IShip, {
   IShipBusinessArea,
   IShipCertType,
@@ -23,7 +24,6 @@ import styles from './style.less';
 import ShipSailorForm from '@/pages/ship/create/components/ShipSailorForm';
 import { SailorModelState } from '@/models/sailor';
 import { ISailorPosition } from '@/interfaces/ISailor';
-import { Moment } from 'moment';
 
 const { Step } = Steps;
 
@@ -71,76 +71,77 @@ interface ShipCreateProps extends FormComponentProps {
 class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   state = {
     current: ShipCreateStep.Certificate,
-    ship: {
-      carrierIdentifier: '3242MIII',
-      examineIdentifier: '432423',
-      formerName: '',
-      grossTone: 322,
-      depth: 32,
-      harbor: 'XX',
-      height: 32,
-      length: 3232,
-      width: 32,
-      materialId: 2,
-      name: 'zha',
-      netTone: 23,
-      owner: '阿健',
-      registerIdentifier: 'E324234',
-      shareInfo: 'TTE',
-      typeId: 3,
-      payloads: [
-        {
-          id: 1,
-          tone: 12,
-          remark: 'remark 33',
-          areaId: 1,
-        },
-        {
-          id: 2,
-          tone: 22,
-          remark: 'remark 22',
-          areaId: 2,
-        },
-      ],
-      sailors: [
-        {
-          id: 1,
-          name: 'AAA',
-          identityNumber: '34234242424',
-          isAdvanced: true,
-          mobile: '1387747878788',
-          positionId: 1,
-        },
-        {
-          id: 2,
-          name: 'BBBB',
-          identityNumber: '231332423423',
-          isAdvanced: true,
-          mobile: '1892882365469',
-          positionId: 2,
-        },
-      ],
-      certificates: [
-        {
-          id: 1,
-          identityNumber: 132313213,
-          expiredAt: '2017-03-05',
-          ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
-          remark: 'remark',
-          issueBy: 'GZ DEP',
-          typeId: 1,
-        },
-        {
-          id: 2,
-          identityNumber: 3232332323,
-          expiredAt: '2017-09-05',
-          ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
-          remark: 'remark 22',
-          issueBy: 'GF DEP',
-          typeId: 2,
-        },
-      ],
-    },
+    ship: {},
+    // ship: {
+    //   carrierIdentifier: '3242MIII',
+    //   examineIdentifier: '432423',
+    //   formerName: '',
+    //   grossTone: 322,
+    //   depth: 32,
+    //   harbor: 'XX',
+    //   height: 32,
+    //   length: 3232,
+    //   width: 32,
+    //   materialId: 2,
+    //   name: 'zha',
+    //   netTone: 23,
+    //   owner: '阿健',
+    //   registerIdentifier: 'E324234',
+    //   shareInfo: 'TTE',
+    //   typeId: 3,
+    //   payloads: [
+    //     {
+    //       id: 1,
+    //       tone: 12,
+    //       remark: 'remark 33',
+    //       areaId: 1,
+    //     },
+    //     {
+    //       id: 2,
+    //       tone: 22,
+    //       remark: 'remark 22',
+    //       areaId: 2,
+    //     },
+    //   ],
+    //   sailors: [
+    //     {
+    //       id: 1,
+    //       name: 'AAA',
+    //       identityNumber: '34234242424',
+    //       isAdvanced: true,
+    //       mobile: '1387747878788',
+    //       positionId: 1,
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'BBBB',
+    //       identityNumber: '231332423423',
+    //       isAdvanced: true,
+    //       mobile: '1892882365469',
+    //       positionId: 2,
+    //     },
+    //   ],
+    //   certificates: [
+    //     {
+    //       id: 1,
+    //       identityNumber: 132313213,
+    //       expiredAt: '2017-03-05',
+    //       ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
+    //       remark: 'remark',
+    //       issueBy: 'GZ DEP',
+    //       typeId: 1,
+    //     },
+    //     {
+    //       id: 2,
+    //       identityNumber: 3232332323,
+    //       expiredAt: '2017-09-05',
+    //       ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
+    //       remark: 'remark 22',
+    //       issueBy: 'GF DEP',
+    //       typeId: 2,
+    //     },
+    //   ]
+    //   },
   };
 
   componentDidMount() {
@@ -152,12 +153,12 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   }
 
   switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
-    let ship = { ...this.state.ship, ...shipData };
+    const ship = { ...this.state.ship, ...shipData };
     this.setState({ current: index, ship });
   };
 
   handleCreateShip = (shipData: Partial<IShip>) => {
-    let finalShipData = { ...this.state.ship, ...shipData };
+    const finalShipData = { ...this.state.ship, ...shipData };
 
     if (finalShipData.assembleAt) {
       finalShipData.assembleAt = (finalShipData.assembleAt as Moment).format('YYYY-MM-DD');
@@ -194,7 +195,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   };
 
   render() {
-    let { materials, types, businessAreas, certificateTypes, sailorPosition } = this.props;
+    const { materials, types, businessAreas, certificateTypes, sailorPosition } = this.props;
     let stepComponent;
 
     if (this.state.current === ShipCreateStep.Basic) {

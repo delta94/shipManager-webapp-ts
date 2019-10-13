@@ -6,11 +6,11 @@ import { routerRedux } from 'dva/router';
 import { FormComponentProps } from 'antd/es/form';
 import { Dispatch } from 'redux';
 import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
+import { RouteComponentProps } from 'react-router';
+import moment from 'moment';
 import { ICompanyCert, ICompanyCertType } from '@/interfaces/ICompany';
 import FileUpload from '@/components/FileUpload';
 import { CompanyCertModelState } from '@/models/companyCert';
-import { RouteComponentProps } from 'react-router';
-import moment from 'moment';
 
 const FormItem = Form.Item;
 
@@ -179,7 +179,7 @@ class CompanyCertUpdate extends React.Component<CompanyCertUpdateProps> {
               )}
             </FormItem>
 
-            <FormItem {...formItemLayout} label={'证书过期日期'}>
+            <FormItem {...formItemLayout} label="证书过期日期">
               {getFieldDecorator('expiredAt', {
                 rules: [{ required: true, type: 'object', message: '请输入建造完工日期' }],
               })(

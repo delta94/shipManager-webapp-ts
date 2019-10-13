@@ -92,7 +92,7 @@ class CompanyLicenseCreate extends React.Component<CompanyLicenseCreateProps> {
               })(<Input placeholder="请输入批文编号" />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label={'批文过期日期'}>
+            <FormItem {...formItemLayout} label="批文过期日期">
               {getFieldDecorator('expireAt', {
                 rules: [{ required: true, type: 'object', message: '请输入批文过期日期' }],
               })(

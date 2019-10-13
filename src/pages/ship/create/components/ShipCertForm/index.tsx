@@ -1,13 +1,13 @@
 import * as React from 'react';
-import IShip, { IShipCertificate, IShipCertType } from '@/interfaces/IShip';
 import { Avatar, Button, Card, Form, List, Popconfirm, Row } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
-import styles from './styles.less';
-import ListContent from './ListContent';
 import { Modal } from 'antd/es';
-import ShipEditCertForm from './EditCertForm';
 import produce from 'immer';
 import uuidv1 from 'uuid/v1';
+import styles from './styles.less';
+import ListContent from './ListContent';
+import ShipEditCertForm from './EditCertForm';
+import IShip, { IShipCertificate, IShipCertType } from '@/interfaces/IShip';
 import { ShipCreateStep } from '@/pages/ship/create';
 
 interface ShipCertCreateProps extends FormComponentProps {
@@ -40,6 +40,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
       };
     }
   }
+
   state = {
     visible: false,
     data: [],
@@ -96,8 +97,8 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
       const newState = produce(this.state, (draft: ShipCertCreateState) => {
         if (this.state.current) {
           // @ts-ignore
-          let id = this.state.current.id;
-          let index = draft.data.findIndex(item => item.id == id);
+          const { id } = this.state.current;
+          const index = draft.data.findIndex(item => item.id == id);
           draft.data[index] = values;
         } else {
           // @ts-ignore
@@ -143,7 +144,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
             pagination={false}
             dataSource={this.state.data}
             renderItem={(item: IShipCertificate) => {
-              let type = this.props.certificateTypes.filter(v => v.id == item.typeId)[0];
+              const type = this.props.certificateTypes.filter(v => v.id == item.typeId)[0];
               if (!type) return (<div>empty</div>)
               return (
                 <List.Item

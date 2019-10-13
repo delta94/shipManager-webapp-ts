@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { DatePicker, Select, Input, Form } from 'antd';
+import { FormComponentProps } from 'antd/es/form';
+import moment from 'moment';
 import FileUpload from '@/components/FileUpload';
 
 import { IShipCertificate, IShipCertType } from '@/interfaces/IShip';
-import { FormComponentProps } from 'antd/es/form';
-import moment from 'moment';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-const TextArea = Input.TextArea;
+const { Option } = Select;
+const { TextArea } = Input;
 
 interface ShipEditCertFormProps extends FormComponentProps {
   current: IShipCertificate | undefined;
@@ -24,7 +24,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
   componentDidMount() {
     const { form } = this.props;
     if (this.props.current) {
-      let item = this.props.current;
+      const item = this.props.current;
       if (item.ossFile) {
         debugger;
         const fileList = item.ossFile.split(';').map((value, index) => ({
@@ -38,7 +38,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
         form.setFieldsValue({ ossFile: { fileList } });
       }
       if (item.expiredAt) {
-        let value = moment(item.expiredAt);
+        const value = moment(item.expiredAt);
         form.setFieldsValue({ expireAt: value });
       }
     }
@@ -89,7 +89,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
           })(<FileUpload />)}
         </FormItem>
 
-        <FormItem label={'证书过期日期'} {...this.formLayout}>
+        <FormItem label="证书过期日期" {...this.formLayout}>
           {getFieldDecorator('expiredAt', {
             rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
           })(

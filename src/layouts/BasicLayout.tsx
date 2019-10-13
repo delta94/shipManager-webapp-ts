@@ -11,11 +11,11 @@ import ProLayout, {
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState, Dispatch } from '@/models/connect';
 import logo from '../assets/logo.png';
-import { routerRedux } from 'dva/router';
 import { setAuthority, updateToken } from '@/utils/authority';
 
 export interface BasicLayoutProps extends ProLayoutProps {

@@ -44,7 +44,7 @@ interface CompanyCertProfileProps extends RouteComponentProps<CompanyCertProfile
 )
 class CompanyCertProfile extends React.Component<CompanyCertProfileProps> {
   componentWillMount() {
-    let {
+    const {
       dispatch,
       match: { params },
     } = this.props;

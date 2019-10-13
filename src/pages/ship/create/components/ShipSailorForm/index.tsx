@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Button, Card, Form, Modal, Popconfirm, Row } from 'antd';
+import { Fragment } from 'react';
+import { FormComponentProps } from 'antd/es/form';
+import produce from 'immer';
 import styles from '@/pages/ship/create/style.less';
 import StandardTable from '@/pages/sailor/list/components/StandardTable';
 import { TableListItem } from '@/pages/sailor/list/sailor';
-import { Fragment } from 'react';
 import { ShipCreateStep } from '@/pages/ship/create';
-import { FormComponentProps } from 'antd/es/form';
 import IShip from '@/interfaces/IShip';
 import ISailor, { ISailorPosition } from '@/interfaces/ISailor';
-import produce from 'immer';
 import SailorListTable from '@/pages/ship/create/components/ShipSailorForm/SailorListTable';
 
 interface ShipSailorFormProps extends FormComponentProps {
@@ -99,7 +99,7 @@ class ShipSailorForm extends React.Component<ShipSailorFormProps, ShipSailorForm
   };
 
   handleSelectSailor = () => {
-    let selectedSailorRows = this.state.selectedSailorRows;
+    const { selectedSailorRows } = this.state;
 
     const newState = produce(this.state, (draft: ShipSailorFormState) => {
       if (selectedSailorRows.length == 0) {

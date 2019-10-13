@@ -4,7 +4,8 @@ import { FormComponentProps } from 'antd/es/form';
 import IShip, { IShipBusinessArea, IShipMaterial, IShipType } from '@/interfaces/IShip';
 import styles from '../../style.less';
 import { ShipCreateStep } from '@/pages/ship/create';
-const Option = Select.Option;
+
+const { Option } = Select;
 
 interface ShipCreateProps extends FormComponentProps {
   ship: Partial<IShip>;
@@ -43,7 +44,7 @@ class ShipBasicForm extends React.Component<ShipCreateProps> {
     } = this.props;
     validateFieldsAndScroll((error, values) => {
       if (!error) {
-        //this.props.switchToStep(1, {})
+        // this.props.switchToStep(1, {})
       }
       this.props.switchToStep(ShipCreateStep.Payload, values);
     });

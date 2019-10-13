@@ -1,6 +1,6 @@
+import { Moment } from 'moment';
 import ISailor from './ISailor';
 import IShipPayload from './IShipPayload';
-import { Moment } from 'moment';
 
 export default interface IShip {
   id: number;

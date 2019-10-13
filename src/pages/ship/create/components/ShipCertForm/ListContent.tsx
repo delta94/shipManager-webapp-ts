@@ -1,11 +1,11 @@
 import React from 'react';
-import styles from './styles.less';
 import moment from 'moment';
 import { Badge } from 'antd';
+import styles from './styles.less';
 import { IShipCertificate } from '@/interfaces/IShip';
 
 const ListContent: React.FC<Partial<IShipCertificate>> = props => {
-  let isValid = moment(props.expiredAt).isAfter(moment.now());
+  const isValid = moment(props.expiredAt).isAfter(moment.now());
   return (
     <div className={styles.listContent}>
       <div className={styles.listContentItem}>

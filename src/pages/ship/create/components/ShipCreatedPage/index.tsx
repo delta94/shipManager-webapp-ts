@@ -1,9 +1,9 @@
 import { Button, Result, Descriptions } from 'antd';
 import React from 'react';
-import styles from './styles.less';
-import IShip from '@/interfaces/IShip';
 import { Dispatch } from 'redux';
 import { routerRedux } from 'dva/router';
+import styles from './styles.less';
+import IShip from '@/interfaces/IShip';
 
 interface ShipCreatedPageProps {
   ship: Partial<IShip>;

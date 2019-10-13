@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Card, Row, Form, Button, Divider, Popconfirm, Modal } from 'antd';
-import ShipPayloadTable from '../ShipPayloadTable';
 import { FormComponentProps } from 'antd/es/form';
+import { Fragment } from 'react';
+import produce from 'immer';
+import uuidv1 from 'uuid/v1';
+import ShipPayloadTable from '../ShipPayloadTable';
 import styles from '../../style.less';
 import IShip, { IShipBusinessArea } from '@/interfaces/IShip';
 import { TableListItem } from '../ShipPayloadTable/ShipCert.d';
 import ShipPayloadEditForm from '@/pages/ship/create/components/ShipPayloadForm/EditForm';
-import { Fragment } from 'react';
-import produce from 'immer';
 import IShipPayload from '@/interfaces/IShipPayload';
-import uuidv1 from 'uuid/v1';
 import { ShipCreateStep } from '@/pages/ship/create';
 
 interface ShipPayloadCreateProps extends FormComponentProps {
@@ -103,8 +103,8 @@ class ShipPayloadForm extends React.Component<ShipPayloadCreateProps, ShipPayloa
       const newState = produce(this.state, (draft: ShipPayloadCreateState) => {
         if (this.state.current) {
           // @ts-ignore
-          let id = this.state.current.id;
-          let index = draft.data.findIndex(item => item.id == id);
+          const { id } = this.state.current;
+          const index = draft.data.findIndex(item => item.id == id);
           draft.data[index] = values;
         } else {
           // @ts-ignore

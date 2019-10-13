@@ -1,10 +1,10 @@
-import React from "react"
-import {Table} from "antd";
-import {connect} from "dva";
-import {SailorModelState} from "@/models/sailor";
-import {Dispatch} from "redux";
-import {TableListPagination} from "@/pages/sailor/list/sailor";
-import ISailor from "@/interfaces/ISailor";
+import React from 'react'
+import { Table } from 'antd';
+import { connect } from 'dva';
+import { Dispatch } from 'redux';
+import { SailorModelState } from '@/models/sailor';
+import { TableListPagination } from '@/pages/sailor/list/sailor';
+import ISailor from '@/interfaces/ISailor';
 
 interface SailorListTableProps {
   previousSelectedKeys?: any[]
@@ -35,17 +35,16 @@ interface SailorListTableState {
   }),
 )
 class SailorListTable extends React.Component<SailorListTableProps, SailorListTableState> {
-
   constructor(props: SailorListTableProps) {
     super(props)
 
     if (props.previousSelectedKeys && props.previousSelectedKeys.length > 0) {
       this.state = {
-        selectedRowKeys: props.previousSelectedKeys
+        selectedRowKeys: props.previousSelectedKeys,
       }
     } else {
       this.state = {
-        selectedRowKeys: []
+        selectedRowKeys: [],
       }
     }
   }
@@ -94,7 +93,7 @@ class SailorListTable extends React.Component<SailorListTableProps, SailorListTa
 
   componentDidMount() {
     this.props.dispatch!({ type: 'sailor/fetch' });
-  };
+  }
 
   render() {
     const { sailor, loading } = this.props;

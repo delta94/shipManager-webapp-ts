@@ -43,7 +43,7 @@ export async function listCompanyCert(params: any) {
   });
 }
 
-/* Company License*/
+/* Company License */
 
 export async function addCompanyLicense(
   params: Partial<ICompanyLicense>,

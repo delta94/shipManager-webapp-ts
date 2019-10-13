@@ -55,7 +55,7 @@ const sailorColumn = [
     dataIndex: 'isAdvanced',
     key: 'isAdvanced',
     render: (isAdvanced: boolean) =>
-      isAdvanced ? <Badge status="success" text="是" /> : <Badge status="error" text="否" />,
+      (isAdvanced ? <Badge status="success" text="是" /> : <Badge status="error" text="否" />),
   },
 ];
 

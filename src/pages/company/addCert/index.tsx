@@ -132,7 +132,7 @@ class CompanyCertCreate extends React.Component<CompanyCertCreateProps> {
               )}
             </FormItem>
 
-            <FormItem {...formItemLayout} label={'证书过期日期'}>
+            <FormItem {...formItemLayout} label="证书过期日期">
               {getFieldDecorator('expiredAt', {
                 rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
               })(
