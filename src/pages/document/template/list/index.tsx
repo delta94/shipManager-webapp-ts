@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Popconfirm, Input, Select, Button, Divider } from 'antd';
+import { Row, Col, Card, Form, Popconfirm, Select, Divider, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
 import { SorterResult } from 'antd/es/table';
 import StandardTable from './components/StandardTable';
-import styles from './style.less';
 import { CompanySheetState } from '@/models/companySheet';
 import { TableListItem, TableListData, TableListPagination } from '../../companySheet.d';
+import StandardFormRow from '@/components/StandardFormRow';
+import TagSelect from '@/components/TagSelect';
+import Search from 'antd/es/input/Search';
+import styles from '@/pages/ship/list/style.less';
 
 const getValue = (obj: { [x: string]: string[] }) =>
   Object.keys(obj)
@@ -16,7 +19,6 @@ const getValue = (obj: { [x: string]: string[] }) =>
     .join(',');
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 interface CompanySheetListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -42,6 +44,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     updateModalVisible: false,
     expandForm: false,
     selectedRows: [],
+    selectedTags: [],
     formValues: {},
   };
 
@@ -86,60 +89,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({ type: 'companySheet/fetchTemplateSheet' });
-  }
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-
-    const certificateTypes = undefined;
-
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 4, lg: 12, xl: 24 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="证书名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="证书类型">
-              {getFieldDecorator('typeId', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请选择证书类型',
-                  },
-                ],
-              })(
-                <Select placeholder="请选择证书类型">
-                  <Option value={undefined} key={99}>
-                    不限证书类型
-                  </Option>
-                  {certificateTypes &&
-                    certificateTypes.map((item, index) => (
-                      <Option value={item.id} key={index}>
-                        {item.name}
-                      </Option>
-                    ))}
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
+    dispatch({ type: 'companySheet/fetchSheetTypes' });
   }
 
   handleInfoCompanyCert(record: TableListItem) {
@@ -158,10 +108,17 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     // });
   }
 
-  handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  handleChangeTags = (values: number[]) => {
+    this.setState({ selectedTags: values }, () => {
+      this.handleSearch();
+    });
+  };
+
+  handleSearch = (e?: React.FormEvent) => {
+    e && e.preventDefault();
 
     const { dispatch, form } = this.props;
+    const selectedTags = this.state.selectedTags;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -171,14 +128,14 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
         values['name.contains'] = fieldsValue.name;
       }
 
-      if (fieldsValue.typeId !== undefined) {
-        values['typeId.equals'] = fieldsValue.typeId;
+      if (selectedTags.length > 0) {
+        values['typeId.in'] = selectedTags;
       }
 
       this.setState({ formValues: values });
 
       dispatch({
-        type: 'companySheet/fetch',
+        type: 'companySheet/fetchTemplateSheet',
         payload: values,
       });
     });
@@ -191,7 +148,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
       formValues: {},
     });
     dispatch({
-      type: 'companySheet/fetch',
+      type: 'companySheet/fetchTemplateSheet',
       payload: {},
     });
   };
@@ -233,25 +190,76 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     }
 
     dispatch({
-      type: 'companySheet/fetch',
+      type: 'companySheet/fetchTemplateSheet',
       payload: params,
     });
   };
 
   render() {
     const {
-      companySheet: { template_sheet },
+      companySheet: { template_sheet, types },
+      form: { getFieldDecorator },
       loading,
     } = this.props;
 
+    const formItemLayout = {
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+
     const { selectedRows } = this.state;
+
+    const formStyle = {
+      paddingBottom: 0,
+      marginBottom: '12px',
+      height: '45px',
+      lineHeight: '36px',
+    };
 
     return (
       <PageHeaderWrapper title="固定表单列表">
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-          </div>
+        <Card bordered={false} bodyStyle={{ paddingBottom: 0 }}>
+          <Form onSubmit={this.handleSearch}>
+            <StandardFormRow title="所属分类" block style={formStyle}>
+              <FormItem>
+                {getFieldDecorator('type')(
+                  <TagSelect onChange={this.handleChangeTags}>
+                    {types &&
+                      types.map(val => (
+                        <TagSelect.Option value={val.id} key={val.id}>
+                          {val.name}
+                        </TagSelect.Option>
+                      ))}
+                  </TagSelect>,
+                )}
+              </FormItem>
+            </StandardFormRow>
+
+            <StandardFormRow title="其它选项" grid last>
+              <Row gutter={8}>
+                <Col lg={8} md={10} sm={16} xs={24}>
+                  <FormItem {...formItemLayout}>
+                    {getFieldDecorator('name', {})(<Search placeholder="文件名" />)}
+                  </FormItem>
+                </Col>
+                <Col md={8} sm={16}>
+                  <span className={styles.submitButtons}>
+                    <Button type="primary" htmlType="submit">
+                      查询
+                    </Button>
+                    <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                      重置
+                    </Button>
+                  </span>
+                </Col>
+              </Row>
+            </StandardFormRow>
+          </Form>
+        </Card>
+
+        <Card bordered={false} style={{ marginTop: 12 }}>
           <StandardTable
             selectedRows={selectedRows}
             loading={loading}

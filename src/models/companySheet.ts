@@ -2,7 +2,11 @@ import { AnyAction } from 'redux';
 import { EffectsCommandMap } from 'dva';
 import { ICompanySheet, ICompanySheetType } from '@/interfaces/ICompanySheet';
 
-import { listCompanyCommonSheets, listCompanyTemplateSheets } from '@/services/sheet';
+import {
+  listCompanyCommonSheets,
+  listCompanyTemplateSheets,
+  listCompanySheetTypes,
+} from '@/services/sheet';
 
 import { ImmerReducer } from '@/models/connect';
 import { ITableListPagination } from '@/interfaces/ITableList';
@@ -30,10 +34,12 @@ export interface CompanySheetModelType {
   effects: {
     fetchCommonSheet: Effect;
     fetchTemplateSheet: Effect;
+    fetchSheetTypes: Effect;
   };
   reducers: {
     updateCommonSheet: ImmerReducer<CompanySheetState>;
     updateTemplateSheet: ImmerReducer<CompanySheetState>;
+    updateSheetTypes: ImmerReducer<CompanySheetState>;
   };
 }
 
@@ -86,6 +92,15 @@ const CompanySheetModel: CompanySheetModelType = {
         payload: response,
       });
     },
+
+    *fetchSheetTypes({ payload }, { call, put }) {
+      const response = yield call(listCompanySheetTypes, payload);
+
+      yield put({
+        type: 'updateSheetTypes',
+        payload: response,
+      });
+    },
   },
   reducers: {
     updateTemplateSheet(state, action) {
@@ -93,6 +108,9 @@ const CompanySheetModel: CompanySheetModelType = {
     },
     updateCommonSheet(state, action) {
       state.common_sheet = action.payload;
+    },
+    updateSheetTypes(state, action) {
+      state.types = action.payload;
     },
   },
 };

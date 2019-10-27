@@ -6,9 +6,12 @@ import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
 import { SorterResult } from 'antd/es/table';
 import StandardTable from './components/StandardTable';
-import styles from './style.less';
 import { CompanySheetState } from '@/models/companySheet';
 import { TableListItem, TableListData, TableListPagination } from '../../companySheet.d';
+import StandardFormRow from '@/components/StandardFormRow';
+import TagSelect from '@/components/TagSelect';
+import Search from 'antd/es/input/Search';
+import styles from '@/pages/ship/list/style.less';
 
 const getValue = (obj: { [x: string]: string[] }) =>
   Object.keys(obj)
@@ -41,6 +44,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     modalVisible: false,
     updateModalVisible: false,
     expandForm: false,
+    selectedTags: [],
     selectedRows: [],
     formValues: {},
   };
@@ -86,60 +90,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({ type: 'companySheet/fetchCommonSheet' });
-  }
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-
-    const certificateTypes = undefined;
-
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 4, lg: 12, xl: 24 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="证书名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="证书类型">
-              {getFieldDecorator('typeId', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请选择证书类型',
-                  },
-                ],
-              })(
-                <Select placeholder="请选择证书类型">
-                  <Option value={undefined} key={99}>
-                    不限证书类型
-                  </Option>
-                  {certificateTypes &&
-                    certificateTypes.map((item, index) => (
-                      <Option value={item.id} key={index}>
-                        {item.name}
-                      </Option>
-                    ))}
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
+    dispatch({ type: 'companySheet/fetchSheetTypes' });
   }
 
   handleInfoCompanyCert(record: TableListItem) {
@@ -158,10 +109,11 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     // });
   }
 
-  handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  handleSearch = (e?: React.FormEvent) => {
+    e && e.preventDefault();
 
     const { dispatch, form } = this.props;
+    const selectedTags = this.state.selectedTags;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -171,14 +123,14 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
         values['name.contains'] = fieldsValue.name;
       }
 
-      if (fieldsValue.typeId !== undefined) {
-        values['typeId.equals'] = fieldsValue.typeId;
+      if (selectedTags.length > 0) {
+        values['typeId.in'] = selectedTags;
       }
 
       this.setState({ formValues: values });
 
       dispatch({
-        type: 'companySheet/fetch',
+        type: 'companySheet/fetchCommonSheet',
         payload: values,
       });
     });
@@ -191,13 +143,19 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
       formValues: {},
     });
     dispatch({
-      type: 'companySheet/fetch',
+      type: 'companySheet/fetchCommonSheet',
       payload: {},
     });
   };
 
   handleCreateCert = () => {
     //this.props.dispatch(routerRedux.push('/company/addCert'));
+  };
+
+  handleChangeTags = (values: number[]) => {
+    this.setState({ selectedTags: values }, () => {
+      this.handleSearch();
+    });
   };
 
   handleSelectRows = (rows: TableListItem[]) => {
@@ -233,25 +191,75 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     }
 
     dispatch({
-      type: 'companySheet/fetch',
+      type: 'companySheet/fetchCommonSheet',
       payload: params,
     });
   };
 
   render() {
     const {
-      companySheet: { common_sheet },
+      form: { getFieldDecorator },
+      companySheet: { common_sheet, types },
       loading,
     } = this.props;
 
     const { selectedRows } = this.state;
 
+    const formItemLayout = {
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+
+    const formStyle = {
+      paddingBottom: 0,
+      marginBottom: '12px',
+      height: '45px',
+      lineHeight: '36px',
+    };
+
     return (
       <PageHeaderWrapper title="固定表单列表">
+        <Card bordered={false} bodyStyle={{ paddingBottom: 0 }}>
+          <Form onSubmit={this.handleSearch}>
+            <StandardFormRow title="所属分类" block style={formStyle}>
+              <FormItem>
+                {getFieldDecorator('type')(
+                  <TagSelect onChange={this.handleChangeTags}>
+                    {types &&
+                      types.map(val => (
+                        <TagSelect.Option value={val.id} key={val.id}>
+                          {val.name}
+                        </TagSelect.Option>
+                      ))}
+                  </TagSelect>,
+                )}
+              </FormItem>
+            </StandardFormRow>
+
+            <StandardFormRow title="其它选项" grid last>
+              <Row gutter={8}>
+                <Col lg={8} md={10} sm={16} xs={24}>
+                  <FormItem {...formItemLayout}>
+                    {getFieldDecorator('name', {})(<Search placeholder="文件名" />)}
+                  </FormItem>
+                </Col>
+                <Col md={8} sm={16}>
+                  <span className={styles.submitButtons}>
+                    <Button type="primary" htmlType="submit">
+                      查询
+                    </Button>
+                    <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                      重置
+                    </Button>
+                  </span>
+                </Col>
+              </Row>
+            </StandardFormRow>
+          </Form>
+        </Card>
         <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-          </div>
           <StandardTable
             selectedRows={selectedRows}
             loading={loading}

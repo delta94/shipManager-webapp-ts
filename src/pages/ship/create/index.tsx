@@ -70,7 +70,7 @@ interface ShipCreateProps extends FormComponentProps {
 )
 class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   state = {
-    current: ShipCreateStep.Certificate,
+    current: ShipCreateStep.Basic,
     ship: {},
     // ship: {
     //   carrierIdentifier: '3242MIII',
