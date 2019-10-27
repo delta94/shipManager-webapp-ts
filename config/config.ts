@@ -193,19 +193,19 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/document/listPreset',
+              redirect: '/document/common/list',
             },
             {
-              path: '/document/listPreset',
+              path: '/document/common/list',
               name: '固定表单',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
-              component: './document/listPreset',
+              component: './document/common/list',
             },
             {
-              path: '/document/listCustom',
+              path: '/document/template/list',
               name: '自定义表单',
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
-              component: './document/listCustom',
+              component: './document/template/list',
             },
           ],
         },
