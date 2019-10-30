@@ -6,6 +6,7 @@ import {
   listCompanyCommonSheets,
   listCompanyTemplateSheets,
   listCompanySheetTypes,
+  deleteCompanySheet
 } from '@/services/sheet';
 
 import { ImmerReducer } from '@/models/connect';
@@ -35,6 +36,7 @@ export interface CompanySheetModelType {
     fetchCommonSheet: Effect;
     fetchTemplateSheet: Effect;
     fetchSheetTypes: Effect;
+    removeSheet: Effect;
   };
   reducers: {
     updateCommonSheet: ImmerReducer<CompanySheetState>;
@@ -100,6 +102,10 @@ const CompanySheetModel: CompanySheetModelType = {
         type: 'updateSheetTypes',
         payload: response,
       });
+    },
+    *removeSheet({ payload, callback }, { call }) {
+      const response = yield call(deleteCompanySheet, payload);
+      if (callback) callback();
     },
   },
   reducers: {

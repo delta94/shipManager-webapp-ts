@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Popconfirm, Input, Select, Button, Divider } from 'antd';
+import {Row, Col, Card, Form, Popconfirm, Button, Divider, message} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -19,7 +19,6 @@ const getValue = (obj: { [x: string]: string[] }) =>
     .join(',');
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 interface CompanySheetListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -70,14 +69,14 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
       title: '操作',
       render: (text: any, record: TableListItem) => (
         <Fragment>
-          <a onClick={() => this.handleInfoCompanyCert(record)}>详情</a>
+          <a onClick={() => this.handleInfoCompanyCommonSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateCompanyCert(record)}>修改</a>
+          <a onClick={() => this.handleUpdateCompanyCommonSheet(record)}>修改</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRemoveCompanyCert(record.id)}
+              title="是否要删除此文件？"
+              onConfirm={() => this.handleRemoveCompanyCommonSheet(record.id)}
             >
               <a>删除</a>
             </Popconfirm>
@@ -93,20 +92,23 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     dispatch({ type: 'companySheet/fetchSheetTypes' });
   }
 
-  handleInfoCompanyCert(record: TableListItem) {
+  handleInfoCompanyCommonSheet(record: TableListItem) {
     //this.props.dispatch(routerRedux.push(`/company/infoCert/${record.id}`));
   }
 
-  handleUpdateCompanyCert(record: TableListItem) {
+  handleUpdateCompanyCommonSheet(record: TableListItem) {
     //this.props.dispatch(routerRedux.push(`/company/updateCert/${record.id}`));
   }
 
-  handleRemoveCompanyCert(key: number) {
-    // this.props.dispatch({
-    //   type: 'companyCert/remove',
-    //   payload: key,
-    //   callback: () => message.success('证书已成功删除'),
-    // });
+  handleRemoveCompanyCommonSheet(id: number) {
+    this.props.dispatch({
+      type: 'companySheet/removeSheet',
+      payload: id,
+      callback: () => {
+        message.success('文件已成功删除');
+        this.props.dispatch({ type: 'companySheet/fetchCommonSheet' });
+      },
+    });
   }
 
   handleSearch = (e?: React.FormEvent) => {

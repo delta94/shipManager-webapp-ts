@@ -1,11 +1,17 @@
 import { ICompanySheet, ICompanySheetType } from '@/interfaces/ICompanySheet';
 import request from '@/utils/request';
 import { stringify } from 'qs';
-import { ICompanyCertType } from '@/interfaces/ICompany';
 
 export async function infoCompanySheet(id: number): Promise<ICompanySheet> {
   return request(`/api/company-sheets/${id}`, {
     method: 'GET',
+  });
+}
+
+
+export async function deleteCompanySheet(id: number): Promise<void> {
+  return request(`/api/company-sheets/${id}`, {
+    method: 'DELETE',
   });
 }
 

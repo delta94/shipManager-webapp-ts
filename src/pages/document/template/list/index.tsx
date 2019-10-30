@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Popconfirm, Select, Divider, Button } from 'antd';
+import {Row, Col, Card, Form, Popconfirm, Select, Divider, Button, message} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -69,14 +69,14 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
       title: '操作',
       render: (text: any, record: TableListItem) => (
         <Fragment>
-          <a onClick={() => this.handleInfoCompanyCert(record)}>详情</a>
+          <a onClick={() => this.handleInfoCompanyTemplateSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateCompanyCert(record)}>修改</a>
+          <a onClick={() => this.handleUpdateCompanyTemplateSheet(record)}>修改</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRemoveCompanyCert(record.id)}
+              title="是否要删除此文件？"
+              onConfirm={() => this.handleRemoveCompanyTemplateSheet(record.id)}
             >
               <a>删除</a>
             </Popconfirm>
@@ -92,20 +92,24 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     dispatch({ type: 'companySheet/fetchSheetTypes' });
   }
 
-  handleInfoCompanyCert(record: TableListItem) {
+  handleInfoCompanyTemplateSheet(record: TableListItem) {
     //this.props.dispatch(routerRedux.push(`/company/infoCert/${record.id}`));
   }
 
-  handleUpdateCompanyCert(record: TableListItem) {
+  handleUpdateCompanyTemplateSheet(record: TableListItem) {
     //this.props.dispatch(routerRedux.push(`/company/updateCert/${record.id}`));
   }
 
-  handleRemoveCompanyCert(key: number) {
-    // this.props.dispatch({
-    //   type: 'companyCert/remove',
-    //   payload: key,
-    //   callback: () => message.success('证书已成功删除'),
-    // });
+  handleRemoveCompanyTemplateSheet(id: number) {
+    this.props.dispatch({
+      type: 'companySheet/removeSheet',
+      payload: id,
+      callback: () => {
+        message.success('文件已成功删除');
+        this.props.dispatch({ type: 'companySheet/fetchTemplateSheet' });
+      }
+    });
+
   }
 
   handleChangeTags = (values: number[]) => {
