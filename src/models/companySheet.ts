@@ -6,7 +6,9 @@ import {
   listCompanyCommonSheets,
   listCompanyTemplateSheets,
   listCompanySheetTypes,
-  deleteCompanySheet
+  deleteCompanySheet,
+  infoCompanySheet,
+  updateCompanySheet,
 } from '@/services/sheet';
 
 import { ImmerReducer } from '@/models/connect';
@@ -21,6 +23,7 @@ export interface CompanySheetState {
     list: ICompanySheet[];
     pagination: ITableListPagination;
   };
+  target: ICompanySheet | undefined;
   types: ICompanySheetType[];
 }
 
@@ -37,11 +40,14 @@ export interface CompanySheetModelType {
     fetchTemplateSheet: Effect;
     fetchSheetTypes: Effect;
     removeSheet: Effect;
+    target: Effect;
+    update: Effect;
   };
   reducers: {
     updateCommonSheet: ImmerReducer<CompanySheetState>;
     updateTemplateSheet: ImmerReducer<CompanySheetState>;
     updateSheetTypes: ImmerReducer<CompanySheetState>;
+    updateTargetSheet: ImmerReducer<CompanySheetState>;
   };
 }
 
@@ -65,6 +71,7 @@ const CompanySheetModel: CompanySheetModelType = {
         pageSize: 0,
       },
     },
+    target: undefined,
     types: [],
   },
 
@@ -103,9 +110,25 @@ const CompanySheetModel: CompanySheetModelType = {
         payload: response,
       });
     },
+
     *removeSheet({ payload, callback }, { call }) {
-      const response = yield call(deleteCompanySheet, payload);
+      yield call(deleteCompanySheet, payload);
       if (callback) callback();
+    },
+
+    *target({ payload, callback }, { call, put }) {
+      const sheet = yield call(infoCompanySheet, payload);
+      yield put({
+        type: 'updateTargetSheet',
+        payload: sheet,
+      });
+
+      callback && callback();
+    },
+
+    *update({ payload, callback }, { call, put }) {
+      yield call(updateCompanySheet, payload);
+      callback && callback();
     },
   },
   reducers: {
@@ -117,6 +140,9 @@ const CompanySheetModel: CompanySheetModelType = {
     },
     updateSheetTypes(state, action) {
       state.types = action.payload;
+    },
+    updateTargetSheet(state, action) {
+      state.target = action.payload;
     },
   },
 };

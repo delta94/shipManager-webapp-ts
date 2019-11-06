@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import {Row, Col, Card, Form, Popconfirm, Select, Divider, Button, message} from 'antd';
+import { Row, Col, Card, Form, Popconfirm, Divider, Button, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -12,6 +12,8 @@ import StandardFormRow from '@/components/StandardFormRow';
 import TagSelect from '@/components/TagSelect';
 import Search from 'antd/es/input/Search';
 import styles from '@/pages/ship/list/style.less';
+import { routerRedux } from 'dva/router';
+import OSSClient from '@/utils/OSSClient';
 
 const getValue = (obj: { [x: string]: string[] }) =>
   Object.keys(obj)
@@ -71,7 +73,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
         <Fragment>
           <a onClick={() => this.handleInfoCompanyTemplateSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateCompanyTemplateSheet(record)}>修改</a>
+          <a onClick={() => this.handleDownloadCompanyCommonSheet(record)}>下载</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
@@ -93,11 +95,20 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
   }
 
   handleInfoCompanyTemplateSheet(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/company/infoCert/${record.id}`));
+    this.props.dispatch(routerRedux.push(`/document/profile/${record.id}`));
   }
 
-  handleUpdateCompanyTemplateSheet(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/company/updateCert/${record.id}`));
+  async handleDownloadCompanyCommonSheet(record: TableListItem) {
+    let ossKey = record.ossFile;
+    let client = await OSSClient.getInstance();
+    let url = client.signatureUrl(ossKey);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = url.split('/').pop() || '';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   handleRemoveCompanyTemplateSheet(id: number) {
@@ -107,12 +118,11 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
       callback: () => {
         message.success('文件已成功删除');
         this.props.dispatch({ type: 'companySheet/fetchTemplateSheet' });
-      }
+      },
     });
-
   }
 
-  handleChangeTags = (values: number[]) => {
+  handleChangeTags = (values: (string | number)[]) => {
     this.setState({ selectedTags: values }, () => {
       this.handleSearch();
     });

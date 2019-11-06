@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import {Row, Col, Card, Form, Popconfirm, Button, Divider, message} from 'antd';
+import { Row, Col, Card, Form, Popconfirm, Button, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -12,6 +12,8 @@ import StandardFormRow from '@/components/StandardFormRow';
 import TagSelect from '@/components/TagSelect';
 import Search from 'antd/es/input/Search';
 import styles from '@/pages/ship/list/style.less';
+import { routerRedux } from 'dva/router';
+import OSSClient from '@/utils/OSSClient';
 
 const getValue = (obj: { [x: string]: string[] }) =>
   Object.keys(obj)
@@ -71,7 +73,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
         <Fragment>
           <a onClick={() => this.handleInfoCompanyCommonSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateCompanyCommonSheet(record)}>修改</a>
+          <a onClick={() => this.handleDownloadCompanyCommonSheet(record)}>下载</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
@@ -93,11 +95,21 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
   }
 
   handleInfoCompanyCommonSheet(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/company/infoCert/${record.id}`));
+    this.props.dispatch(routerRedux.push(`/document/profile/${record.id}`));
   }
 
-  handleUpdateCompanyCommonSheet(record: TableListItem) {
-    //this.props.dispatch(routerRedux.push(`/company/updateCert/${record.id}`));
+  async handleDownloadCompanyCommonSheet(record: TableListItem) {
+    let ossKey = record.ossFile;
+    let client = await OSSClient.getInstance();
+    let url = client.signatureUrl(ossKey);
+
+    let a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.download = url.split('/').pop() || '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   handleRemoveCompanyCommonSheet(id: number) {
@@ -154,7 +166,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     //this.props.dispatch(routerRedux.push('/company/addCert'));
   };
 
-  handleChangeTags = (values: number[]) => {
+  handleChangeTags = (values: (number | string)[]) => {
     this.setState({ selectedTags: values }, () => {
       this.handleSearch();
     });

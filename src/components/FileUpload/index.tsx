@@ -1,7 +1,8 @@
-import { Upload, Icon, Modal, message } from 'antd';
+import { Upload, Icon, Modal, message, Button } from 'antd';
 import React from 'react';
 
 import OssClient, { generateOSSKey, resolveOSSPath } from '@/utils/OSSClient';
+import { UploadListType } from 'antd/es/upload/interface';
 
 interface FileUploadState {
   previewVisible: boolean;
@@ -12,6 +13,7 @@ interface FileUploadState {
 
 interface FileUploadProps {
   onChange?: (values: any) => void;
+  listType?: UploadListType;
 }
 
 class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
@@ -68,7 +70,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
       ossClient
         .multipartUpload(key, file, {})
-        .then(({ bucket, name }) => {
+        .then(({ bucket, name, res }) => {
           message.success('文件上传成功');
           const url = resolveOSSPath(bucket, name);
 
@@ -77,6 +79,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             name: file.name,
             status: file.status,
             type: file.type,
+            size: res.size,
             result: name,
             url,
           };
@@ -103,16 +106,15 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     const { previewVisible, previewImage, fileList, limit } = this.state;
 
     const uploadButton = (
-      <div>
-        <Icon type="plus" />
-        <div className="ant-upload-text">上传文件</div>
-      </div>
+      <Button>
+        <Icon type="upload" /> 上传文件
+      </Button>
     );
 
     return (
       <div>
         <Upload
-          listType="picture-card"
+          listType={this.props.listType}
           fileList={fileList}
           onRemove={this.handleRemove}
           onPreview={this.handlePreview} // 点击图片缩略图，进行预览

@@ -8,10 +8,16 @@ export async function infoCompanySheet(id: number): Promise<ICompanySheet> {
   });
 }
 
-
 export async function deleteCompanySheet(id: number): Promise<void> {
   return request(`/api/company-sheets/${id}`, {
     method: 'DELETE',
+  });
+}
+
+export async function updateCompanySheet(params: any): Promise<void> {
+  return request(`/api/company-sheets/`, {
+    method: 'PUT',
+    data: params,
   });
 }
 
