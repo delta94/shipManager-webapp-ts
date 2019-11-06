@@ -167,14 +167,14 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     });
   };
 
-  handleCreateCert = () => {
-    //this.props.dispatch(routerRedux.push('/company/addCert'));
-  };
-
   handleSelectRows = (rows: TableListItem[]) => {
     this.setState({
       selectedRows: rows,
     });
+  };
+
+  handleClickAdd = () => {
+    this.props.dispatch(routerRedux.push('/document/create/template'));
   };
 
   handleStandardTableChange = (
@@ -234,6 +234,13 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
 
     return (
       <PageHeaderWrapper title="固定表单列表">
+
+        <Card bordered={false} style={{marginBottom: -24}}>
+          <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
+            新建
+          </Button>
+        </Card>
+
         <Card bordered={false} bodyStyle={{ paddingBottom: 0 }}>
           <Form onSubmit={this.handleSearch}>
             <StandardFormRow title="所属分类" block style={formStyle}>

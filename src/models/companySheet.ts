@@ -8,6 +8,7 @@ import {
   listCompanySheetTypes,
   deleteCompanySheet,
   infoCompanySheet,
+  createCompanySheet,
   updateCompanySheet,
 } from '@/services/sheet';
 
@@ -42,6 +43,7 @@ export interface CompanySheetModelType {
     removeSheet: Effect;
     target: Effect;
     update: Effect;
+    create: Effect;
   };
   reducers: {
     updateCommonSheet: ImmerReducer<CompanySheetState>;
@@ -126,8 +128,13 @@ const CompanySheetModel: CompanySheetModelType = {
       callback && callback();
     },
 
-    *update({ payload, callback }, { call, put }) {
+    *update({ payload, callback }, { call }) {
       yield call(updateCompanySheet, payload);
+      callback && callback();
+    },
+
+    *create({ payload, callback }, { call }) {
+      yield call(createCompanySheet, payload);
       callback && callback();
     },
   },

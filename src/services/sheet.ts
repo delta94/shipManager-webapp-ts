@@ -14,6 +14,13 @@ export async function deleteCompanySheet(id: number): Promise<void> {
   });
 }
 
+export async function createCompanySheet(params: any): Promise<void> {
+  return request("/api/company-sheets/", {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export async function updateCompanySheet(params: any): Promise<void> {
   return request(`/api/company-sheets/`, {
     method: 'PUT',

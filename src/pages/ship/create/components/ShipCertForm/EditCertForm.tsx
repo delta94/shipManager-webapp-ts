@@ -26,7 +26,6 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
     if (this.props.current) {
       const item = this.props.current;
       if (item.ossFile) {
-        debugger;
         const fileList = item.ossFile.split(';').map((value, index) => ({
           uid: `pre_${index}`,
           name: value,

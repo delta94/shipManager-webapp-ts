@@ -99,7 +99,6 @@ class CompanySheetUpdate extends React.Component<CompanySheetUpdateProps> {
       if (!err) {
         if (values.ossFile && values.ossFile.fileList) {
           values.ossFile = values.ossFile.fileList.map((value: any) => value.url).join(';');
-          debugger;
           values.fileSize;
         }
         values.id = companySheet.id;

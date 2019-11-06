@@ -68,9 +68,12 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
       const ossClient = await OssClient.getInstance();
       const key = generateOSSKey(file);
 
+      const hideLoading = message.loading('文件上传中...');
+
       ossClient
         .multipartUpload(key, file, {})
         .then(({ bucket, name, res }) => {
+          hideLoading();
           message.success('文件上传成功');
           const url = resolveOSSPath(bucket, name);
 
@@ -95,6 +98,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
           this.setState(({ fileList }) => ({ fileList: newValues }));
         })
         .catch(error => {
+          hideLoading()
           message.error('文件上传失败');
           console.error(error);
         });

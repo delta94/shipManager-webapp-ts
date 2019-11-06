@@ -214,6 +214,13 @@ export default {
               authority: ['ROLE_USER', 'ROLE_ADMIN'],
               component: './document/shared/profile',
             },
+            {
+              path: '/document/create/:type',
+              name: '表单详情',
+              hideInMenu: true,
+              authority: ['ROLE_USER', 'ROLE_ADMIN'],
+              component: './document/shared/create',
+            },
           ],
         },
         {
