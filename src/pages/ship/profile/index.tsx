@@ -7,31 +7,8 @@ import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
 import { Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router';
 import { ShipStateType } from '@/models/ship';
-import IShip from '@/interfaces/IShip';
+import IShip, { ShipFieldLabels as fieldLabels } from '@/interfaces/IShip';
 import styles from './style.less';
-
-const fieldLabels = {
-  name: '船舶名',
-  carrierIdentifier: '船舶识别号',
-  owner: '船舶所有人',
-  shareInfo: '船舶共有情况',
-  harbor: '船籍港',
-  formerName: '曾用名',
-  registerIdentifier: '初次登记号',
-  examineIdentifier: '船检登记号',
-  material: '船舶材质',
-  buildAt: '建造完工日期',
-  assembleAt: '安放龙骨日期',
-  type: '船舶类型',
-  sailorCount: '船员总人数',
-  power: '发动机功率',
-  grossTone: '总吨位 (吨)',
-  netTone: '净吨位 (吨)',
-  length: '船身长 (米)',
-  width: '船身宽 (米)',
-  depth: '船身深 (米)',
-  height: '船身高 (米)',
-};
 
 const sailorColumn = [
   {
@@ -55,7 +32,7 @@ const sailorColumn = [
     dataIndex: 'isAdvanced',
     key: 'isAdvanced',
     render: (isAdvanced: boolean) =>
-      (isAdvanced ? <Badge status="success" text="是" /> : <Badge status="error" text="否" />),
+      isAdvanced ? <Badge status="success" text="是" /> : <Badge status="error" text="否" />,
   },
 ];
 

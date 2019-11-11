@@ -147,11 +147,8 @@ const ShipModel: ShipModelType = {
     },
 
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(deleteShip, payload);
-      yield put({
-        type: 'removeShip',
-        payload: response,
-      });
+      yield call(deleteShip, payload);
+      yield put({ type: 'removeShip', payload: payload });
       if (callback) callback();
     },
 
@@ -214,7 +211,7 @@ const ShipModel: ShipModelType = {
       return {
         ...state,
         data: {
-          list: ship.filter(item => item != action.payload),
+          list: ship.filter(item => item.id != action.payload),
           pagination: {
             total: pagination.total - 1,
             pageSize: pagination.pageSize,
