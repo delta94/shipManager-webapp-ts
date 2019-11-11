@@ -145,7 +145,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
             dataSource={this.state.data}
             renderItem={(item: IShipCertificate) => {
               const type = this.props.certificateTypes.filter(v => v.id == item.typeId)[0];
-              if (!type) return (<div>empty</div>)
+              if (!type) return <div>empty</div>;
               return (
                 <List.Item
                   actions={[

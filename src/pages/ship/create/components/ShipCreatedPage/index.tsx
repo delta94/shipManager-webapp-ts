@@ -37,9 +37,11 @@ const ShipCreatedPage: React.FC<ShipCreatedPageProps> = props => {
 
   const extra = (
     <>
-      <Button type="primary" onClick={onCreate}>
-        再次录入
-      </Button>
+      {!ship.id && (
+        <Button type="primary" onClick={onCreate}>
+          再次录入
+        </Button>
+      )}
       <Button onClick={onFinish}>查看列表</Button>
     </>
   );

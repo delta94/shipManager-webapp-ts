@@ -125,7 +125,7 @@ const CompanySheetModel: CompanySheetModelType = {
         payload: sheet,
       });
 
-      callback && callback();
+      callback && callback(sheet);
     },
 
     *update({ payload, callback }, { call }) {

@@ -8,6 +8,8 @@ export interface ICompanySheet {
   updateAt: string;
   typeName: string;
   typeId: number;
+  bindings: string;
+  ex_bindings?: Binding[];
 }
 
 export interface ICompanySheetType {
@@ -16,3 +18,14 @@ export interface ICompanySheetType {
   remark: string;
   icon: string;
 }
+
+export interface Binding {
+  name: string;
+  desc: string;
+  required: boolean;
+  global: boolean;
+  multiple: boolean;
+  default: any;
+}
+
+export interface ICompanyTemplateSheet {}

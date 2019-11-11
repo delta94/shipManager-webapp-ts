@@ -44,9 +44,9 @@ export async function deleteShip(id: number) {
 }
 
 export async function updateShip(params: any) {
-  return request(`/api/ships/${params.id}`, {
-    method: 'UPDATE',
-    body: params,
+  return request(`/api/ships/`, {
+    method: 'PUT',
+    data: params,
   });
 }
 

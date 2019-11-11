@@ -10,6 +10,7 @@ import {
   listShipTypes,
   listShipBusinessAreas,
   listShipCertificateTypes,
+  updateShip,
 } from '@/services/ship';
 import IShip, {
   IShipBusinessArea,
@@ -47,6 +48,7 @@ export interface ShipModelType {
     fetchCertificateType: Effect;
     create: Effect;
     remove: Effect;
+    update: Effect;
     target: Effect;
   };
   reducers: {
@@ -138,6 +140,12 @@ const ShipModel: ShipModelType = {
       if (callback) callback();
     },
 
+    *update({ payload, callback }, { call }) {
+      let data = yield call(updateShip, payload);
+      // todo: update ship in shipList
+      if (callback) callback(data);
+    },
+
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(deleteShip, payload);
       yield put({
@@ -153,8 +161,7 @@ const ShipModel: ShipModelType = {
         type: 'loadShip',
         payload: ship,
       });
-
-      callback && callback();
+      callback && callback(ship);
     },
   },
 

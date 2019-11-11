@@ -73,7 +73,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
         <Fragment>
           <a onClick={() => this.handleInfoCompanyCommonSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDownloadCompanyCommonSheet(record)}>下载</a>
+          <a onClick={() => this.handlePrintCompanyCommonSheet(record)}>打印</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
@@ -98,7 +98,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
     this.props.dispatch(routerRedux.push(`/document/profile/${record.id}`));
   }
 
-  async handleDownloadCompanyCommonSheet(record: TableListItem) {
+  async handlePrintCompanyCommonSheet(record: TableListItem) {
     let ossKey = record.ossFile;
     let client = await OSSClient.getInstance();
     let url = client.signatureUrl(ossKey);
@@ -239,8 +239,7 @@ class CommonDocument extends React.Component<CompanySheetListProps> {
 
     return (
       <PageHeaderWrapper title="固定表单列表">
-
-        <Card bordered={false} style={{marginBottom: -24}}>
+        <Card bordered={false} style={{ marginBottom: -24 }}>
           <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
             新建
           </Button>

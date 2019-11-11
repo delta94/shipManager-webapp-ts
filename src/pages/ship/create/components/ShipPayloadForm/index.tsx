@@ -26,6 +26,7 @@ interface ShipPayloadCreateState {
 class ShipPayloadForm extends React.Component<ShipPayloadCreateProps, ShipPayloadCreateState> {
   constructor(props: ShipPayloadCreateProps) {
     super(props);
+
     if (this.props.ship && this.props.ship.payloads) {
       this.state = {
         data: this.props.ship.payloads,

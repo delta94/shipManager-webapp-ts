@@ -42,7 +42,7 @@ interface ShipCreateState {
 
 interface ShipCreateProps extends FormComponentProps {
   dispatch: Dispatch<any>;
-  submitting: boolean;
+  loading: boolean;
   types: IShipType[];
   materials: IShipMaterial[];
   businessAreas: IShipBusinessArea[];
@@ -72,76 +72,6 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
   state = {
     current: ShipCreateStep.Basic,
     ship: {},
-    // ship: {
-    //   carrierIdentifier: '3242MIII',
-    //   examineIdentifier: '432423',
-    //   formerName: '',
-    //   grossTone: 322,
-    //   depth: 32,
-    //   harbor: 'XX',
-    //   height: 32,
-    //   length: 3232,
-    //   width: 32,
-    //   materialId: 2,
-    //   name: 'zha',
-    //   netTone: 23,
-    //   owner: '阿健',
-    //   registerIdentifier: 'E324234',
-    //   shareInfo: 'TTE',
-    //   typeId: 3,
-    //   payloads: [
-    //     {
-    //       id: 1,
-    //       tone: 12,
-    //       remark: 'remark 33',
-    //       areaId: 1,
-    //     },
-    //     {
-    //       id: 2,
-    //       tone: 22,
-    //       remark: 'remark 22',
-    //       areaId: 2,
-    //     },
-    //   ],
-    //   sailors: [
-    //     {
-    //       id: 1,
-    //       name: 'AAA',
-    //       identityNumber: '34234242424',
-    //       isAdvanced: true,
-    //       mobile: '1387747878788',
-    //       positionId: 1,
-    //     },
-    //     {
-    //       id: 2,
-    //       name: 'BBBB',
-    //       identityNumber: '231332423423',
-    //       isAdvanced: true,
-    //       mobile: '1892882365469',
-    //       positionId: 2,
-    //     },
-    //   ],
-    //   certificates: [
-    //     {
-    //       id: 1,
-    //       identityNumber: 132313213,
-    //       expiredAt: '2017-03-05',
-    //       ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
-    //       remark: 'remark',
-    //       issueBy: 'GZ DEP',
-    //       typeId: 1,
-    //     },
-    //     {
-    //       id: 2,
-    //       identityNumber: 3232332323,
-    //       expiredAt: '2017-09-05',
-    //       ossFile: 'http://ship-manager.oss-cn-shenzhen.aliyuncs.com/20190915/2_na7c8ly44hp.jpg',
-    //       remark: 'remark 22',
-    //       issueBy: 'GF DEP',
-    //       typeId: 2,
-    //     },
-    //   ]
-    //   },
   };
 
   componentDidMount() {
@@ -164,7 +94,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
       finalShipData.assembleAt = (finalShipData.assembleAt as Moment).format('YYYY-MM-DD');
     }
 
-    if (finalShipData.assembleAt) {
+    if (finalShipData.buildAt) {
       finalShipData.buildAt = (finalShipData.buildAt as Moment).format('YYYY-MM-DD');
     }
 
@@ -182,7 +112,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
       type: 'ship/create',
       payload: finalShipData,
       callback: () => {
-        this.setState({ current: ShipCreateStep.Result, ship: {} });
+        this.setState({ current: ShipCreateStep.Result, ship: finalShipData });
       },
     });
   };

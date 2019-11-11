@@ -1,15 +1,4 @@
-import {
-  Popconfirm,
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Input,
-  Row,
-  Select,
-  message,
-} from 'antd';
+import { Popconfirm, Button, Card, Col, Divider, Form, Input, Row, Select, message } from 'antd';
 import React, { Component, Fragment } from 'react';
 
 import { Dispatch } from 'redux';
@@ -27,7 +16,10 @@ import { ShipStateType } from '@/models/ship';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key => obj[key]).join(',');
+const getValue = (obj: { [x: string]: string[] }) =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -117,7 +109,7 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleUpdateShip = (record: TableListItem) => {
-
+    this.props.dispatch(routerRedux.push(`/ship/update/${record.id}`));
   };
 
   handleDeleteShip = (record: TableListItem) => {
@@ -126,9 +118,9 @@ class TableList extends Component<TableListProps, TableListState> {
       type: 'ship/remove',
       payload: record.id,
       callback: () => {
-        message.success('船舶删除成功')
+        message.success('船舶删除成功');
       },
-    })
+    });
   };
 
   componentDidMount() {
@@ -197,7 +189,7 @@ class TableList extends Component<TableListProps, TableListState> {
       const values = {};
 
       if (fieldsValue.typeId !== undefined) {
-        values['typeId.equals'] = fieldsValue.typeId
+        values['typeId.equals'] = fieldsValue.typeId;
       }
 
       if (fieldsValue.name !== undefined) {
@@ -236,7 +228,12 @@ class TableList extends Component<TableListProps, TableListState> {
             <FormItem label="船舶类型">
               {getFieldDecorator('typeId')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {types && types.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+                  {types &&
+                    types.map(val => (
+                      <Option value={val.id} key={val.id}>
+                        {val.name}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </FormItem>

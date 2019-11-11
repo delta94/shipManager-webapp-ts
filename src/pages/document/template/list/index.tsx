@@ -73,7 +73,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
         <Fragment>
           <a onClick={() => this.handleInfoCompanyTemplateSheet(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDownloadCompanyCommonSheet(record)}>下载</a>
+          <a onClick={() => this.handlePrintCompanyCommonSheet(record)}>打印</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm
@@ -98,17 +98,8 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
     this.props.dispatch(routerRedux.push(`/document/profile/${record.id}`));
   }
 
-  async handleDownloadCompanyCommonSheet(record: TableListItem) {
-    let ossKey = record.ossFile;
-    let client = await OSSClient.getInstance();
-    let url = client.signatureUrl(ossKey);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = url.split('/').pop() || '';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  async handlePrintCompanyCommonSheet(record: TableListItem) {
+    this.props.dispatch(routerRedux.push(`/document/template/generate/${record.id}`));
   }
 
   handleRemoveCompanyTemplateSheet(id: number) {
@@ -234,8 +225,7 @@ class TemplateDocument extends React.Component<CompanySheetListProps> {
 
     return (
       <PageHeaderWrapper title="固定表单列表">
-
-        <Card bordered={false} style={{marginBottom: -24}}>
+        <Card bordered={false} style={{ marginBottom: -24 }}>
           <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
             新建
           </Button>
