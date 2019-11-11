@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, Col, Row, Form, Select, DatePicker, Input, Button } from 'antd';
+import { Card, Col, Row, Form, Select, DatePicker, Input, Button, message } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import IShip, {
   IShipBusinessArea,
@@ -23,14 +23,12 @@ interface ShipBasicProps extends FormComponentProps {
 
 class ShipBasicForm extends React.Component<ShipBasicProps> {
   handleNext = () => {
-    const {
-      form: { validateFieldsAndScroll },
-    } = this.props;
-    validateFieldsAndScroll((error, values) => {
-      if (!error) {
-        // this.props.switchToStep(1, {})
+    this.props.form.validateFieldsAndScroll((error, values) => {
+      if (error) {
+        message.warn('请填写必要字段信息');
+      } else {
+        this.props.switchToStep(ShipCreateStep.Payload, values);
       }
-      this.props.switchToStep(ShipCreateStep.Payload, values);
     });
   };
 
