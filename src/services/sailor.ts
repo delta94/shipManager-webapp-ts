@@ -39,7 +39,7 @@ export async function listSailor(params: any): Promise<ISailor[]> {
     params.page -= 1;
   }
 
-  return request(`/api/sailors-list?${stringify(params)}`, {
+  return request(`/api/sailors/list?${stringify(params)}`, {
     method: 'GET',
   });
 }

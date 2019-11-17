@@ -83,7 +83,7 @@ class ShipPayloadForm extends React.Component<ShipPayloadCreateProps, ShipPayloa
   };
 
   onPrev = () => {
-    this.props.switchToStep(ShipCreateStep.Basic, { payloads: this.state.data });
+    this.props.switchToStep(ShipCreateStep.Machine, { payloads: this.state.data });
   };
 
   onNext = () => {

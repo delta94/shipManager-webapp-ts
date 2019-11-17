@@ -23,6 +23,8 @@ export default interface IShip {
   sailors: Partial<ISailor>[];
   payloads: Partial<IShipPayload>[];
   certificates: Partial<IShipCertificate>[];
+  generators: Partial<IShipGenerator>[];
+  hosts: Partial<IShipHost>[];
   sailorCount: number;
   typeName: string;
   typeId: number;
@@ -70,6 +72,23 @@ export interface IShipCertificate {
   shipId: number;
   typeId: number;
   typeName: string;
+}
+
+export interface IShipGenerator {
+  shipId: number;
+  remark: string;
+  power: number;
+  modelType: string;
+  identityNumber: string;
+}
+
+export interface IShipHost {
+  id: number;
+  shipId: number;
+  identityNumber: string;
+  modelType: string;
+  power: number;
+  remark: string;
 }
 
 export const ShipFieldLabels = {

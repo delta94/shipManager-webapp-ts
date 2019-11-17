@@ -27,7 +27,7 @@ class ShipBasicForm extends React.Component<ShipBasicProps> {
       if (error) {
         message.warn('请填写必要字段信息');
       } else {
-        this.props.switchToStep(ShipCreateStep.Payload, values);
+        this.props.switchToStep(ShipCreateStep.Machine, values);
       }
     });
   };

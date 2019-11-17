@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "cross-env umi build",
-    "upload-oss": "ts-node  scripts/uploadToOSS.ts",
+    "upload-oss": "ts-node scripts/uploadToOSS.ts",
     "upload-server": "ts-node  scripts/uploadToServer.ts",
     "upload-dev-server": "ts-node  scripts/uploadToDevServer.ts",
     "fetch:blocks": "pro fetch-blocks",

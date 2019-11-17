@@ -1,4 +1,4 @@
-import { Button, Result, Descriptions } from 'antd';
+import { Button, Result } from 'antd';
 import React from 'react';
 import { Dispatch } from 'redux';
 import { routerRedux } from 'dva/router';
@@ -26,15 +26,6 @@ const ShipCreatedPage: React.FC<ShipCreatedPageProps> = props => {
     props.onReset();
   };
 
-  const information = (
-    <div className={styles.information}>
-      <Descriptions column={1}>
-        <Descriptions.Item label="船舶名称"> {ship.name}</Descriptions.Item>
-        <Descriptions.Item label="船舶所有人"> {ship.owner}</Descriptions.Item>
-      </Descriptions>
-    </div>
-  );
-
   const extra = (
     <>
       {!ship.id && (
@@ -46,11 +37,7 @@ const ShipCreatedPage: React.FC<ShipCreatedPageProps> = props => {
     </>
   );
 
-  return (
-    <Result status="success" title="操作成功" extra={extra} className={styles.result}>
-      {information}
-    </Result>
-  );
+  return <Result status="success" title="操作成功" extra={extra} className={styles.result} />;
 };
 
 export default ShipCreatedPage;

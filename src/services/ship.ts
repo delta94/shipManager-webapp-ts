@@ -13,7 +13,7 @@ export async function listShip(params: any): Promise<IShip[]> {
     params.page -= 1;
   }
 
-  return request(`/api/ships-list?${stringify(params)}`, {
+  return request(`/api/ships/list?${stringify(params)}`, {
     method: 'GET',
   });
 }

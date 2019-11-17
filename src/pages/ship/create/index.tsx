@@ -11,6 +11,8 @@ import { Moment } from 'moment';
 import ShipBasicForm from './components/ShipBasicForm';
 import ShipPayloadForm from './components/ShipPayloadForm';
 import ShipCertForm from './components/ShipCertForm';
+import ShipMachineForm from './components/ShipMachineForm';
+import ShipSailorForm from './components/ShipSailorForm';
 import ShipCreateResultPage from './components/ShipCreatedPage';
 
 import { ShipStateType } from '@/models/ship';
@@ -21,7 +23,7 @@ import IShip, {
   IShipType,
 } from '@/interfaces/IShip';
 import styles from './style.less';
-import ShipSailorForm from '@/pages/ship/create/components/ShipSailorForm';
+
 import { SailorModelState } from '@/models/sailor';
 import { ISailorPosition } from '@/interfaces/ISailor';
 
@@ -29,6 +31,7 @@ const { Step } = Steps;
 
 export enum ShipCreateStep {
   Basic,
+  Machine,
   Payload,
   Certificate,
   Sailor,
@@ -103,6 +106,16 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
       finalShipData.certificates = finalShipData.certificates.map(item => omit(item, 'id'));
     }
 
+    if (finalShipData.generators) {
+      // @ts-ignore
+      finalShipData.generators = finalShipData.generators.map(item => omit(item, 'id'));
+    }
+
+    if (finalShipData.hosts) {
+      // @ts-ignore
+      finalShipData.hosts = finalShipData.hosts.map(item => omit(item, 'id'));
+    }
+
     if (finalShipData.payloads) {
       // @ts-ignore
       finalShipData.payloads = finalShipData.payloads.map(item => omit(item, 'id'));
@@ -138,6 +151,8 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           switchToStep={this.switchToStep}
         />
       );
+    } else if (this.state.current === ShipCreateStep.Machine) {
+      stepComponent = <ShipMachineForm ship={this.state.ship} switchToStep={this.switchToStep} />;
     } else if (this.state.current === ShipCreateStep.Payload) {
       stepComponent = (
         <ShipPayloadForm
@@ -179,6 +194,7 @@ class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
           <>
             <Steps current={this.state.current} className={styles.steps}>
               <Step title="基本信息" />
+              <Step title="船机信息" />
               <Step title="载重吨信息" />
               <Step title="证书信息" />
               <Step title="船员信息" />

@@ -49,6 +49,47 @@ const payloadColumn = [
     render: (payload: number) => `${payload} 吨`,
   },
 ];
+
+const generatorColumn = [
+  {
+    title: '发动机编号',
+    dataIndex: 'identityNumber',
+  },
+  {
+    title: '发动机种类',
+    dataIndex: 'modelType',
+  },
+  {
+    title: '发动机功率',
+    dataIndex: 'power',
+    render: (text: any) => `${text} 千瓦`,
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
+  },
+];
+
+const hostColumn = [
+  {
+    title: '主机编号',
+    dataIndex: 'identityNumber',
+  },
+  {
+    title: '主机种类',
+    dataIndex: 'modelType',
+  },
+  {
+    title: '主机功率',
+    dataIndex: 'power',
+    render: (text: any) => `${text} 千瓦`,
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
+  },
+];
+
 interface ShipProfileParams {
   id: string;
 }
@@ -126,7 +167,7 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
             <Descriptions.Item label={fieldLabels.grossTone}>{ship.grossTone}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.netTone}>{ship.netTone}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.sailorCount}>
-              {ship.sailorCount}
+              {ship.sailors ? ship.sailors.length : 0}
             </Descriptions.Item>
             <Descriptions.Item label={fieldLabels.length}>{ship.length}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.width}>{ship.width}</Descriptions.Item>
@@ -154,6 +195,28 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
             pagination={false}
             dataSource={ship.payloads}
             columns={payloadColumn}
+          />
+        </Card>
+
+        <Card style={{ marginBottom: 24 }} bordered={false}>
+          <div className={styles.title}>发动机信息</div>
+          <Table
+            size="middle"
+            bordered={false}
+            pagination={false}
+            dataSource={ship.generators}
+            columns={generatorColumn}
+          />
+        </Card>
+
+        <Card style={{ marginBottom: 24 }} bordered={false}>
+          <div className={styles.title}>主机信息</div>
+          <Table
+            size="middle"
+            bordered={false}
+            pagination={false}
+            dataSource={ship.hosts}
+            columns={hostColumn}
           />
         </Card>
       </PageHeaderWrapper>
