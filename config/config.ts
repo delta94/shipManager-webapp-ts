@@ -56,7 +56,7 @@ export default {
   history: 'hash',
   publicPath:
     process.env.NODE_ENV === 'production'
-      ? 'http://ship-manager-cdn.oss-cn-shenzhen.aliyuncs.com/'
+      ? 'https://ship-manager-cdn.oss-cn-shenzhen.aliyuncs.com/'
       : '',
   targets: {
     ie: 11,

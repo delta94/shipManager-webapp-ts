@@ -1,8 +1,10 @@
-name: 'Main workflow'
+name: Deployment workflow
 on:
   push:
     branches:
-      - github_action
+      - master
+    tags:
+      - '*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,33 +22,30 @@ jobs:
           key: '${{ runner.os }}-node-${{ hashFiles(''**/package.json'') }}'
           restore-keys: "${{ runner.os }}-node-\n"
       -
-        name: 'Install Dependency'
+        name: Install Dependency
         run: 'npm install'
       -
-        name: 'Build dist'
-        run: 'npm build'
+        name: Build dist
+        run: 'npm run build'
       -
-        name: 'zip dist direction'
+        name: Zip dist direction
         run: 'zip dist.zip ./dist/*'
       -
-        name: 'Create Release'
-        id: create_release
-        uses: actions/create-release@v1.0.0
-        env:
-          GITHUB_TOKEN: '${{ secrets.ACCESS_TOKEN }}'
+        name: Setup aliyun oss
+        uses: manyuanrong/setup-ossutil@master
         with:
-          tag_name: '${{ github.ref }}'
-          release_name: 'Release ${{ github.ref }}'
-          draft: false
-          prerelease: false
+          endpoint: oss-cn-shenzhen.aliyuncs.com
+          access-key-id: '${{ secrets.OSS_KEY_ID }}'
+          access-key-secret: '${{ secrets.OSS_KEY_SECRET }}'
       -
-        name: 'Upload Release Asset'
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: '${{ secrets.ACCESS_TOKEN }}'
+        name: Copy files to aliyun OSS
+        run: 'ossutil cp -rf ./dist/ oss://ship-manager-cdn/'
+      -
+        name: Copy dist file to server
+        uses: garygrossgarten/github-action-scp@release
         with:
-          upload_url: '${{ steps.create_release.outputs.upload_url }}'
-          asset_path: ./dist.zip
-          asset_name: dist.zip
-          asset_content_type: application/zip
+          local: ./dist.zip
+          remote: /root/ship/remote/dist.zip
+          username: root
+          host: '${{ secrets.HOST }}'
+          privateKey: '${{ secrets.PRIVATE_KEY }}'
