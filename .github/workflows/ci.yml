@@ -26,10 +26,8 @@ jobs:
         name: 'Build dist'
         run: 'npm build'
       -
-        name: 'Zip dist direction'
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: unzip -qq dist.zip -d ./dist
+        name: 'zip dist direction'
+        run: 'zip dist.zip ./dist/*'
       -
         name: 'Create Release'
         id: create_release
