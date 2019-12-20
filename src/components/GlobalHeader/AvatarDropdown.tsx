@@ -7,6 +7,7 @@ import { ConnectProps, ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import defaultAvatar from '@/assets/icons/avatar.png';
 
 export interface GlobalHeaderRightProps extends ConnectProps {
   currentUser?: IAccount;
@@ -34,11 +35,12 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
   render() {
     const { currentUser, menu } = this.props;
+    const imageUrl = currentUser && currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar;
 
     if (!menu && currentUser) {
       return (
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.imageUrl} alt="avatar" />
+          <Avatar size="small" className={styles.avatar} src={imageUrl} alt="avatar" />
           <span className={styles.name}>{currentUser.login}</span>
         </span>
       );
@@ -60,13 +62,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     return currentUser && currentUser.id ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar
-            size="small"
-            icon="user"
-            className={styles.avatar}
-            src={currentUser.imageUrl}
-            alt="avatar"
-          />
+          <Avatar size="small" icon="user" className={styles.avatar} src={imageUrl} alt="avatar" />
         </span>
       </HeaderDropdown>
     ) : (
