@@ -47,3 +47,9 @@ jobs:
           username: root
           host: '${{ secrets.HOST }}'
           privateKey: '${{ secrets.PRIVATE_KEY }}'
+      -
+        name: Send message via telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
