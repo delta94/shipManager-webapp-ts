@@ -1,4 +1,4 @@
-import { MenuTheme } from 'antd/es/menu';
+import { MenuTheme } from 'antd/es/menu/MenuContext';
 
 export type ContentWidth = 'Fluid' | 'Fixed';
 
@@ -43,17 +43,19 @@ export interface DefaultSettings {
 }
 
 export default {
-  "navTheme": "dark",
-  "primaryColor": "#1890FF",
-  "layout": "sidemenu",
-  "contentWidth": "Fluid",
-  "fixedHeader": true,
-  "autoHideHeader": false,
-  "fixSiderbar": true,
-  "menu": {
-    "locale": true
+  navTheme: 'dark',
+  // 拂晓蓝
+  primaryColor: '#1890ff',
+  layout: 'sidemenu',
+  contentWidth: 'Fluid',
+  fixedHeader: false,
+  autoHideHeader: false,
+  fixSiderbar: false,
+  colorWeak: false,
+  menu: {
+    locale: true,
   },
-  "title": "船务管理系统",
-  "pwa": false,
-  "iconfontUrl": ""
+  title: 'Ant Design Pro',
+  pwa: false,
+  iconfontUrl: '',
 } as DefaultSettings;
