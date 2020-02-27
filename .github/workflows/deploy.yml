@@ -5,51 +5,37 @@ jobs:
     name: build dist
     runs-on: ubuntu-latest
     if: "contains(github.event.head_commit.message, '[build]')"
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
-      -
-        uses: actions/checkout@v1
-      -
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          node-version: 10.x
-      -
-        uses: actions/cache@v1
+          node-version: 10.16
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        id: yarn-cache
         with:
-          path: ~/.npm
-          key: '${{ runner.os }}-node-${{ hashFiles(''**/package.json'') }}'
-          restore-keys: "${{ runner.os }}-node-\n"
-      -
-        name: Install Dependency
-        run: 'npm install'
-      -
-        name: Build dist
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn install
+      - name: Build dist
         run: 'npm run build'
-      -
-        name: Zip dist direction
+      - name: Zip dist direction
         run: 'zip dist.zip ./dist/*'
-      -
-        name: Setup aliyun oss
+      - name: Setup aliyun oss
         uses: manyuanrong/setup-ossutil@master
         with:
           endpoint: oss-cn-shenzhen.aliyuncs.com
           access-key-id: '${{ secrets.OSS_KEY_ID }}'
           access-key-secret: '${{ secrets.OSS_KEY_SECRET }}'
-      -
-        name: Copy files to aliyun OSS
+      - name: Copy files to aliyun OSS
         run: 'ossutil cp -rf ./dist/ oss://ship-manager-cdn/'
-      -
-        name: Copy dist file to server
-        uses: garygrossgarten/github-action-scp@release
+      - uses: actions/upload-artifact@v1
         with:
-          local: ./dist.zip
-          remote: /root/ship/remote/dist.zip
-          username: root
-          host: '${{ secrets.HOST }}'
-          privateKey: '${{ secrets.PRIVATE_KEY }}'
-      -
-        name: Send message via telegram
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
+          name: Dist Folder
+          path: dist
