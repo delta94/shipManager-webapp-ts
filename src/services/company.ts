@@ -1,6 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 import { ICompanyCert, ICompanyCertType, ICompanyLicense } from '@/interfaces/ICompany';
+import { PageableData } from '@/interfaces/ITableList';
 
 export async function listCompanyCertType(): Promise<ICompanyCertType[]> {
   return request('/api/company-cert-types', {
@@ -34,12 +35,18 @@ export async function infoCompanyCert(id: number) {
   });
 }
 
-export async function listCompanyCert(params: any) {
-  if (params && params.page) {
-    params.page -= 1;
-  }
-  return request(`/api/company-certs-list?${stringify(params)}`, {
+export async function listCompanyCert(
+  page: number = 0,
+  size: number = 20,
+  sort: string = '',
+): Promise<PageableData<ICompanyCert>> {
+  return await request('/api/company-certs-list', {
     method: 'GET',
+    params: {
+      page: page - 1,
+      size,
+      sort,
+    },
   });
 }
 

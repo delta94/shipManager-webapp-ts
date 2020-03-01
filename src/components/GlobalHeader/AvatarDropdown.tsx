@@ -1,8 +1,9 @@
-import { Avatar, Icon, Menu, Spin } from 'antd';
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { Avatar, Menu, Spin } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import React from 'react';
 import { connect } from 'dva';
-import router from 'umi/router';
+import { router } from 'umi';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
 import HeaderDropdown from '../HeaderDropdown';
@@ -34,35 +35,37 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
   };
 
   render() {
-    const { currentUser, menu } = this.props;
-    const imageUrl = currentUser && currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar;
+    const {
+      currentUser = {
+        imageUrl: defaultAvatar,
+        login: '',
+      },
+      menu,
+    } = this.props;
 
-    if (!menu && currentUser) {
-      return (
-        <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={imageUrl} alt="avatar" />
-          <span className={styles.name}>{currentUser.login}</span>
-        </span>
-      );
-    }
+    const imageUrl = currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar;
 
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        <Menu.Item key="personal">
-          <Icon type="setting" />
-          个人设置
-        </Menu.Item>
-        <Menu.Divider />
+        {menu && (
+          <Menu.Item key="personal">
+            <SettingOutlined />
+            个人设置
+          </Menu.Item>
+        )}
+        {menu && <Menu.Divider />}
+
         <Menu.Item key="logout">
-          <Icon type="logout" />
+          <LogoutOutlined />
           退出登录
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.id ? (
+    return currentUser && currentUser.login ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" icon="user" className={styles.avatar} src={imageUrl} alt="avatar" />
+          <Avatar size="small" className={styles.avatar} src={imageUrl} alt="avatar" />
+          <span className={styles.name}>{currentUser.login}</span>
         </span>
       </HeaderDropdown>
     ) : (

@@ -44,18 +44,17 @@ export interface DefaultSettings {
 
 export default {
   navTheme: 'dark',
-  // 拂晓蓝
-  primaryColor: '#1890ff',
+  primaryColor: 'daybreak',
   layout: 'sidemenu',
   contentWidth: 'Fluid',
-  fixedHeader: false,
+  fixedHeader: true,
   autoHideHeader: false,
   fixSiderbar: false,
   colorWeak: false,
   menu: {
-    locale: true,
+    locale: false,
   },
-  title: 'Ant Design Pro',
+  title: '船务管理系统',
   pwa: false,
   iconfontUrl: '',
 } as DefaultSettings;

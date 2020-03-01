@@ -4,7 +4,18 @@ export interface ITableListPagination {
   current: number;
 }
 
-export interface ITableListData<T> {
+export interface Pagination {
+  total: number;
+  pageSize: number;
+  current: number;
+}
+
+export interface PageableData<T> {
   list: T[];
-  pagination: Partial<ITableListPagination>;
+  pagination: Partial<Pagination>;
+}
+
+export interface ITableResult<T> {
+  total: number;
+  list: T[];
 }

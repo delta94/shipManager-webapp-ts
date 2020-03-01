@@ -30,15 +30,6 @@ const plugins: IPlugin[] = [
       pwa: false,
     },
   ],
-  [
-    'umi-plugin-pro-block',
-    {
-      moveMock: false,
-      moveService: false,
-      modifyRequest: true,
-      autoAddMenu: true,
-    },
-  ],
 ];
 export default {
   plugins,
