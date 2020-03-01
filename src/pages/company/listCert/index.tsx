@@ -1,31 +1,17 @@
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, TableDropdown } from '@ant-design/pro-table';
-import { Button, Card, Form, Divider, Popconfirm, Select } from 'antd';
-import { useFormTable } from '@umijs/hooks';
-import { PaginatedParams } from '@umijs/use-request/lib/types';
-import styles from './style.less';
-import { ICompanyCert, ICompanyCertType } from '@/interfaces/ICompany';
-import { listCompanyCert } from '@/services/company';
-import { ITableResult } from '@/interfaces/ITableList';
+import ProTable from '@ant-design/pro-table';
+import { Button, Card, Divider, Popconfirm, Select } from 'antd';
+import { useRequest } from '@umijs/hooks';
+import { ICompanyCert } from '@/interfaces/ICompany';
+import { listCompanyCert, listCompanyCertType } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
 
-const getTableData = async (
-  { current, pageSize }: PaginatedParams[0],
-  formData,
-): Promise<ITableResult<ICompanyCert>> => {
-  console.log(formData);
-  let startIndex = current - 1;
-  let data = await listCompanyCert(startIndex, pageSize, '');
-  return {
-    total: data.pagination.total,
-    list: data.list,
-  };
-};
-
 const CompanyCertList = () => {
-
-  const certificateTypes: ICompanyCertType[] = [];
+  const { data } = useRequest(() => listCompanyCertType(), {
+    cacheKey: 'company_cert_type',
+    initialData: [],
+  });
 
   const handleInfoCompanyCert = (record: ICompanyCert) => {};
 
@@ -39,11 +25,27 @@ const CompanyCertList = () => {
     {
       title: '名称',
       dataIndex: 'name',
-      hideInSearch: true,
     },
     {
       title: '证书类型',
       dataIndex: 'typeName',
+      renderFormItem: () => {
+        return (
+          <Select placeholder="请选择证书类型">
+            <Select.Option value={-1} key={99}>
+              不限证书类型
+            </Select.Option>
+            {data &&
+              data.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
+          </Select>
+        );
+      },
     },
     {
       title: '证书号',
@@ -85,8 +87,8 @@ const CompanyCertList = () => {
             return {
               success: true,
               total: data.pagination.total,
-              data: data.list
-            }
+              data: data.list,
+            };
           }}
           rowKey="id"
           dateFormatter="string"
