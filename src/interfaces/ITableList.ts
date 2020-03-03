@@ -12,7 +12,7 @@ export interface Pagination {
 
 export interface PageableData<T> {
   list: T[];
-  pagination: Partial<Pagination>;
+  pagination: Pagination;
 }
 
 export interface ITableResult<T> {

@@ -11,7 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.0.2",
     "@ant-design/pro-layout": "^5.0.5",
-    "@ant-design/pro-table": "^1.0.43",
+    "@ant-design/pro-table": "^v2.1.4",
     "@antv/data-set": "^0.10.2",
     "@umijs/hooks": "^1.6.2",
     "ali-oss": "^6.1.1",

@@ -38,14 +38,14 @@ export async function infoCompanyCert(id: number) {
 export async function listCompanyCert(
   page: number = 0,
   size: number = 20,
-  sort: string = '',
+  extra: object
 ): Promise<PageableData<ICompanyCert>> {
   return await request('/api/company-certs-list', {
     method: 'GET',
     params: {
       page: page - 1,
       size,
-      sort,
+      ...extra
     },
   });
 }

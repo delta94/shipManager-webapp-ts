@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { Button, Card, Divider, Popconfirm, Select } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { ICompanyCert } from '@/interfaces/ICompany';
@@ -13,15 +13,33 @@ const CompanyCertList = () => {
     initialData: [],
   });
 
+  const requestCompanyList = async (params: any) => {
+    let { current = 0, pageSize = 20, typeId, name } = params;
+    let extra = {};
+
+    if (typeId !== undefined && typeId !== -1) {
+      extra['typeId.equals'] = typeId;
+    }
+
+    if (name !== undefined) {
+      extra['name.contains'] = name;
+    }
+
+    const data = await listCompanyCert(current, pageSize, extra);
+    return {
+      success: true,
+      total: data.pagination.total,
+      data: data.list,
+    };
+  };
+
   const handleInfoCompanyCert = (record: ICompanyCert) => {};
 
   const handleUpdateCompanyCert = (record: ICompanyCert) => {};
 
   const handleRemoveCompanyCert = (id: number) => {};
 
-  const handleCreateCert = () => {};
-
-  const columns = [
+  const columns: ProColumns<ICompanyCert>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -29,10 +47,17 @@ const CompanyCertList = () => {
     {
       title: '证书类型',
       dataIndex: 'typeName',
-      renderFormItem: () => {
+      hideInSearch: true,
+    },
+    {
+      title: '证书类型',
+      hideInTable: true,
+      hideInSearch: false,
+      dataIndex: 'typeId',
+      renderFormItem: (item, props) => {
         return (
-          <Select placeholder="请选择证书类型">
-            <Select.Option value={-1} key={99}>
+          <Select placeholder="请选择证书类型" onChange={props.onChange}>
+            <Select.Option key={99} value={-1}>
               不限证书类型
             </Select.Option>
             {data &&
@@ -48,7 +73,7 @@ const CompanyCertList = () => {
       },
     },
     {
-      title: '证书号',
+      title: '证书编号',
       dataIndex: 'identityNumber',
     },
     {
@@ -81,21 +106,14 @@ const CompanyCertList = () => {
     <PageHeaderWrapper title="公司证书列表">
       <Card bordered={false}>
         <ProTable<ICompanyCert>
-          columns={columns}
-          request={async (params = {}) => {
-            const data = await listCompanyCert(params.current, params.pageSize);
-            return {
-              success: true,
-              total: data.pagination.total,
-              data: data.list,
-            };
-          }}
           rowKey="id"
+          columns={columns}
+          request={requestCompanyList}
           dateFormatter="string"
           toolBarRender={() => [
             <Button key="3" type="primary">
               <PlusOutlined />
-              新建
+              新建证书
             </Button>,
           ]}
         />

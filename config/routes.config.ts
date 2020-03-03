@@ -91,39 +91,39 @@ export default [
           },
         ],
       },
-      // {
-      //   path: '/ship',
-      //   name: '船舶管理',
-      //   icon: 'book',
-      //   routes: [
-      //     {
-      //       name: '船舶列表',
-      //       path: '/ship/list',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './ship/list',
-      //     },
-      //     {
-      //       name: '新建船舶',
-      //       path: '/ship/create',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './ship/create',
-      //     },
-      //     {
-      //       name: '船舶详情',
-      //       path: '/ship/profile/:id',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './ship/profile',
-      //       hideInMenu: true,
-      //     },
-      //     {
-      //       name: '更新船舶',
-      //       path: '/ship/update/:id',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './ship/update',
-      //       hideInMenu: true,
-      //     },
-      //   ],
-      // },
+      {
+        path: '/ship',
+        name: '船舶管理',
+        icon: 'book',
+        routes: [
+          {
+            name: '船舶列表',
+            path: '/ship/list',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './ship/list',
+          },
+          {
+            name: '新建船舶',
+            path: '/ship/create',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './ship/create',
+          },
+          {
+            name: '船舶详情',
+            path: '/ship/profile/:id',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './ship/profile',
+            hideInMenu: true,
+          },
+          {
+            name: '更新船舶',
+            path: '/ship/update/:id',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './ship/update',
+            hideInMenu: true,
+          },
+        ],
+      },
       // {
       //   path: '/document',
       //   name: '表单管理',
