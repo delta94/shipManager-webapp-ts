@@ -1,104 +1,83 @@
-import { Upload, Icon, Modal, message, Button } from 'antd';
 import React from 'react';
-
-import OssClient, { generateOSSKey, resolveOSSPath } from '@/utils/OSSClient';
-import { UploadListType } from 'antd/es/upload/interface';
+import { Upload, Modal, message, Button } from 'antd';
+import OssClient, {generateOSSKey, OSSResourceType} from '@/utils/OSSClient';
+import { UploadOutlined } from '@ant-design/icons';
+import { UploadFile, UploadListType } from 'antd/lib/upload/interface';
 
 interface FileUploadState {
-  previewVisible: boolean;
-  fileList: any[];
-  limit: number;
+  visible: boolean;
+  fileList: UploadFile[];
   previewImage: string;
 }
 
 interface FileUploadProps {
-  onChange?: (values: any) => void;
+  onChange?(value: any): void;
   listType?: UploadListType;
+  limit?: number;
 }
 
-class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
-  static getDerivedStateFromProps(nextProps: any) {
-    // Should be a controlled component.
-    if ('value' in nextProps) {
-      return {
-        ...(nextProps.value || {}),
-      };
-    }
-    return null;
-  }
-
-  state = {
-    previewVisible: false,
+export default class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
+  static defaultProps = {
+    listType: 'picture-card',
     limit: 3,
+  };
+
+  state: FileUploadState = {
+    visible: false,
     previewImage: '',
     fileList: [],
   };
 
   handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  handlePreview = (file: UploadFile) => {
     this.setState({
-      previewVisible: false,
+      previewImage: file.thumbUrl || '',
+      visible: true,
     });
   };
 
-  handlePreview = (file: any) => {
-    this.setState({
-      previewImage: file.url || file.thumbUrl,
-      previewVisible: true,
-    });
+  handleRemove = (file: UploadFile) => {
+    const newValues = this.state.fileList.filter(item => item.uid != file.uid);
+    this.setState({ fileList: newValues });
+    this.props.onChange && this.props.onChange(newValues);
   };
 
-  handleRemove = (file: any) => {
-    // @ts-ignore
-    const newValues = this.state.fileList.filter(item => item.url != file.url);
-
-    this.setState(({ fileList }) => ({ fileList: newValues }));
-
-    const { onChange } = this.props;
-
-    if (onChange) {
-      onChange({ fileList: newValues });
-    }
-  };
-
-  // 参考链接：https://www.jianshu.com/p/f356f050b3c9
   handleBeforeUpload = (file: any) => {
     const reader = new FileReader();
+
     reader.readAsDataURL(file);
+
     reader.onloadend = async () => {
       const ossClient = await OssClient.getInstance();
-      const key = generateOSSKey(file);
-
+      const key = generateOSSKey(file, OSSResourceType.CompanyCert);
       const hideLoading = message.loading('文件上传中...');
-
       ossClient
         .multipartUpload(key, file, {})
-        .then(({ bucket, name, res }) => {
+        .then(({ name, res }) => {
           hideLoading();
           message.success('文件上传成功');
-          const url = resolveOSSPath(bucket, name);
 
-          const newImage = {
+          const newImage: UploadFile = {
             uid: file.uid,
             name: file.name,
             status: file.status,
             type: file.type,
             size: res.size,
-            result: name,
-            url,
+            thumbUrl: ossClient.resolveOSSPath(name),
+            url: name
           };
 
           const newValues = [...this.state.fileList, newImage];
 
-          const { onChange } = this.props;
-
-          if (onChange) {
-            onChange({ fileList: newValues });
-          }
-
-          this.setState(({ fileList }) => ({ fileList: newValues }));
+          this.setState({ fileList: newValues }, () => {
+            this.props.onChange && this.props.onChange(newValues);
+          });
         })
         .catch(error => {
-          hideLoading()
+          hideLoading();
           message.error('文件上传失败');
           console.error(error);
         });
@@ -107,31 +86,30 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
   };
 
   render() {
-    const { previewVisible, previewImage, fileList, limit } = this.state;
+    const { visible, previewImage, fileList } = this.state;
+    const { limit, listType } = this.props;
 
     const uploadButton = (
       <Button>
-        <Icon type="upload" /> 上传文件
+        <UploadOutlined /> 上传文件
       </Button>
     );
 
     return (
       <div>
         <Upload
-          listType={this.props.listType}
+          listType={listType!}
           fileList={fileList}
           onRemove={this.handleRemove}
-          onPreview={this.handlePreview} // 点击图片缩略图，进行预览
-          beforeUpload={this.handleBeforeUpload} // 上传之前，对图片的格式做校验，并获取图片的宽高
+          onPreview={this.handlePreview}
+          beforeUpload={this.handleBeforeUpload}
         >
-          {fileList.length >= limit ? null : uploadButton}
+          {fileList.length >= limit! ? null : uploadButton}
         </Upload>
-        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        <Modal visible={visible} destroyOnClose footer={null} onCancel={this.handleCancel}>
+          <img alt="preview" style={{ width: '100%' }} src={previewImage} />
         </Modal>
       </div>
     );
   }
 }
-
-export default FileUpload;

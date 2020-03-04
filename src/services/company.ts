@@ -9,10 +9,10 @@ export async function listCompanyCertType(): Promise<ICompanyCertType[]> {
   });
 }
 
-export async function addCompanyCert(params: Partial<ICompanyCert>): Promise<ICompanyCert> {
+export async function addCompanyCert(cert: Partial<ICompanyCert>): Promise<ICompanyCert> {
   return request('/api/company-certs', {
     method: 'POST',
-    data: params,
+    data: cert,
   });
 }
 

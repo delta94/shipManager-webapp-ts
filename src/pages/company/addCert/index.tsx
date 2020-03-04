@@ -1,23 +1,41 @@
-import { Form, Input, Card, DatePicker, Select, Button } from 'antd';
+import { Form, Input, Card, DatePicker, Select, Button, message } from 'antd';
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { listCompanyCertType } from '@/services/company';
+import { addCompanyCert, listCompanyCertType } from '@/services/company';
 import { useRequest } from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import {ICompanyCert} from "@/interfaces/ICompany";
+import { ICompanyCert } from '@/interfaces/ICompany';
+import { parseOSSFile } from '@/utils/OSSClient';
+import { useDispatch, routerRedux } from 'dva'
 
 const CompanyCertCreate: React.FC<any> = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
 
   const { data: certificateTypes } = useRequest(() => listCompanyCertType(), {
     cacheKey: 'company_cert_type',
     initialData: [],
   });
 
+  const { loading, run } = useRequest(addCompanyCert, {
+    manual: true,
+    onSuccess: () => {
+      message.success('公司证书信息已录入');
+      dispatch(routerRedux.push('/company/listCert'));
+    },
+    onError: error => {
+      console.error(error);
+      message.error('公司证书信息已录入失败');
+    },
+  });
+
   const onFinish = (values: Partial<ICompanyCert>) => {
     //@ts-ignore
-    values.expiredAt = values.expiredAt.format('YYYY-MM-DD')
+    values.expiredAt = values.expiredAt.format('YYYY-MM-DD');
+    //@ts-ignore
+    values.ossFile = parseOSSFile(values.ossFile);
 
+    run(values);
   };
 
   const onReset = () => {
@@ -93,7 +111,7 @@ const CompanyCertCreate: React.FC<any> = () => {
           </Form.Item>
 
           <Form.Item label="证书电子件" name="ossFile">
-            <FileUpload />
+            <FileUpload listType="picture" />
           </Form.Item>
 
           <Form.Item label="证书备注" name="remark">
@@ -101,7 +119,7 @@ const CompanyCertCreate: React.FC<any> = () => {
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
-            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
+            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }} loading={loading}>
               保存
             </Button>
             <Button htmlType="button" onClick={onReset}>
