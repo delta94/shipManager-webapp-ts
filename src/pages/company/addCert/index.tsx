@@ -6,7 +6,7 @@ import { useRequest } from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { parseOSSFile } from '@/utils/OSSClient';
-import { useDispatch, routerRedux } from 'dva'
+import { useDispatch, routerRedux } from 'dva';
 
 const CompanyCertCreate: React.FC<any> = () => {
   const [form] = Form.useForm();

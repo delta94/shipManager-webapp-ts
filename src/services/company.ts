@@ -53,11 +53,11 @@ export async function listCompanyCert(
 /* Company License */
 
 export async function addCompanyLicense(
-  params: Partial<ICompanyLicense>,
+  license: Partial<ICompanyLicense>,
 ): Promise<ICompanyLicense> {
   return request('/api/company-licenses', {
     method: 'POST',
-    data: params,
+    data: license,
   });
 }
 
