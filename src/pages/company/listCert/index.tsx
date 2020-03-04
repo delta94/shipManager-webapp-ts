@@ -3,12 +3,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
+import { useDispatch, routerRedux } from 'dva'
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { deleteCompanyCert, listCompanyCert, listCompanyCertType } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
 
 const CompanyCertList: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const dispatch = useDispatch();
 
   const { data } = useRequest(() => listCompanyCertType(), {
     cacheKey: 'company_cert_type',
@@ -46,9 +48,17 @@ const CompanyCertList: React.FC = () => {
     };
   };
 
-  const handleInfoCompanyCert = (record: ICompanyCert) => {};
+  const handleAddCompanyCert = () => {
+    dispatch(routerRedux.push('/company/addCert'));
+  };
 
-  const handleUpdateCompanyCert = (record: ICompanyCert) => {};
+  const handleInfoCompanyCert = (id: number) => {
+    dispatch(routerRedux.push(`/company/infoCert/${id}`));
+  };
+
+  const handleUpdateCompanyCert = (id: number) => {
+    dispatch(routerRedux.push(`/company/updateCert/${id}`));
+  };
 
   const columns: ProColumns<ICompanyCert>[] = [
     {
@@ -59,6 +69,10 @@ const CompanyCertList: React.FC = () => {
       title: '证书类型',
       dataIndex: 'typeName',
       hideInSearch: true,
+    },
+    {
+      title: '证书编号',
+      dataIndex: 'identityNumber',
     },
     {
       title: '证书类型',
@@ -72,20 +86,16 @@ const CompanyCertList: React.FC = () => {
               不限证书类型
             </Select.Option>
             {data &&
-              data.map((item, index) => {
-                return (
-                  <Select.Option value={item.id} key={index}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
+            data.map((item, index) => {
+              return (
+                <Select.Option value={item.id} key={index}>
+                  {item.name}
+                </Select.Option>
+              );
+            })}
           </Select>
         );
       },
-    },
-    {
-      title: '证书编号',
-      dataIndex: 'identityNumber',
     },
     {
       title: '有效期',
@@ -96,9 +106,9 @@ const CompanyCertList: React.FC = () => {
       title: '操作',
       render: (text: any, record: ICompanyCert) => (
         <>
-          <a onClick={() => handleInfoCompanyCert(record)}>详情</a>
+          <a onClick={() => handleInfoCompanyCert(record.id)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => handleUpdateCompanyCert(record)}>修改</a>
+          <a onClick={() => handleUpdateCompanyCert(record.id)}>修改</a>
           <Divider type="vertical" />
           <span>
             <Popconfirm title="是否要删除此行？" onConfirm={() => deleteCert(record.id)}>
@@ -120,7 +130,7 @@ const CompanyCertList: React.FC = () => {
           request={requestCompanyList}
           dateFormatter="string"
           toolBarRender={() => [
-            <Button key="3" type="primary">
+            <Button key="3" type="primary" onClick={handleAddCompanyCert}>
               <PlusOutlined />
               新建证书
             </Button>,

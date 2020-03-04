@@ -1,6 +1,6 @@
 import React from 'react';
 import { Upload, Modal, message, Button } from 'antd';
-import OssClient, {generateOSSKey, OSSResourceType} from '@/utils/OSSClient';
+import OssClient, { generateOSSKey, OSSResourceType } from '@/utils/OSSClient';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile, UploadListType } from 'antd/lib/upload/interface';
 
@@ -11,12 +11,25 @@ interface FileUploadState {
 }
 
 interface FileUploadProps {
+  value?: UploadFile[];
   onChange?(value: any): void;
   listType?: UploadListType;
   limit?: number;
 }
 
 export default class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
+  static getDerivedStateFromProps(nextProps: FileUploadProps, prevState: FileUploadState) {
+    if (
+      nextProps.value &&
+      nextProps.value.length > 0 &&
+      prevState.fileList &&
+      prevState.fileList.length == 0
+    ) {
+      return { fileList: nextProps.value };
+    }
+    return null;
+  }
+
   static defaultProps = {
     listType: 'picture-card',
     limit: 3,
@@ -67,7 +80,7 @@ export default class FileUpload extends React.Component<FileUploadProps, FileUpl
             type: file.type,
             size: res.size,
             thumbUrl: ossClient.resolveOSSPath(name),
-            url: name
+            url: name,
           };
 
           const newValues = [...this.state.fileList, newImage];

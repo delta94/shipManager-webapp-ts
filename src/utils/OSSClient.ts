@@ -61,9 +61,31 @@ export function generateOSSKey(file: File, type: OSSResourceType) {
   return `${type}/${moment().format('YYYY_MM_DD')}/${fileName}_${uuid}.${fileType}`;
 }
 
-export function parseOSSFile(file: UploadFile[]) {
-  if (file && file.length > 0) {
-    return file.map(item => item.url).join(',');
+export function parseOSSFile(files: UploadFile[]) {
+  if (files && files.length > 0) {
+    let values = files.map((file, idx) => {
+      return {
+        uid: idx,
+        url: file.url,
+        size: file.size,
+        name: file.name,
+        type: file.type,
+      };
+    });
+    return JSON.stringify(values);
   }
   return '';
+}
+
+export function parseUploadData(str: string, client: OssClient): UploadFile[] {
+  if (str === '') return [];
+  try {
+    let data = JSON.parse(str) as UploadFile[];
+    data.forEach(item => {
+      item.thumbUrl = client.signatureUrl(item.url!);
+    });
+    return data;
+  } catch (e) {
+    return [];
+  }
 }
