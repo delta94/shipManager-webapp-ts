@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable, { ProColumns } from '@ant-design/pro-table';
-import { Button, Card, Divider, Popconfirm, Select } from 'antd';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { ICompanyCert } from '@/interfaces/ICompany';
-import { listCompanyCert, listCompanyCertType } from '@/services/company';
+import { deleteCompanyCert, listCompanyCert, listCompanyCertType } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
 
 const CompanyCertList: React.FC = () => {
+  const actionRef = useRef<ActionType>();
+
   const { data } = useRequest(() => listCompanyCertType(), {
     cacheKey: 'company_cert_type',
     initialData: [],
+  });
+
+  const { run: deleteCert } = useRequest(deleteCompanyCert, {
+    manual: true,
+    onSuccess: () => {
+      actionRef.current && actionRef.current.reload();
+      message.success('证书已成功删除');
+    },
+    onError: err => {
+      console.error(err);
+    },
   });
 
   const requestCompanyList = async (params: any) => {
@@ -36,8 +49,6 @@ const CompanyCertList: React.FC = () => {
   const handleInfoCompanyCert = (record: ICompanyCert) => {};
 
   const handleUpdateCompanyCert = (record: ICompanyCert) => {};
-
-  const handleRemoveCompanyCert = (id: number) => {};
 
   const columns: ProColumns<ICompanyCert>[] = [
     {
@@ -90,10 +101,7 @@ const CompanyCertList: React.FC = () => {
           <a onClick={() => handleUpdateCompanyCert(record)}>修改</a>
           <Divider type="vertical" />
           <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => handleRemoveCompanyCert(record.id)}
-            >
+            <Popconfirm title="是否要删除此行？" onConfirm={() => deleteCert(record.id)}>
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -106,6 +114,7 @@ const CompanyCertList: React.FC = () => {
     <PageHeaderWrapper title="公司证书列表">
       <Card bordered={false}>
         <ProTable<ICompanyCert>
+          actionRef={actionRef}
           rowKey="id"
           columns={columns}
           request={requestCompanyList}
@@ -114,7 +123,7 @@ const CompanyCertList: React.FC = () => {
             <Button key="3" type="primary">
               <PlusOutlined />
               新建证书
-            </Button>
+            </Button>,
           ]}
         />
       </Card>
