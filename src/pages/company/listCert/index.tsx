@@ -7,7 +7,7 @@ import { ICompanyCert } from '@/interfaces/ICompany';
 import { listCompanyCert, listCompanyCertType } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
 
-const CompanyCertList = () => {
+const CompanyCertList: React.FC = () => {
   const { data } = useRequest(() => listCompanyCertType(), {
     cacheKey: 'company_cert_type',
     initialData: [],
@@ -114,7 +114,7 @@ const CompanyCertList = () => {
             <Button key="3" type="primary">
               <PlusOutlined />
               新建证书
-            </Button>,
+            </Button>
           ]}
         />
       </Card>
