@@ -1,6 +1,8 @@
 import { ICompanySheet, ICompanySheetType } from '@/interfaces/ICompanySheet';
 import request from '@/utils/request';
 import { stringify } from 'qs';
+import {PageableData} from "@/interfaces/ITableList";
+import {ICompanyCert} from "@/interfaces/ICompany";
 
 export async function infoCompanySheet(id: number): Promise<ICompanySheet> {
   return request(`/api/company-sheets/${id}`, {
@@ -34,13 +36,21 @@ export async function listCompanySheetTypes(): Promise<ICompanySheetType[]> {
   });
 }
 
-export async function listCompanyCommonSheets(params: any) {
-  if (params && params.page) {
-    params.page -= 1;
-  }
 
-  return request(`/api/company-sheets-list?isTemplate.in=false&${stringify(params)}`, {
+
+export async function listCompanyCommonSheets(
+  page: number = 0,
+  size: number = 20,
+  extra: object,
+): Promise<PageableData<ICompanySheet>> {
+  return await request('/api/company-sheets-list', {
     method: 'GET',
+    params: {
+      'isTemplate.in': false,
+      page: page - 1,
+      size,
+      ...extra,
+    },
   });
 }
 

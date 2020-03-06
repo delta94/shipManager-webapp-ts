@@ -1,3 +1,5 @@
+import { UploadFile } from "antd/lib/upload/interface";
+
 export interface ICompanySheet {
   id: number;
   name: string;
@@ -10,6 +12,7 @@ export interface ICompanySheet {
   typeId: number;
   bindings: string;
   ex_bindings?: Binding[];
+  ex_ossFile?: UploadFile[]
 }
 
 export interface ICompanySheetType {
