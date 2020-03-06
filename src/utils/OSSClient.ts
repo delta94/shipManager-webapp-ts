@@ -77,13 +77,15 @@ export function parseOSSFile(files: UploadFile[]) {
   return '';
 }
 
-export function parseUploadData(str: string, client: OssClient): UploadFile[] {
+export function parseUploadData(str: string, client?: OssClient): UploadFile[] {
   if (str === '') return [];
   try {
     let data = JSON.parse(str) as UploadFile[];
-    data.forEach(item => {
-      item.thumbUrl = client.signatureUrl(item.url!);
-    });
+    if (client) {
+      data.forEach(item => {
+        item.thumbUrl = client.signatureUrl(item.url!);
+      });
+    }
     return data;
   } catch (e) {
     return [];

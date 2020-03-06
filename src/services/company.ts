@@ -1,7 +1,7 @@
-import { stringify } from 'qs';
 import request from '@/utils/request';
 import { ICompanyCert, ICompanyCertType, ICompanyLicense } from '@/interfaces/ICompany';
 import { PageableData } from '@/interfaces/ITableList';
+import { parseUploadData } from '@/utils/OSSClient';
 
 export async function listCompanyCertType(): Promise<ICompanyCertType[]> {
   return request('/api/company-cert-types', {
@@ -29,23 +29,26 @@ export async function deleteCompanyCert(id: number) {
   });
 }
 
-export async function infoCompanyCert(id: number) {
+export async function infoCompanyCert(id: number): Promise<ICompanyCert> {
   return request(`/api/company-certs/${id}`, {
     method: 'GET',
+  }).then((data: ICompanyCert) => {
+    data.ex_ossFile = parseUploadData(data.ossFile);
+    return data;
   });
 }
 
 export async function listCompanyCert(
   page: number = 0,
   size: number = 20,
-  extra: object
+  extra: object,
 ): Promise<PageableData<ICompanyCert>> {
   return await request('/api/company-certs-list', {
     method: 'GET',
     params: {
       page: page - 1,
       size,
-      ...extra
+      ...extra,
     },
   });
 }
@@ -82,11 +85,17 @@ export async function infoCompanyLicense(id: number) {
   });
 }
 
-export async function listCompanyLicense(params: any) {
-  if (params && params.page) {
-    params.page -= 1;
-  }
-  return request(`/api/company-licenses-list?${stringify(params)}`, {
+export async function listCompanyLicense(
+  page: number = 0,
+  size: number = 20,
+  extra: object,
+): Promise<PageableData<ICompanyLicense>> {
+  return await request('/api/company-licenses-list', {
     method: 'GET',
+    params: {
+      page: page - 1,
+      size,
+      ...extra,
+    },
   });
 }

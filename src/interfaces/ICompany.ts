@@ -1,3 +1,5 @@
+import { UploadFile } from "antd/lib/upload/interface";
+
 export interface ICompany {
   id: number;
   name: string;
@@ -16,6 +18,7 @@ export interface ICompanyCert {
   remark: string;
   typeName: string;
   typeId: number;
+  ex_ossFile?: UploadFile[]
 }
 
 export interface ICompanyCertType {

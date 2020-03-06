@@ -16,7 +16,7 @@ const CompanyLicenseCreate: React.FC<any> = () => {
     manual: true,
     onSuccess: () => {
       message.success('公司批文信息已录入');
-      dispatch(routerRedux.push('/company/listCert'));
+      dispatch(routerRedux.push('/company/listLicense'));
     },
     onError: error => {
       console.error(error);
@@ -39,7 +39,7 @@ const CompanyLicenseCreate: React.FC<any> = () => {
 
   return (
     <PageHeaderWrapper title="新的公司批文信息" content="按表单提示填入相应信息">
-      <Card title="证书信息" bordered={false}>
+      <Card title="批文信息" bordered={false}>
         <Form
           form={form}
           onFinish={onFinish}

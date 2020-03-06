@@ -69,16 +69,15 @@ export default class FileUpload extends React.Component<FileUploadProps, FileUpl
       const hideLoading = message.loading('文件上传中...');
       ossClient
         .multipartUpload(key, file, {})
-        .then(({ name, res }) => {
+        .then(({ name }) => {
           hideLoading();
           message.success('文件上传成功');
 
           const newImage: UploadFile = {
             uid: file.uid,
             name: file.name,
-            status: file.status,
             type: file.type,
-            size: res.size,
+            size: file.size,
             thumbUrl: ossClient.resolveOSSPath(name),
             url: name,
           };
