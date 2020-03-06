@@ -35,4 +35,5 @@ export interface ICompanyLicense {
   remark: string;
   ossFile: string;
   expireAt: string;
+  ex_ossFile?: UploadFile[]
 }

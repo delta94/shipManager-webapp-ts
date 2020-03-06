@@ -79,9 +79,12 @@ export async function deleteCompanyLicense(id: number) {
   });
 }
 
-export async function infoCompanyLicense(id: number) {
+export async function infoCompanyLicense(id: number): Promise<ICompanyLicense> {
   return request(`/api/company-licenses/${id}`, {
     method: 'GET',
+  }).then((data: ICompanyLicense) => {
+    data.ex_ossFile = parseUploadData(data.ossFile);
+    return data;
   });
 }
 
