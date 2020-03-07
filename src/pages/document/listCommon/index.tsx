@@ -4,7 +4,6 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useDispatch, routerRedux } from 'dva';
-import { deleteCommonSheet } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
 import {deleteCompanySheet, listCompanyCommonSheets, listCompanySheetTypes} from '@/services/sheet';
 import { ICompanySheet } from '@/interfaces/ICompanySheet';
@@ -83,9 +82,9 @@ const CommonList: React.FC = () => {
       dataIndex: 'typeId',
       renderFormItem: (item, props) => {
         return (
-          <Select placeholder="请选择证书类型" onChange={props.onChange}>
+          <Select placeholder="请选择类型" onChange={props.onChange}>
             <Select.Option key={99} value={-1}>
-              不限证书类型
+              不限类型
             </Select.Option>
             {data &&
               data.map((item, index) => {
