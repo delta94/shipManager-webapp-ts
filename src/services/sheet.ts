@@ -1,12 +1,14 @@
 import { ICompanySheet, ICompanySheetType } from '@/interfaces/ICompanySheet';
 import request from '@/utils/request';
-import { stringify } from 'qs';
 import { PageableData } from '@/interfaces/ITableList';
-import { ICompanyCert } from '@/interfaces/ICompany';
+import { parseUploadData } from '@/utils/OSSClient';
 
 export async function infoCompanySheet(id: number): Promise<ICompanySheet> {
   return request(`/api/company-sheets/${id}`, {
     method: 'GET',
+  }).then((data: ICompanySheet) => {
+    data.ex_ossFile = parseUploadData(data.ossFile);
+    return data;
   });
 }
 
@@ -16,7 +18,7 @@ export async function deleteCompanySheet(id: number): Promise<void> {
   });
 }
 
-export async function createCompanySheet(params: any): Promise<void> {
+export async function addCompanySheet(params: Partial<ICompanySheet>): Promise<void> {
   return request('/api/company-sheets/', {
     method: 'POST',
     data: params,

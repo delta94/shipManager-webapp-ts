@@ -11,6 +11,7 @@ interface FileUploadState {
 }
 
 interface FileUploadProps {
+  resourceType: OSSResourceType
   value?: UploadFile[];
   onChange?(value: any): void;
   listType?: UploadListType;
@@ -65,7 +66,7 @@ export default class FileUpload extends React.Component<FileUploadProps, FileUpl
 
     reader.onloadend = async () => {
       const ossClient = await OssClient.getInstance();
-      const key = generateOSSKey(file, OSSResourceType.CompanyCert);
+      const key = generateOSSKey(file, this.props.resourceType);
       const hideLoading = message.loading('文件上传中...');
       ossClient
         .multipartUpload(key, file, {})

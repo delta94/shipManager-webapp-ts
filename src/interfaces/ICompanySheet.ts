@@ -10,6 +10,7 @@ export interface ICompanySheet {
   updateAt: string;
   typeName: string;
   typeId: number;
+  remark: string;
   bindings: string;
   ex_bindings?: Binding[];
   ex_ossFile?: UploadFile[]

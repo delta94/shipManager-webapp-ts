@@ -1,100 +1,91 @@
-import * as React from 'react';
-import { connect } from 'dva';
-import { Button, Card, Descriptions } from 'antd';
-
-import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
-import { Dispatch } from 'redux';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { CompanySheetState } from '@/models/companySheet';
-import { ICompanySheet } from '@/interfaces/ICompanySheet';
+import { FilePdfTwoTone } from '@ant-design/icons';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { useRequest } from '@umijs/hooks';
+import { Descriptions, Divider, Typography, Card, List } from 'antd';
+import { UploadFile } from 'antd/lib/upload/interface';
 import OSSClient from '@/utils/OSSClient';
+import { bytesToSize } from '@/utils/utils';
+import {infoCompanySheet} from "@/services/sheet";
+import {ICompanySheet} from "@/interfaces/ICompanySheet";
 
-const fieldLabels = {
-  name: '证书名',
-  type: '类型',
-  template: '是否为模版',
-  remark: '备注',
-  ossFile: '证书电子件',
-  updateAt: '更新日期',
-};
+const CompanySheetProfile: React.FC<RouteComponentProps<{ id: string }>> = ({
+  match: { params },
+}) => {
+  var { data } = useRequest(() => infoCompanySheet(parseInt(params.id)), {
+    cacheKey: `company_sheet_${params.id}`,
+    refreshDeps: [params.id],
+  });
 
-interface CompanySheetProfileParams {
-  id: string;
-}
+  const companySheet = (data || {}) as ICompanySheet;
 
-interface CompanySheetProfileProps extends RouteComponentProps<CompanySheetProfileParams> {
-  loading: boolean;
-  dispatch: Dispatch<any>;
-  companySheet: ICompanySheet;
-}
-
-@connect(
-  ({
-    companySheet,
-    loading,
-  }: {
-    companySheet: CompanySheetState;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    companySheet: companySheet.target,
-    loading: loading.effects['companySheet/target'],
-  }),
-)
-class CompanySheetProfile extends React.Component<CompanySheetProfileProps> {
-  componentWillMount() {
-    const {
-      dispatch,
-      match: { params },
-    } = this.props;
-    if (params && params.id) {
-      const id = parseInt(params.id, 10);
-      dispatch({ type: 'companySheet/target', payload: id });
-    }
-  }
-
-  handleDownloadFile = async () => {
-    let ossKey = this.props.companySheet.ossFile;
+  const downloadFile = async (file: UploadFile) => {
     let client = await OSSClient.getInstance();
-    let url = client.signatureUrl(ossKey);
-
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = url.split('/').pop() || '';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    let downloadUrl = client.signatureUrl(file.url || '');
+    var anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.target = '_blank';
+    anchor.download = file.name;
+    anchor.click();
   };
 
-  render() {
-    const sheet = this.props.companySheet || ({} as ICompanySheet);
+  return (
+    <PageHeaderWrapper title="模版详情页">
+      <Card bordered={false}>
+        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
+          <Descriptions.Item label="证书名">{companySheet.name}</Descriptions.Item>
+          <Descriptions.Item label="更新日期">{companySheet.updateAt}</Descriptions.Item>
+          <Descriptions.Item label="类型">{companySheet.typeName}</Descriptions.Item>
+          <Descriptions.Item label="上传者">{companySheet.uploader}</Descriptions.Item>
+        </Descriptions>
 
-    return (
-      <PageHeaderWrapper title="文件详情页">
-        <Card style={{ marginBottom: 24 }} bordered={false}>
-          <Descriptions title="基本信息">
-            <Descriptions.Item label={fieldLabels.name}>{sheet.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.template}>
-              {sheet.isTemplate ? '是' : '否'}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.type}>{sheet.typeName}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.updateAt}>{sheet.updateAt}</Descriptions.Item>
-          </Descriptions>
-        </Card>
+        <Divider style={{ marginBottom: 32 }} />
 
-        <Card style={{ marginBottom: 24 }} bordered={false} title="文件">
-          <Descriptions.Item label={fieldLabels.ossFile}>
-            {sheet.ossFile ? sheet.ossFile : ''}
-          </Descriptions.Item>
-          <br />
-          <br />
-          <Button onClick={this.handleDownloadFile}>下载文件</Button>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
+        <Descriptions title="备注信息" style={{ marginBottom: 32 }}>
+          <Typography.Text>{companySheet.remark || '暂无备注'}</Typography.Text>
+        </Descriptions>
+
+        <Divider style={{ marginBottom: 32 }} />
+
+        <Descriptions title="变量信息" style={{ marginBottom: 32 }}>
+          <Typography.Text>{companySheet.bindings || '暂无变量'}</Typography.Text>
+        </Descriptions>
+
+        <Divider style={{ marginBottom: 32 }} />
+
+        <Descriptions title="电子件信息" style={{ marginBottom: 32 }}>
+          <div>
+            <List
+              bordered
+              itemLayout="horizontal"
+              dataSource={(data && data.ex_ossFile) || []}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <a
+                      key="list-edit"
+                      onClick={() => {
+                        downloadFile(item);
+                      }}
+                    >
+                      下载
+                    </a>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={<FilePdfTwoTone style={{ fontSize: '32px' }} />}
+                    title={item.name}
+                    description={bytesToSize(item.size)}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+        </Descriptions>
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
 export default CompanySheetProfile;

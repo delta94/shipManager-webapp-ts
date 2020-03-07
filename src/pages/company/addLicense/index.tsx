@@ -1,12 +1,12 @@
-import { Form, Input, Card, DatePicker, Button, message } from 'antd';
+import {Button, Card, DatePicker, Form, Input, message} from 'antd';
 import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { addCompanyLicense } from '@/services/company';
-import { useRequest } from '@umijs/hooks';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {addCompanyLicense} from '@/services/company';
+import {useRequest} from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import { ICompanyLicense } from '@/interfaces/ICompany';
-import { parseOSSFile } from '@/utils/OSSClient';
-import { useDispatch, routerRedux } from 'dva';
+import {ICompanyLicense} from '@/interfaces/ICompany';
+import {OSSResourceType, parseOSSFile} from '@/utils/OSSClient';
+import {routerRedux, useDispatch} from 'dva';
 
 const CompanyLicenseCreate: React.FC<any> = () => {
   const [form] = Form.useForm();
@@ -86,7 +86,7 @@ const CompanyLicenseCreate: React.FC<any> = () => {
           </Form.Item>
 
           <Form.Item label="批文电子件" name="ossFile">
-            <FileUpload listType="picture" />
+            <FileUpload listType="picture" resourceType={OSSResourceType.CompanyLicense} />
           </Form.Item>
 
           <Form.Item label="批文备注" name="remark">

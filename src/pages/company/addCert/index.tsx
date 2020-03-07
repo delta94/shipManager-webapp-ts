@@ -1,12 +1,12 @@
-import { Form, Input, Card, DatePicker, Select, Button, message } from 'antd';
+import {Button, Card, DatePicker, Form, Input, message, Select} from 'antd';
 import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { addCompanyCert, listCompanyCertType } from '@/services/company';
-import { useRequest } from '@umijs/hooks';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {addCompanyCert, listCompanyCertType} from '@/services/company';
+import {useRequest} from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import { ICompanyCert } from '@/interfaces/ICompany';
-import { parseOSSFile } from '@/utils/OSSClient';
-import { useDispatch, routerRedux } from 'dva';
+import {ICompanyCert} from '@/interfaces/ICompany';
+import {OSSResourceType, parseOSSFile} from '@/utils/OSSClient';
+import {routerRedux, useDispatch} from 'dva';
 
 const CompanyCertCreate: React.FC<any> = () => {
   const [form] = Form.useForm();
@@ -111,7 +111,7 @@ const CompanyCertCreate: React.FC<any> = () => {
           </Form.Item>
 
           <Form.Item label="证书电子件" name="ossFile">
-            <FileUpload listType="picture" />
+            <FileUpload listType="picture" resourceType={OSSResourceType.CompanyCert} />
           </Form.Item>
 
           <Form.Item label="证书备注" name="remark">

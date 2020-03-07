@@ -1,13 +1,13 @@
-import { Form, Input, Card, DatePicker, Select, Button, message } from 'antd';
+import {Button, Card, DatePicker, Form, Input, message, Select} from 'antd';
 import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { infoCompanyCert, listCompanyCertType, updateCompanyCert } from '@/services/company';
-import { useRequest } from '@umijs/hooks';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {infoCompanyCert, listCompanyCertType, updateCompanyCert} from '@/services/company';
+import {useRequest} from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import { ICompanyCert } from '@/interfaces/ICompany';
-import OSSClient, { parseOSSFile, parseUploadData } from '@/utils/OSSClient';
-import { useDispatch, routerRedux } from 'dva';
-import { RouteComponentProps } from 'react-router';
+import {ICompanyCert} from '@/interfaces/ICompany';
+import OSSClient, {OSSResourceType, parseOSSFile, parseUploadData} from '@/utils/OSSClient';
+import {routerRedux, useDispatch} from 'dva';
+import {RouteComponentProps} from 'react-router';
 import moment from 'moment';
 
 const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
@@ -139,7 +139,7 @@ const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
           </Form.Item>
 
           <Form.Item label="证书电子件" name="ossFile">
-            <FileUpload listType="picture" />
+            <FileUpload listType="picture" resourceType={OSSResourceType.CompanyCert} />
           </Form.Item>
 
           <Form.Item label="证书备注" name="remark">

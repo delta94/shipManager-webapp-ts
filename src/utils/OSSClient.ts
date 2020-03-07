@@ -6,6 +6,8 @@ import { UploadFile } from 'antd/lib/upload/interface';
 
 export enum OSSResourceType {
   CompanyCert = 'CompanyCert',
+  CompanyLicense = 'CompanyLicense',
+  CompanySheet = 'CompanySheet',
   ShipCert = 'ShipCert',
 }
 
