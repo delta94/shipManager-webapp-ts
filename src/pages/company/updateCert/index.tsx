@@ -18,7 +18,6 @@ const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
 
   useRequest(() => infoCompanyCert(parseInt(params.id)), {
     cacheKey: `company_cert_${params.id}`,
-    initialData: {},
     onSuccess: async result => {
       let client = await OSSClient.getInstance();
       let values = Object.keys(result).reduce(function(prev, key) {

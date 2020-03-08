@@ -19,3 +19,8 @@ export interface ITableResult<T> {
   total: number;
   list: T[];
 }
+
+export type IPageableFilter<T> = {
+  pageSize?: number;
+  current?: number;
+} & Partial<T>

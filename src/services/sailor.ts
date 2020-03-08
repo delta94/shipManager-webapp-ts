@@ -1,8 +1,8 @@
-import { stringify } from 'qs';
 import request from '@/utils/request';
-import ISailor from '@/interfaces/ISailor';
+import ISailor, {ISailorPosition} from '@/interfaces/ISailor';
+import { PageableData } from '@/interfaces/ITableList';
 
-export async function listSailorPosition() {
+export async function listSailorPosition(): Promise<ISailorPosition[]> {
   return request('/api/sailor-positions', {
     method: 'GET',
   });
@@ -34,12 +34,17 @@ export async function infoSailor(id: number): Promise<ISailor> {
   });
 }
 
-export async function listSailor(params: any): Promise<ISailor[]> {
-  if (params && params.page) {
-    params.page -= 1;
-  }
-
-  return request(`/api/sailors/list?${stringify(params)}`, {
+export async function listSailor(
+  page: number = 0,
+  size: number = 20,
+  extra: object,
+): Promise<PageableData<ISailor>> {
+  return await request('/api/sailors/list', {
     method: 'GET',
+    params: {
+      page: page - 1,
+      size,
+      ...extra,
+    },
   });
 }

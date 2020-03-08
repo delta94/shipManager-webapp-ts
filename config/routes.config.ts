@@ -168,69 +168,69 @@ export default [
           },
         ],
       },
-      // {
-      //   path: '/person',
-      //   name: '人员管理',
-      //   icon: 'profile',
-      //   routes: [
-      //     {
-      //       path: '/',
-      //       redirect: '/person/sailor/list',
-      //     }, // sailor
-      //     {
-      //       path: '/person/sailor/list',
-      //       name: '船员管理',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './sailor/list',
-      //     },
-      //     {
-      //       path: '/person/sailor/create',
-      //       name: '新建船员',
-      //       component: './sailor/create',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //     },
-      //     {
-      //       path: '/person/sailor/profile/:id',
-      //       name: '船员详情',
-      //       component: './sailor/profile',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       hideInMenu: true,
-      //     },
-      //     {
-      //       name: '更新船员',
-      //       path: '/person/sailor/update/:id',
-      //       component: './sailor/update',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       hideInMenu: true,
-      //     }, // manager
-      //     {
-      //       path: '/person/manager/list',
-      //       name: '管理人员列表',
-      //       component: './manager/list',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //     },
-      //     {
-      //       path: '/person/manager/profile/:id',
-      //       name: '管理人员详情',
-      //       hideInMenu: true,
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './manager/profile',
-      //     },
-      //     {
-      //       path: '/person/manager/create',
-      //       name: '新增管理人员',
-      //       component: './manager/create',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //     },
-      //     {
-      //       path: '/person/manager/update/:id',
-      //       name: '更新管理人员',
-      //       hideInMenu: true,
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './manager/update',
-      //     },
-      //   ],
-      // },
+      {
+        path: '/person',
+        name: '人员管理',
+        icon: 'profile',
+        routes: [
+          {
+            path: '/',
+            redirect: '/person/sailor/list',
+          }, // sailor
+          {
+            path: '/person/sailor/list',
+            name: '船员管理',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './sailor/list',
+          },
+          {
+            path: '/person/sailor/create',
+            name: '新建船员',
+            component: './sailor/create',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          },
+          {
+            path: '/person/sailor/profile/:id',
+            name: '船员详情',
+            component: './sailor/profile',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            hideInMenu: true,
+          },
+          {
+            name: '更新船员',
+            path: '/person/sailor/update/:id',
+            component: './sailor/update',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            hideInMenu: true,
+          },
+          {
+            path: '/person/manager/list',
+            name: '管理人员列表',
+            component: './manager/list',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          },
+          {
+            path: '/person/manager/profile/:id',
+            name: '管理人员详情',
+            hideInMenu: true,
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './manager/profile',
+          },
+          {
+            path: '/person/manager/create',
+            name: '新增管理人员',
+            component: './manager/create',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          },
+          {
+            path: '/person/manager/update/:id',
+            name: '更新管理人员',
+            hideInMenu: true,
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './manager/update',
+          },
+        ],
+      },
       // {
       //   path: '/setting',
       //   name: '设置',

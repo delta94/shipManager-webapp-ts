@@ -18,7 +18,6 @@ const CompanyLicenseUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
 
   useRequest(() => infoCompanyLicense(parseInt(params.id)), {
     cacheKey: `company_license_${params.id}`,
-    initialData: {},
     onSuccess: async result => {
       let client = await OSSClient.getInstance();
       let values = Object.keys(result).reduce(function(prev, key) {

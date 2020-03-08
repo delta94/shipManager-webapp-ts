@@ -1,77 +1,81 @@
-import {
-  Popconfirm,
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Input,
-  Row,
-  Select,
-  message,
-} from 'antd';
-import React, { Component, Fragment } from 'react';
-
-import { Dispatch } from 'redux';
-import { routerRedux } from 'dva/router';
-import { FormComponentProps } from 'antd/es/form';
+import React, { useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { SorterResult } from 'antd/es/table';
-import { connect } from 'dva';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
+import { useRequest } from '@umijs/hooks';
+import { useDispatch, routerRedux } from 'dva';
+import { PlusOutlined } from '@ant-design/icons';
+import ISailor from '@/interfaces/ISailor';
+import { deleteSailor, listSailor, listSailorPosition } from '@/services/sailor';
+import { IPageableFilter } from '@/interfaces/ITableList';
 
-import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import { TableListData, TableListItem, TableListPagination } from './sailor.d';
+const SailorList: React.FC = () => {
+  const actionRef = useRef<ActionType>();
+  const dispatch = useDispatch();
 
-import styles from './style.less';
-import { SailorModelState } from '@/models/sailor';
+  const { data: sailorPositions } = useRequest(() => listSailorPosition(), {
+    cacheKey: 'sailor_position_type',
+    initialData: [],
+  });
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key => obj[key]).join(',');
+  const { run: deleteRecord } = useRequest(deleteSailor, {
+    manual: true,
+    onSuccess: () => {
+      actionRef.current && actionRef.current.reload();
+      message.success('已成功删除');
+    },
+    onError: err => {
+      console.error(err);
+    },
+  });
 
-interface TableListProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  loading: boolean;
-  sailor: SailorModelState;
-}
+  const requestSailorList = async (params: IPageableFilter<ISailor>) => {
+    let { current = 0, pageSize = 20 } = params;
+    let extra = {};
 
-interface TableListState {
-  modalVisible: boolean;
-  updateModalVisible: boolean;
-  expandForm: boolean;
-  selectedRows: TableListItem[];
-  formValues: { [key: string]: string };
-  stepFormValues: Partial<TableListItem>;
-}
+    if (params.name !== undefined) {
+      extra['name.contains'] = params.name;
+    }
 
-/* eslint react/no-multi-comp:0 */
-@connect(
-  ({
-     sailor,
-     loading,
-   }: {
-    sailor: SailorModelState;
-    loading: {
-      models: {
-        [key: string]: boolean;
-      };
+    if (params.mobile !== undefined) {
+      extra['mobile.contains'] = params.mobile;
+    }
+
+    if (params.identityNumber !== undefined) {
+      extra['identityNumber.contains'] = params.identityNumber;
+    }
+
+    // @ts-ignore
+    if (params.isAdvanced !== undefined && params.isAdvanced != 'extra') {
+      extra['isAdvanced.equals'] = params.isAdvanced;
+    }
+
+    if (params.positionId !== undefined && params.positionId !== -1) {
+      extra['positionId.equals'] = params.positionId;
+    }
+
+    const data = await listSailor(current, pageSize, extra);
+
+    return {
+      success: true,
+      total: data.pagination.total,
+      data: data.list,
     };
-  }) => ({
-    sailor,
-    loading: loading.models.ship,
-  }),
-)
-class TableList extends Component<TableListProps, TableListState> {
-  state: TableListState = {
-    modalVisible: false,
-    updateModalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
-    stepFormValues: {},
   };
 
-  columns: StandardTableColumnProps[] = [
+  const handleAddSailor = () => {
+    dispatch(routerRedux.push('/person/sailor/create'));
+  };
+
+  const handleUpdateSailor = (id: number) => {
+    dispatch(routerRedux.push(`/person/sailor/update/${id}`));
+  };
+
+  const handleInfoSailor = (id: number) => {
+    dispatch(routerRedux.push(`/person/sailor/profile/${id}`));
+  };
+
+  const columns: ProColumns<ISailor>[] = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -79,246 +83,87 @@ class TableList extends Component<TableListProps, TableListState> {
     {
       title: '常任职位',
       dataIndex: 'positionName',
-    },
-    {
-      title: '手机号码',
-      dataIndex: 'mobile',
+      hideInSearch: true,
     },
     {
       title: '身份证',
       dataIndex: 'identityNumber',
     },
     {
-      title: '是否高级船员',
-      dataIndex: 'isAdvanced',
-      render: val => (val ? '是' : '否'),
+      title: '手机号码',
+      dataIndex: 'mobile',
     },
-
+    {
+      title: '职位类型',
+      hideInTable: true,
+      hideInSearch: false,
+      dataIndex: 'positionId',
+      renderFormItem: (item, props) => {
+        return (
+          <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select.Option key={99} value={-1}>
+              不限类型
+            </Select.Option>
+            {sailorPositions &&
+              sailorPositions.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
+          </Select>
+        );
+      },
+    },
+    {
+      title: '是否高级',
+      width: 120,
+      dataIndex: 'isAdvanced',
+      valueEnum: {
+        extra: { text: '不限', status: 'Success' },
+        true: { text: '是', status: 'Success' },
+        false: { text: '否', status: 'Error' },
+      },
+    },
     {
       title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.handleInfoSailor(record)}>详情</a>
+      render: (text: any, record: ISailor) => (
+        <>
+          <a onClick={() => handleInfoSailor(record.id)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateSailor(record)}>修改</a>
+          <a onClick={() => handleUpdateSailor(record.id)}>更改</a>
           <Divider type="vertical" />
           <span>
-             <Popconfirm title="是否要删除此船员？" onConfirm={() => this.handleRemoveSailor(record)}>
-                <a>删除</a>
-             </Popconfirm>
+            <Popconfirm title="是否要删除此行？" onConfirm={() => deleteRecord(record.id)}>
+              <a>删除</a>
+            </Popconfirm>
           </span>
-        </Fragment>
+        </>
       ),
     },
   ];
 
-  handleInfoSailor = (record: TableListItem) => {
-    this.props.dispatch(routerRedux.push(`/person/sailor/profile/${record.id}`))
-  };
+  return (
+    <PageHeaderWrapper title="船员列表">
+      <Card bordered={false}>
+        <ProTable<ISailor>
+          actionRef={actionRef}
+          rowKey="id"
+          columns={columns}
+          //@ts-ignore
+          request={requestSailorList}
+          dateFormatter="string"
+          toolBarRender={() => [
+            <Button key="3" type="primary" onClick={handleAddSailor}>
+              <PlusOutlined />
+              新建船员
+            </Button>,
+          ]}
+        />
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-  handleUpdateSailor = (record: TableListItem) => {
-    this.props.dispatch(routerRedux.push(`/person/sailor/update/${record.id}`))
-  };
-
-  handleRemoveSailor = (record: TableListItem) => {
-    this.props.dispatch({
-      type: 'sailor/remove',
-      payload: record.id,
-      callback: () => {
-        message.success('船员已成功删除')
-      },
-    })
-  };
-
-  componentDidMount() {
-    this.props.dispatch({ type: 'sailor/fetchPositionTypes' });
-    this.props.dispatch({ type: 'sailor/fetch' });
-  }
-
-  handleStandardTableChange = (
-    pagination: Partial<TableListPagination>,
-    filtersArg: Record<keyof TableListItem, string[]>,
-    sorter: SorterResult<TableListItem>,
-  ) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      page: pagination.current,
-      size: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-
-    if (sorter.field) {
-      // @ts-ignore
-      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
-    }
-
-    dispatch({
-      type: 'sailor/fetch',
-      payload: params,
-    });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'sailor/fetch',
-      payload: {},
-    });
-  };
-
-  handleSelectRows = (rows: TableListItem[]) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const values = {};
-
-      if (fieldsValue.isAdvanced !== undefined) {
-        if (fieldsValue.isAdvanced == 1) {
-          values['isAdvanced.equals'] = true
-        }
-        if (fieldsValue.isAdvanced == 2) {
-          values['isAdvanced.equals'] = false
-        }
-
-        if (fieldsValue.isAdvanced == 3) {
-          values['isAdvanced.in'] = [true, false]
-        }
-      }
-
-      if (fieldsValue.name !== undefined) {
-        values['name.contains'] = fieldsValue.name;
-      }
-
-      if (fieldsValue.positionId !== undefined) {
-        values['positionId.equals'] = fieldsValue.positionId;
-      }
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'sailor/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleClickAdd = () => {
-    this.props.dispatch(routerRedux.push('/person/sailor/create/'));
-  };
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-      sailor: { positions },
-    } = this.props;
-
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 4, lg: 12, xl: 24 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="职位">
-              {getFieldDecorator('positionId', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请输入职位',
-                  },
-                ],
-              })(
-                <Select placeholder="请选择职位">
-                  {
-                    positions && positions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="是否高级">
-              {getFieldDecorator('isAdvanced')(
-                <Select placeholder="请选择是否高级">
-                  <Option value={1} key={1}>是</Option>
-                  <Option value={2} key={2}>否</Option>
-                  <Option value={3} key={3}>不限</Option>
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  render() {
-    const {
-      sailor: { data },
-      loading,
-    } = this.props;
-
-    const { selectedRows } = this.state;
-
-    return (
-      <PageHeaderWrapper>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
-                新建
-              </Button>
-            </div>
-            <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data as TableListData}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
-          </div>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default Form.create<TableListProps>()(TableList);
+export default SailorList;

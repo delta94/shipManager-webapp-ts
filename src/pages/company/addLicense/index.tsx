@@ -1,12 +1,12 @@
-import {Button, Card, DatePicker, Form, Input, message} from 'antd';
+import { Button, Card, DatePicker, Form, Input, message } from 'antd';
 import React from 'react';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {addCompanyLicense} from '@/services/company';
-import {useRequest} from '@umijs/hooks';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { addCompanyLicense } from '@/services/company';
+import { useRequest } from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import {ICompanyLicense} from '@/interfaces/ICompany';
-import {OSSResourceType, parseOSSFile} from '@/utils/OSSClient';
-import {routerRedux, useDispatch} from 'dva';
+import { ICompanyLicense } from '@/interfaces/ICompany';
+import { OSSResourceType, parseOSSFile } from '@/utils/OSSClient';
+import { routerRedux, useDispatch } from 'dva';
 
 const CompanyLicenseCreate: React.FC<any> = () => {
   const [form] = Form.useForm();
@@ -26,7 +26,7 @@ const CompanyLicenseCreate: React.FC<any> = () => {
 
   const onFinish = (values: Partial<ICompanyLicense>) => {
     //@ts-ignore
-    values.expiredAt = values.expiredAt.format('YYYY-MM-DD');
+    values.expireAt = values.expireAt.format('YYYY-MM-DD');
     //@ts-ignore
     values.ossFile = parseOSSFile(values.ossFile);
 
@@ -75,8 +75,8 @@ const CompanyLicenseCreate: React.FC<any> = () => {
 
           <Form.Item
             label="批文过期日期"
-            name="expiredAt"
-            rules={[{ required: true, type: 'object', message: '请输入过期日期' }]}
+            name="expireAt"
+            rules={[{ required: true, message: '请输入过期日期' }]}
           >
             <DatePicker
               format="YYYY-MM-DD"
@@ -85,7 +85,11 @@ const CompanyLicenseCreate: React.FC<any> = () => {
             />
           </Form.Item>
 
-          <Form.Item label="批文电子件" name="ossFile">
+          <Form.Item
+            label="批文电子件"
+            name="ossFile"
+            rules={[{ required: true, message: '请输入批文电子件' }]}
+          >
             <FileUpload listType="picture" resourceType={OSSResourceType.CompanyLicense} />
           </Form.Item>
 
