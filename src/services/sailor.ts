@@ -1,6 +1,8 @@
 import request from '@/utils/request';
 import ISailor, {ISailorPosition} from '@/interfaces/ISailor';
 import { PageableData } from '@/interfaces/ITableList';
+import {ICompanyLicense} from "@/interfaces/ICompany";
+import {parseUploadData} from "@/utils/OSSClient";
 
 export async function listSailorPosition(): Promise<ISailorPosition[]> {
   return request('/api/sailor-positions', {
@@ -31,6 +33,9 @@ export async function deleteSailor(id: number): Promise<void> {
 export async function infoSailor(id: number): Promise<ISailor> {
   return request(`/api/sailors/${id}`, {
     method: 'GET',
+  }).then((data: ISailor) => {
+    data.ex_certFile = parseUploadData(data.certFile);
+    return data;
   });
 }
 

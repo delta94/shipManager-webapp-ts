@@ -145,13 +145,13 @@ export default [
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
             component: './document/listTemplate',
           },
-          {
-            path: '/document/template/generate/:id',
-            name: '自定义表单生成',
-            hideInMenu: true,
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './document/template/generate',
-          },
+          // {
+          //   path: '/document/template/generate/:id',
+          //   name: '自定义表单生成',
+          //   hideInMenu: true,
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          //   component: './document/template/generate',
+          // },
           {
             path: '/document/profile/:id',
             name: '表单详情',

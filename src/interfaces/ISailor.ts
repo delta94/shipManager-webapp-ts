@@ -1,3 +1,4 @@
+import { UploadFile } from "antd/lib/upload/interface";
 
 export default interface ISailor {
   id: number;
@@ -11,6 +12,7 @@ export default interface ISailor {
   positionId: number;
   shipName: string;
   shipId: number;
+  ex_certFile?: UploadFile[]
 }
 
 export interface ISailorPosition {
