@@ -1,6 +1,8 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 import { IManager, IManagerAssignerPosition, IManagerCertType } from '@/interfaces/IManager';
+import {PageableData} from "@/interfaces/ITableList";
+import ISailor from "@/interfaces/ISailor";
 
 export async function listManagerAssignerPosition(): Promise<IManagerAssignerPosition[]> {
   return request('/api/manager-assigner-positions', {
@@ -66,11 +68,17 @@ export async function infoManager(id: number) {
   });
 }
 
-export async function listManager(params: any) {
-  if (params && params.page) {
-    params.page -= 1;
-  }
-  return request(`/api/managers-list?${stringify(params)}`, {
+export async function listManager(
+  page: number = 0,
+  size: number = 20,
+  extra: object,
+): Promise<PageableData<ISailor>> {
+  return await request('/api/managers-list', {
     method: 'GET',
+    params: {
+      page: page - 1,
+      size,
+      ...extra,
+    },
   });
 }
