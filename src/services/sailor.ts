@@ -1,7 +1,6 @@
 import request from '@/utils/request';
 import ISailor, {ISailorPosition} from '@/interfaces/ISailor';
 import { PageableData } from '@/interfaces/ITableList';
-import {ICompanyLicense} from "@/interfaces/ICompany";
 import {parseUploadData} from "@/utils/OSSClient";
 
 export async function listSailorPosition(): Promise<ISailorPosition[]> {
