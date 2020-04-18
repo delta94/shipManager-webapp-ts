@@ -1,4 +1,3 @@
-import { stringify } from 'qs';
 import request from '@/utils/request';
 import { IManager, IManagerAssignerPosition, IManagerCertType } from '@/interfaces/IManager';
 import {PageableData} from "@/interfaces/ITableList";

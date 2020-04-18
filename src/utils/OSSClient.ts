@@ -9,7 +9,8 @@ export enum OSSResourceType {
   CompanyLicense = 'CompanyLicense',
   CompanySheet = 'CompanySheet',
   ShipCert = 'ShipCert',
-  SailorCert = 'SailorCert'
+  SailorCert = 'SailorCert',
+  ManagerCert = 'MangerCert'
 }
 
 export default class OssClient extends OSS {
