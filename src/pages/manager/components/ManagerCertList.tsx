@@ -1,91 +1,130 @@
-import * as React from 'react'
-import Button from 'antd/es/button/button';
-import List from 'antd/es/list';
-import { findDOMNode } from 'react-dom';
-import { Avatar, Popconfirm } from 'antd';
-import { IManagerCert } from 'src/interfaces/IManager';
-import ListContent from './ListContent';
-
-interface ManagerCertListProps {
-  removeCertItem(value: IManagerCert): void
-  showCreateModal: (value: IManagerCert | undefined) => void
-}
+import React, { useReducer, useRef } from 'react';
+import { Avatar, Popconfirm, List, Button, Divider } from 'antd';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { IManager, IManagerCert } from 'src/interfaces/IManager';
+import { PlusOutlined } from '@ant-design/icons';
+import ManagerCertEditFormModal from './ManagerCertEditFormModal';
 
 interface ManagerCertListState {
-  certList: IManagerCert[]
+  current: IManagerCert | null;
+  list: IManagerCert[];
+  showEditModal: boolean;
 }
 
-class ManagerCertList extends React.Component<ManagerCertListProps, ManagerCertListState> {
-  static getDerivedStateFromProps(nextProps: any) {
-    // Should be a controlled component.
-    if ('value' in nextProps) {
+const initialState: ManagerCertListState = {
+  current: null,
+  showEditModal: false,
+  list: [],
+};
+
+function reducer(state: ManagerCertListState, action) {
+  switch (action.type) {
+    case 'remove':
       return {
-        ...(nextProps.value || {}),
+        ...state,
+        list: state.list.filter(x => x.id !== action.payload),
+      };
+    case 'add':
+      return {
+        ...state,
+        showEditModal: false,
+        list: state.list.concat(action.payload),
+      };
+    case 'edit':
+      return {
+        ...state,
+        current: action.payload,
+      };
+    case 'toggleModal': {
+      return {
+        ...state,
+        showEditModal: !state.showEditModal,
       };
     }
-    return null;
-  }
-
-  state = {
-      certList: [],
-  }
-
-  addBtn: HTMLButtonElement | undefined | null = undefined;
-
-  handleEditItem = (e: any, item: IManagerCert) => {
-    this.props.showCreateModal(item);
-  };
-
-  handleRemoveItem = (e: any, item: IManagerCert) => {
-    this.props.removeCertItem(item)
-  };
-
-  showModal = () => {
-    this.props.showCreateModal(undefined);
-  };
-
-  render() {
-    return (
-      <div>
-        <Button
-          type="dashed"
-          style={{ width: '100%', marginBottom: 8 }}
-          icon="plus"
-          onClick={this.showModal}
-          ref={component => {
-            // eslint-disable-next-line  react/no-find-dom-node
-            this.addBtn = findDOMNode(component) as HTMLButtonElement;
-          }}
-        >
-          添加证书
-        </Button>
-        <List
-          size="large"
-          rowKey="id"
-          dataSource={this.state.certList}
-          renderItem={(item: IManagerCert) => (
-            <List.Item
-              actions={[
-                <a key="edit" onClick={e => this.handleEditItem(e, item)}>
-                  编辑
-                </a>,
-                <Popconfirm title="是否要删除此行？" onConfirm={e => this.handleRemoveItem(e, item)}>
-                  <a>删除</a>
-                </Popconfirm>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={<Avatar shape="square" size="large" src={ item.icon || 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png'}/>}
-                title={item.name}
-                description={item.typeName}
-              />
-              <ListContent item={item} />
-            </List.Item>
-          )}
-        />
-      </div>
-    )
+    default:
+      throw new Error();
   }
 }
 
-export default ManagerCertList
+const ManagerCertList: React.FC = () => {
+  const actionRef = useRef<ActionType>();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleRemoveItem = (e, item) => {
+    dispatch({ type: 'remove', payload: item.id });
+  };
+
+  const handleEditItem = (e, item) => {
+    dispatch({ type: 'edit', payload: item });
+  };
+
+  const handleToggleModal = () => {
+    dispatch({ type: 'toggleModal' });
+  };
+
+  const handleModalSubmit = (values: IManagerCert) => {
+    dispatch({ type: 'add', payload: values });
+  };
+
+  const columns: ProColumns<IManagerCert>[] = [
+    {
+      title: '证书名',
+      dataIndex: 'name',
+    },
+    {
+      title: '证书编号',
+      dataIndex: 'identityNumber',
+    },
+    {
+      title: '证书过期时间',
+      dataIndex: 'expiredAt',
+    },
+    {
+      title: '证书类型',
+      dataIndex: 'typeName',
+    },
+    {
+      title: '操作',
+      render: (text: any, record: IManagerCert) => (
+        <>
+          <a onClick={e => handleEditItem(e, record)}>更改</a>
+          <Divider type="vertical" />
+          <span>
+            <Popconfirm title="是否要删除此行？" onConfirm={e => handleRemoveItem(e, record)}>
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <Button type="dashed" style={{ width: '100%', marginBottom: 8 }} onClick={handleToggleModal}>
+        <PlusOutlined />
+        添加
+      </Button>
+
+      <ProTable<IManagerCert>
+        search={false}
+        toolBarRender={false}
+        actionRef={actionRef}
+        rowKey="id"
+        dataSource={state.list}
+        columns={columns}
+        dateFormatter="string"
+        pagination={false}
+      />
+
+      <ManagerCertEditFormModal
+        onCancel={handleToggleModal}
+        onSubmit={handleModalSubmit}
+        visible={state.showEditModal}
+        current={state.current}
+      />
+    </div>
+  );
+};
+
+export default ManagerCertList;

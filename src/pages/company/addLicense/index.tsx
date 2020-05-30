@@ -1,129 +1,114 @@
+import { Button, Card, DatePicker, Form, Input, message } from 'antd';
 import React from 'react';
-import { Card, Button, Form, DatePicker, Input, message } from 'antd';
-import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-
-import { FormComponentProps } from 'antd/es/form';
-import { Dispatch } from 'redux';
-import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { addCompanyLicense } from '@/services/company';
+import { useRequest } from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
+import { ICompanyLicense } from '@/interfaces/ICompany';
+import { OSSResourceType, parseOSSFile } from '@/utils/OSSClient';
+import { routerRedux, useDispatch } from 'dva';
 
-const FormItem = Form.Item;
+const CompanyLicenseCreate: React.FC<any> = () => {
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
 
-interface CompanyLicenseCreateProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  submitting: boolean;
-}
+  const { loading, run } = useRequest(addCompanyLicense, {
+    manual: true,
+    onSuccess: () => {
+      message.success('公司批文信息已录入');
+      dispatch(routerRedux.push('/company/listLicense'));
+    },
+    onError: error => {
+      console.error(error);
+      message.error('公司批文信息录入失败');
+    },
+  });
 
-@connect(({ loading }: { loading: { effects: { [key: string]: boolean } } }) => ({
-  submitting: loading.effects['companyLicense/create'],
-}))
-class CompanyLicenseCreate extends React.Component<CompanyLicenseCreateProps> {
-  handleCompanyLicenseCreated = () => {
-    message.success('公司批文信息已录入');
-    this.props.dispatch(routerRedux.push('/company/listLicense'));
+  const onFinish = (values: Partial<ICompanyLicense>) => {
+    //@ts-ignore
+    values.expireAt = values.expireAt.format('YYYY-MM-DD');
+    //@ts-ignore
+    values.ossFile = parseOSSFile(values.ossFile);
+
+    run(values);
   };
 
-  handleSubmit = (e: React.FormEvent) => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        if (values.ossFile && values.ossFile.fileList) {
-          values.ossFile = values.ossFile.fileList.map((value: any) => value.url).join(';');
-        }
-        dispatch({
-          type: 'companyLicense/create',
-          payload: values,
-          callback: this.handleCompanyLicenseCreated,
-        });
-      }
-    });
+  const onReset = () => {
+    form.resetFields();
   };
 
-  render() {
-    const {
-      submitting,
-      form: { getFieldDecorator },
-    } = this.props;
+  return (
+    <PageHeaderWrapper title="新的公司批文信息" content="按表单提示填入相应信息">
+      <Card title="批文信息" bordered={false}>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 8 }}
+          hideRequiredMark
+        >
+          <Form.Item
+            name="name"
+            label="批文名"
+            rules={[
+              {
+                required: true,
+                message: '请输入批文名',
+              },
+            ]}
+          >
+            <Input placeholder="请输入证书名" />
+          </Form.Item>
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
-    };
+          <Form.Item
+            name="identityNumber"
+            label="证书编号"
+            rules={[
+              {
+                required: true,
+                message: '请输入批文编号',
+              },
+            ]}
+          >
+            <Input placeholder="请输入批文编号" />
+          </Form.Item>
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 4 },
-      },
-    };
+          <Form.Item
+            label="批文过期日期"
+            name="expireAt"
+            rules={[{ required: true, message: '请输入过期日期' }]}
+          >
+            <DatePicker
+              format="YYYY-MM-DD"
+              style={{ width: '100%' }}
+              placeholder="请选择批文过期日期"
+            />
+          </Form.Item>
 
-    return (
-      <PageHeaderWrapper title="新的公司批文信息" content="按表单提示填入相应信息">
-        <Card title="批文信息" bordered={false}>
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="批文名">
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入批文名',
-                  },
-                ],
-              })(<Input placeholder="请输入批文名" />)}
-            </FormItem>
+          <Form.Item
+            label="批文电子件"
+            name="ossFile"
+            rules={[{ required: true, message: '请输入批文电子件' }]}
+          >
+            <FileUpload listType="picture" resourceType={OSSResourceType.CompanyLicense} />
+          </Form.Item>
 
-            <FormItem {...formItemLayout} label="批文编号">
-              {getFieldDecorator('identityNumber', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入批文编号',
-                  },
-                ],
-              })(<Input placeholder="请输入批文编号" />)}
-            </FormItem>
+          <Form.Item label="批文备注" name="remark">
+            <Input.TextArea placeholder="请输入批文备注" />
+          </Form.Item>
 
-            <FormItem {...formItemLayout} label="批文过期日期">
-              {getFieldDecorator('expireAt', {
-                rules: [{ required: true, type: 'object', message: '请输入批文过期日期' }],
-              })(
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  style={{ width: '100%' }}
-                  placeholder="请选择批文过期日期"
-                />,
-              )}
-            </FormItem>
+          <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
+            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }} loading={loading}>
+              保存
+            </Button>
+            <Button htmlType="button" onClick={onReset}>
+              重置
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-            <FormItem {...formItemLayout} label="批文电子件">
-              {getFieldDecorator('ossFile', {
-                initialValue: { fileList: [] },
-              })(<FileUpload />)}
-            </FormItem>
-
-            <FormItem {...formItemLayout} label="批文备注">
-              {getFieldDecorator('remark')(<Input.TextArea placeholder="请输入批文备注" />)}
-            </FormItem>
-
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                保存
-              </Button>
-            </FormItem>
-          </Form>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default Form.create<CompanyLicenseCreateProps>()(CompanyLicenseCreate);
+export default CompanyLicenseCreate;

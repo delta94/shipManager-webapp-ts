@@ -5,8 +5,6 @@ import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { UserModelState } from './user';
-import { ShipModelType } from '@/models/ship';
-import { SailorModelType } from '@/models/sailor';
 
 export { GlobalModelState, SettingModelState, UserModelState };
 
@@ -17,9 +15,6 @@ export interface Loading {
     global?: boolean;
     menu?: boolean;
     setting?: boolean;
-    user?: boolean;
-    ship?: boolean;
-    sailor?: boolean;
   };
 }
 
@@ -27,9 +22,6 @@ export interface ConnectState {
   global: GlobalModelState;
   loading: Loading;
   settings: SettingModelState;
-  user: UserModelState;
-  ship: ShipModelType;
-  sailor: SailorModelType;
 }
 
 export type Effect = (

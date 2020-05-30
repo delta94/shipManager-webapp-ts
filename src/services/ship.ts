@@ -18,7 +18,7 @@ export async function listShip(params: any): Promise<IShip[]> {
   });
 }
 
-export async function listShipMeta() {
+export async function listShipMeta(): Promise<IShip[]> {
   return request('/api/ships-meta-list', {
     method: 'GET',
   });

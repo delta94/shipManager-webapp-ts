@@ -1,102 +1,77 @@
-import * as React from 'react';
+import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { connect } from 'dva';
-import { Card, Descriptions } from 'antd';
-import { Dispatch } from 'redux';
+import { Card, Descriptions, Divider, List } from 'antd';
 import { RouteComponentProps } from 'react-router';
-import ISailor from '@/interfaces/ISailor';
-import { SailorModelState } from '@/models/sailor';
+import { useRequest } from '@umijs/hooks';
+import { FilePdfTwoTone } from '@ant-design/icons';
+import { UploadFile } from 'antd/lib/upload/interface';
+import { infoSailor } from '@/services/sailor';
+import OSSClient from '@/utils/OSSClient';
+import { bytesToSize } from '@/utils/utils';
 
-const fieldLabels = {
-  name: '船员名',
-  identityNumber: '身份证号码',
-  isAdvanced: '是否高级船员',
-  mobile: '手机号码',
-  certFile: '证书电子证件',
-  address: '地址',
-  positionName: '职位',
-  shipName: '所属船舶名',
+const SailorDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
+  const { data: sailor } = useRequest(() => infoSailor(parseInt(params.id)), {
+    cacheKey: `sailor_info_${params.id}`,
+    refreshDeps: [params.id],
+  });
+
+  const downloadFile = async (file: UploadFile) => {
+    let client = await OSSClient.getInstance();
+    let downloadUrl = client.signatureUrl(file.url || '');
+    var anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.target = '_blank';
+    anchor.download = file.name;
+    anchor.click();
+  };
+
+  return (
+    <PageHeaderWrapper title="船员详情页">
+      <Card bordered={false}>
+        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
+          <Descriptions.Item label="船员名">{sailor?.name}</Descriptions.Item>
+          <Descriptions.Item label="是否高级船员">
+            {sailor?.isAdvanced ? '是' : '否'}
+          </Descriptions.Item>
+          <Descriptions.Item label="身份证号码">{sailor?.identityNumber}</Descriptions.Item>
+          <Descriptions.Item label="职位">{sailor?.positionName}</Descriptions.Item>
+          <Descriptions.Item label="住址">{sailor?.address}</Descriptions.Item>
+        </Descriptions>
+
+        <Divider style={{ marginBottom: 32 }} />
+
+        <Descriptions title="船员电子件信息" style={{ marginBottom: 32 }}>
+          <div>
+            <List
+              bordered
+              itemLayout="horizontal"
+              dataSource={(sailor && sailor.ex_certFile) || []}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <a
+                      key="list-edit"
+                      onClick={() => {
+                        downloadFile(item);
+                      }}
+                    >
+                      下载
+                    </a>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={<FilePdfTwoTone style={{ fontSize: '32px' }} />}
+                    title={item.name}
+                    description={bytesToSize(item.size)}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+        </Descriptions>
+      </Card>
+    </PageHeaderWrapper>
+  );
 };
-
-interface SailorDetailsProps extends RouteComponentProps {
-  loading: boolean;
-  dispatch: Dispatch<any>;
-  sailor: ISailor;
-}
-
-@connect(
-  ({
-    sailor,
-    loading,
-  }: {
-    sailor: SailorModelState;
-    loading: { effects: { [key: string]: boolean } };
-  }) => ({
-    submitting: loading.effects['sailor/target'],
-    sailor: sailor.target,
-  }),
-)
-class SailorDetails extends React.Component<SailorDetailsProps> {
-  componentWillMount() {
-    const { params } = this.props.match;
-    // @ts-ignore
-    if (params && params.id !== undefined) {
-      // @ts-ignore
-      const sailorId = parseInt(params.id, 10);
-      setTimeout(() => {
-        this.props.dispatch({
-          type: 'sailor/target',
-          payload: sailorId,
-        });
-      }, 10);
-    }
-  }
-
-  render() {
-    const sailor = this.props.sailor || {};
-
-    const certItems =
-      sailor.certFile &&
-      sailor.certFile
-        .split(';')
-        .map((item, index) => (
-          <Card hoverable bordered={false} style={{ width: 240 }} cover={<img src={item} />} />
-        ));
-
-    return (
-      <PageHeaderWrapper title="船员详情页">
-        <Card style={{ marginBottom: 24 }} bordered={false}>
-          <Descriptions title="基本信息" bordered>
-            <Descriptions.Item label={fieldLabels.name}>{sailor.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.isAdvanced}>
-              {sailor.isAdvanced ? '是' : '否'}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.positionName}>
-              {sailor.positionName}
-            </Descriptions.Item>
-
-            <Descriptions.Item label={fieldLabels.mobile}>{sailor.mobile}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.identityNumber} span={3}>
-              {sailor.identityNumber}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.shipName} span={3}>
-              {sailor.shipName}
-            </Descriptions.Item>
-
-            <Descriptions.Item label={fieldLabels.certFile} span={3}>
-              {certItems}
-            </Descriptions.Item>
-
-            <Descriptions.Item label={fieldLabels.address}>
-              <br />
-              {sailor.address}
-              <br />
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
 
 export default SailorDetails;

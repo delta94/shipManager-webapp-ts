@@ -4,7 +4,23 @@ export interface ITableListPagination {
   current: number;
 }
 
-export interface ITableListData<T> {
-  list: T[];
-  pagination: Partial<ITableListPagination>;
+export interface Pagination {
+  total: number;
+  pageSize: number;
+  current: number;
 }
+
+export interface PageableData<T> {
+  list: T[];
+  pagination: Pagination;
+}
+
+export interface ITableResult<T> {
+  total: number;
+  list: T[];
+}
+
+export type IPageableFilter<T> = {
+  pageSize?: number;
+  current?: number;
+} & Partial<T>

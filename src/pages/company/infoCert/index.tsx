@@ -1,94 +1,85 @@
-import * as React from 'react';
-import { connect } from 'dva';
-import moment from 'moment';
-import { Card, Descriptions } from 'antd';
-
-import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
-import { Dispatch } from 'redux';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { CompanyCertModelState } from '@/models/companyCert';
+import { infoCompanyCert } from '@/services/company';
+import { FilePdfTwoTone } from '@ant-design/icons';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { useRequest } from '@umijs/hooks';
+import { Descriptions, Divider, Typography, Card, List } from 'antd';
 import { ICompanyCert } from '@/interfaces/ICompany';
+import { UploadFile } from 'antd/lib/upload/interface';
+import OSSClient from '@/utils/OSSClient';
+import {bytesToSize} from "@/utils/utils";
 
-const fieldLabels = {
-  name: '证书名',
-  identityNumber: '证书编号',
-  type: '类型',
-  remark: '备注',
-  ossFile: '证书电子件',
-  expiredAt: '有效期',
+const CompanyCertProfile: React.FC<RouteComponentProps<{ id: string }>> = ({
+  match: { params },
+}) => {
+  var { data } = useRequest(() => infoCompanyCert(parseInt(params.id)), {
+    cacheKey: `company_cert_${params.id}`,
+    refreshDeps: [params.id],
+  });
+
+  const companyCert = (data || {}) as ICompanyCert;
+
+  const downloadFile = async (file: UploadFile) => {
+    let client = await OSSClient.getInstance();
+    let downloadUrl = client.signatureUrl(file.url || '');
+    var anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.target = '_blank';
+    anchor.download = file.name;
+    anchor.click();
+  };
+
+  return (
+    <PageHeaderWrapper title="公司证书详情页">
+      <Card bordered={false}>
+        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
+          <Descriptions.Item label="证书名">{companyCert.name}</Descriptions.Item>
+          <Descriptions.Item label="证书编号">{companyCert.identityNumber}</Descriptions.Item>
+          <Descriptions.Item label="证书类型">{companyCert.typeName}</Descriptions.Item>
+          <Descriptions.Item label="证书有效期">{companyCert.expiredAt}</Descriptions.Item>
+        </Descriptions>
+
+        <Divider style={{ marginBottom: 32 }} />
+
+        <Descriptions title="备注信息" style={{ marginBottom: 32 }}>
+          <Typography.Text>{companyCert.remark || '暂无备注'}</Typography.Text>
+        </Descriptions>
+
+        <Divider style={{ marginBottom: 32 }} />
+
+        <Descriptions title="电子件信息" style={{ marginBottom: 32 }}>
+          <div>
+            <List
+              bordered
+              itemLayout="horizontal"
+              dataSource={(data && data.ex_ossFile) || []}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <a
+                      key="list-edit"
+                      onClick={() => {
+                        downloadFile(item);
+                      }}
+                    >
+                      下载
+                    </a>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={<FilePdfTwoTone style={{ fontSize: '32px' }} />}
+                    title={item.name}
+                    description={bytesToSize(item.size)}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+        </Descriptions>
+      </Card>
+    </PageHeaderWrapper>
+  );
 };
-
-interface CompanyCertProfileParams {
-  id: string;
-}
-
-interface CompanyCertProfileProps extends RouteComponentProps<CompanyCertProfileParams> {
-  loading: boolean;
-  dispatch: Dispatch<any>;
-  companyCert: ICompanyCert;
-}
-
-@connect(
-  ({
-    companyCert,
-    loading,
-  }: {
-    companyCert: CompanyCertModelState;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    companyCert: companyCert.target,
-    loading: loading.effects['companyCert/target'],
-  }),
-)
-class CompanyCertProfile extends React.Component<CompanyCertProfileProps> {
-  componentWillMount() {
-    const {
-      dispatch,
-      match: { params },
-    } = this.props;
-    if (params && params.id) {
-      const id = parseInt(params.id, 10);
-      dispatch({ type: 'companyCert/target', payload: id });
-    }
-  }
-
-  render() {
-    const cert = this.props.companyCert || ({} as ICompanyCert);
-
-    let ossItems: React.ReactNode = <div>暂未上传任何文件</div>;
-
-    if (cert.ossFile) {
-      ossItems = cert.ossFile
-        .split(';')
-        .map(item => (
-          <Card hoverable bordered={false} style={{ width: 240 }} cover={<img src={item} />} />
-        ));
-    }
-
-    return (
-      <PageHeaderWrapper title="公司证书详情页">
-        <Card style={{ marginBottom: 24 }} bordered={false}>
-          <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
-            <Descriptions.Item label={fieldLabels.name}>{cert.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.identityNumber}>
-              {cert.identityNumber}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.type}>{cert.typeName}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.remark}>{cert.remark}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.expiredAt}>
-              {cert.expiredAt ? moment(cert.expiredAt).format('YYYY-MM-DD') : ''}
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
-
-        <Card style={{ marginBottom: 24 }} bordered={false} title="证书电子件">
-          {ossItems}
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
 
 export default CompanyCertProfile;

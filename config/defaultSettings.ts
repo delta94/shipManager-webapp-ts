@@ -1,4 +1,4 @@
-import { MenuTheme } from 'antd/es/menu';
+import { MenuTheme } from 'antd/es/menu/MenuContext';
 
 export type ContentWidth = 'Fluid' | 'Fixed';
 
@@ -43,17 +43,18 @@ export interface DefaultSettings {
 }
 
 export default {
-  "navTheme": "dark",
-  "primaryColor": "#1890FF",
-  "layout": "sidemenu",
-  "contentWidth": "Fluid",
-  "fixedHeader": true,
-  "autoHideHeader": false,
-  "fixSiderbar": true,
-  "menu": {
-    "locale": true
+  navTheme: 'dark',
+  primaryColor: 'daybreak',
+  layout: 'sidemenu',
+  contentWidth: 'Fluid',
+  fixedHeader: true,
+  autoHideHeader: false,
+  fixSiderbar: false,
+  colorWeak: false,
+  menu: {
+    locale: false,
   },
-  "title": "船务管理系统",
-  "pwa": false,
-  "iconfontUrl": ""
+  title: '船务管理系统',
+  pwa: false,
+  iconfontUrl: '',
 } as DefaultSettings;

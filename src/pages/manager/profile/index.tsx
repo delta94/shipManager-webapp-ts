@@ -1,125 +1,67 @@
-import * as React from 'react';
-import { connect } from 'dva';
-
-import { Card, Table, Descriptions } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Dispatch } from 'redux';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { ManagerModelState } from '@/models/manager';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { useRequest } from '@umijs/hooks';
+import { Descriptions, Table, Card } from 'antd';
+import { infoManager } from '@/services/manager';
 import { IManager } from '@/interfaces/IManager';
 
-const fieldLabels = {
-  name: '管理人员姓名',
-  identityNumber: '身份证号码',
-  assignerName: '指定职位',
-  mobile: '手机号码',
-  phone: '座机电话',
-  dept: '部门',
-  position: '职务',
+const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
+  var { data } = useRequest(() => infoManager(parseInt(params.id)), {
+    cacheKey: `manager_profile_${params.id}`,
+    refreshDeps: [params.id],
+  });
+
+  const managerInfo = (data || {}) as IManager;
+
+  const certsColumns = [
+    {
+      title: '证书名',
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: '证书类型',
+      dataIndex: 'typeName',
+      key: 'typeName'
+    },
+    {
+      title: '证书编号',
+      dataIndex: 'identityNumber',
+      key: 'identityNumber'
+    },
+    {
+      title: '到期时间',
+      dataIndex: 'expiredAt',
+      key: 'expiredAt'
+    },
+  ];
+
+  return (
+    <PageHeaderWrapper title="管理人员详情页">
+      <Card bordered={false}>
+        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
+          <Descriptions.Item label="管理人员姓名">{managerInfo.name}</Descriptions.Item>
+          <Descriptions.Item label="身份证号码">{managerInfo.identityNumber}</Descriptions.Item>
+          <Descriptions.Item label="指定职位">{managerInfo.assignerName}</Descriptions.Item>
+          <Descriptions.Item label="手机号码">{managerInfo.mobile}</Descriptions.Item>
+          <Descriptions.Item label="部门">{managerInfo.dept}</Descriptions.Item>
+          <Descriptions.Item label="职务">{managerInfo.position}</Descriptions.Item>
+        </Descriptions>
+      </Card>
+
+      <Card>
+        <Descriptions title="证书信息" />
+        <Table
+          style={{ marginBottom: 24 }}
+          pagination={false}
+          dataSource={managerInfo.certs}
+          columns={certsColumns}
+          rowKey="id"
+        />
+      </Card>
+    </PageHeaderWrapper>
+  );
 };
 
-interface Params {
-  id: string;
-}
-
-interface ManagerDetailsProps extends RouteComponentProps<Params> {
-  loading: boolean;
-  dispatch: Dispatch<any>;
-  manager: IManager;
-}
-
-@connect(
-  ({
-    manager,
-    loading,
-  }: {
-    manager: ManagerModelState;
-    loading: { effects: { [key: string]: boolean } };
-  }) => ({
-    loading: loading.effects['manager/target'],
-    manager: manager.target,
-  }),
-)
-class ManagerDetails extends React.Component<ManagerDetailsProps> {
-  componentWillMount() {
-    if (this.props.match.params.id) {
-      const managerId = parseInt(this.props.match.params.id, 10);
-      setTimeout(() => {
-        this.props.dispatch({
-          type: 'manager/target',
-          payload: managerId,
-        });
-      }, 10);
-    }
-  }
-
-  render() {
-    const { loading } = this.props;
-    const manager = this.props.manager || {};
-
-    const renderContent = (value: any) => ({
-      children: value,
-      props: {},
-    });
-    const certsColumns = [
-      {
-        title: '证书名',
-        dataIndex: 'name',
-        key: 'name',
-        render: renderContent,
-      },
-      {
-        title: '证书类型',
-        dataIndex: 'typeName',
-        key: 'typeName',
-        render: renderContent,
-      },
-      {
-        title: '证书编号',
-        dataIndex: 'identityNumber',
-        key: 'identityNumber',
-        render: renderContent,
-      },
-      {
-        title: '到期时间',
-        dataIndex: 'expiredAt',
-        key: 'expiredAt',
-        render: renderContent,
-      },
-    ];
-
-    return (
-      <PageHeaderWrapper title="管理人员详情页">
-        <Card style={{ marginBottom: 24 }} bordered={false}>
-          <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
-            <Descriptions.Item label={fieldLabels.name}>{manager.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.identityNumber}>
-              {manager.identityNumber}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.assignerName}>
-              {manager.assignerName}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.mobile}>{manager.mobile}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.phone}>{manager.phone}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.dept}>{manager.dept}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.position}>{manager.position}</Descriptions.Item>
-          </Descriptions>
-        </Card>
-
-        <Card bordered={false}>
-          <Descriptions title="证书信息" />
-          <Table
-            style={{ marginBottom: 24 }}
-            pagination={false}
-            loading={loading}
-            dataSource={manager.certs}
-            columns={certsColumns}
-            rowKey="id"
-          />
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default ManagerDetails;
+export default ManagerProfile;

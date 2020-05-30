@@ -1,9 +1,10 @@
-import { MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
-import DocumentTitle from 'react-document-title';
-import Link from 'umi/link';
+import { ConnectProps, ConnectState } from '@/models/connect';
+import { MenuDataItem, getMenuData, getPageTitle, DefaultFooter } from '@ant-design/pro-layout';
+
+import { Helmet } from 'react-helmet';
+import { Link } from 'umi';
 import React from 'react';
 import { connect } from 'dva';
-import { ConnectProps, ConnectState } from '@/models/connect';
 import logo from '../assets/logo.png';
 import styles from './UserLayout.less';
 
@@ -13,7 +14,7 @@ export interface UserLayoutProps extends ConnectProps {
   };
 }
 
-const UserLayout: React.SFC<UserLayoutProps> = props => {
+const UserLayout: React.FC<UserLayoutProps> = props => {
   const {
     route = {
       routes: [],
@@ -27,16 +28,18 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
     },
   } = props;
   const { breadcrumb } = getMenuData(routes);
-
-
+  const title = getPageTitle({
+    pathname: location.pathname,
+    breadcrumb,
+    ...props,
+  });
   return (
-    <DocumentTitle
-      title={getPageTitle({
-        pathname: location.pathname,
-        breadcrumb,
-        ...props,
-      })}
-    >
+    <>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={title} />
+      </Helmet>
+
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.top}>
@@ -50,8 +53,9 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
           </div>
           {children}
         </div>
+        <DefaultFooter copyright="2020 船务管理系统" links={false} />
       </div>
-    </DocumentTitle>
+    </>
   );
 };
 

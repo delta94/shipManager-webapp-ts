@@ -1,9 +1,9 @@
-import { Icon, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import React from 'react';
 import { connect } from 'dva';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
@@ -22,23 +22,17 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
-        placeholder="站内搜索"
-        dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
-      />
       <Tooltip title="使用文档">
-        <a rel="noopener noreferrer" className={styles.action}>
-          <Icon type="question-circle-o" />
+        <a
+          target="_blank"
+          href="https://pro.ant.design/docs/getting-started"
+          rel="noopener noreferrer"
+          className={styles.action}
+        >
+          <QuestionCircleOutlined />
         </a>
       </Tooltip>
-      <Avatar menu />
+      <Avatar />
     </div>
   );
 };

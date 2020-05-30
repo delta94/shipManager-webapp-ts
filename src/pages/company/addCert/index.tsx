@@ -1,169 +1,135 @@
+import {Button, Card, DatePicker, Form, Input, message, Select} from 'antd';
 import React from 'react';
-import { Card, Button, Form, DatePicker, Input, Select, message } from 'antd';
-import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-
-import { FormComponentProps } from 'antd/es/form';
-import { Dispatch } from 'redux';
-import PageHeaderWrapper from '@ant-design/pro-layout/es/PageHeaderWrapper';
-import { ICompanyCertType } from '@/interfaces/ICompany';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {addCompanyCert, listCompanyCertType} from '@/services/company';
+import {useRequest} from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import { CompanyCertModelState } from '@/models/companyCert';
+import {ICompanyCert} from '@/interfaces/ICompany';
+import {OSSResourceType, parseOSSFile} from '@/utils/OSSClient';
+import {routerRedux, useDispatch} from 'dva';
 
-const FormItem = Form.Item;
+const CompanyCertCreate: React.FC<any> = () => {
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
 
-const { Option } = Select;
+  const { data: certificateTypes } = useRequest(() => listCompanyCertType(), {
+    cacheKey: 'company_cert_type',
+    initialData: [],
+  });
 
-interface CompanyCertCreateProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  submitting: boolean;
-  certificateTypes: ICompanyCertType[];
-}
+  const { loading, run } = useRequest(addCompanyCert, {
+    manual: true,
+    onSuccess: () => {
+      message.success('公司证书信息已录入');
+      dispatch(routerRedux.push('/company/listCert'));
+    },
+    onError: error => {
+      console.error(error);
+      message.error('公司证书信息已录入失败');
+    },
+  });
 
-@connect(
-  ({
-    companyCert,
-    loading,
-  }: {
-    companyCert: CompanyCertModelState;
-    loading: { effects: { [key: string]: boolean } };
-  }) => ({
-    submitting: loading.effects['companyCert/create'],
-    certificateTypes: companyCert.certificateTypes,
-  }),
-)
-class CompanyCertCreate extends React.Component<CompanyCertCreateProps> {
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({ type: 'companyCert/fetchCertificateTypes' });
-  }
+  const onFinish = (values: Partial<ICompanyCert>) => {
+    //@ts-ignore
+    values.expiredAt = values.expiredAt.format('YYYY-MM-DD');
+    //@ts-ignore
+    values.ossFile = parseOSSFile(values.ossFile);
 
-  handleCompanyCertCreated = () => {
-    message.success('公司证书信息已录入');
-    this.props.dispatch(routerRedux.push('/company/listCert'));
+    run(values);
   };
 
-  handleSubmit = (e: React.FormEvent) => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        if (values.ossFile && values.ossFile.fileList) {
-          values.ossFile = values.ossFile.fileList.map((value: any) => value.url).join(';');
-        }
-        dispatch({
-          type: 'companyCert/create',
-          payload: values,
-          callback: this.handleCompanyCertCreated,
-        });
-      }
-    });
+  const onReset = () => {
+    form.resetFields();
   };
 
-  render() {
-    const {
-      submitting,
-      certificateTypes,
-      form: { getFieldDecorator },
-    } = this.props;
+  return (
+    <PageHeaderWrapper title="新的公司证书信息" content="按表单提示填入相应信息">
+      <Card title="证书信息" bordered={false}>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 8 }}
+          hideRequiredMark
+        >
+          <Form.Item
+            name="name"
+            label="证书名"
+            rules={[
+              {
+                required: true,
+                message: '请输入证书名',
+              },
+            ]}
+          >
+            <Input placeholder="请输入证书名" />
+          </Form.Item>
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
-    };
+          <Form.Item
+            name="identityNumber"
+            label="证书编号"
+            rules={[
+              {
+                required: true,
+                message: '请输入证书编号',
+              },
+            ]}
+          >
+            <Input placeholder="请输入证书编号" />
+          </Form.Item>
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 4 },
-      },
-    };
+          <Form.Item
+            name="typeId"
+            label="证书类型"
+            rules={[
+              {
+                required: true,
+                message: '请输入证书类型',
+              },
+            ]}
+          >
+            <Select placeholder="请选择证书类型">
+              {certificateTypes &&
+                certificateTypes.map((item, index) => (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
 
-    return (
-      <PageHeaderWrapper title="新的公司证书信息" content="按表单提示填入相应信息">
-        <Card title="证书信息" bordered={false}>
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="证书名">
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入证书名',
-                  },
-                ],
-              })(<Input placeholder="请输入证书名" />)}
-            </FormItem>
+          <Form.Item
+            label="证书过期日期"
+            name="expiredAt"
+            rules={[{ required: true, type: 'object', message: '请输入证书过期日期' }]}
+          >
+            <DatePicker
+              format="YYYY-MM-DD"
+              style={{ width: '100%' }}
+              placeholder="请选择证书过期日期"
+            />
+          </Form.Item>
 
-            <FormItem {...formItemLayout} label="证书编号">
-              {getFieldDecorator('identityNumber', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入证书编号',
-                  },
-                ],
-              })(<Input placeholder="请输入证书编号" />)}
-            </FormItem>
+          <Form.Item label="证书电子件" name="ossFile">
+            <FileUpload listType="picture" resourceType={OSSResourceType.CompanyCert} />
+          </Form.Item>
 
-            <FormItem {...formItemLayout} label="证书类型">
-              {getFieldDecorator('typeId', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入证书类型',
-                  },
-                ],
-              })(
-                <Select placeholder="请选择证书类型">
-                  {certificateTypes &&
-                    certificateTypes.map((item, index) => (
-                      <Option value={item.id} key={index}>
-                        {item.name}
-                      </Option>
-                    ))}
-                </Select>,
-              )}
-            </FormItem>
+          <Form.Item label="证书备注" name="remark">
+            <Input.TextArea placeholder="请输入证书备注" />
+          </Form.Item>
 
-            <FormItem {...formItemLayout} label="证书过期日期">
-              {getFieldDecorator('expiredAt', {
-                rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
-              })(
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  style={{ width: '100%' }}
-                  placeholder="请选择证书过期日期"
-                />,
-              )}
-            </FormItem>
+          <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
+            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }} loading={loading}>
+              保存
+            </Button>
+            <Button htmlType="button" onClick={onReset}>
+              重置
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-            <FormItem {...formItemLayout} label="证书电子件">
-              {getFieldDecorator('ossFile', {
-                initialValue: { fileList: [] },
-              })(<FileUpload />)}
-            </FormItem>
-
-            <FormItem {...formItemLayout} label="证书备注">
-              {getFieldDecorator('remark')(<Input.TextArea placeholder="请输入证书备注" />)}
-            </FormItem>
-
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                保存
-              </Button>
-            </FormItem>
-          </Form>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default Form.create<CompanyCertCreateProps>()(CompanyCertCreate);
+export default CompanyCertCreate;

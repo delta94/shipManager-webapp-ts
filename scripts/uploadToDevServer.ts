@@ -1,14 +1,14 @@
 const path = require('path');
 const SftpUpload = require('sftp-upload');
-const configs = require('../secret.config');
+const configs = require('../secret.config').config;
 
-const localPath = path.resolve(__dirname, '../dist');
+const localPath = path.resolve(__dirname, '../dist/index.html');
 const remotePath = '/var/www/';
 
 const options = {
-  host: configs.dev_host,
-  username: configs.dev_username,
-  password: configs.dev_password,
+  host: configs.host,
+  username: configs.username,
+  password: configs.password,
   path: localPath,
   remoteDir: remotePath,
 };

@@ -16,6 +16,7 @@
     "allowJs": true,
     "experimentalDecorators": true,
     "strict": true,
+    "typeRoots": ["node_modules/@types", "typings"],
     "paths": {
       "@/*": ["./src/*"]
     }

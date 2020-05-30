@@ -1,55 +1,76 @@
-import React, { Fragment } from 'react';
-import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Popconfirm,
-  Input,
-  Select,
-  Button,
-  Divider,
-  message,
-} from 'antd';
+import React, { useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Dispatch } from 'redux';
-import { FormComponentProps } from 'antd/es/form';
-import { SorterResult } from 'antd/es/table';
-import StandardTable from './components/StandardTable';
-import styles from './style.less';
-import { ManagerModelState } from '@/models/manager';
-import { TableListItem, TableListData, TableListPagination } from './manager.d';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
+import { useRequest } from '@umijs/hooks';
+import { useDispatch, routerRedux } from 'dva';
+import { PlusOutlined } from '@ant-design/icons';
+import {
+  listManager,
+  deleteManager,
+  listManagerAssignerPosition,
+} from '@/services/manager';
+import { IPageableFilter } from '@/interfaces/ITableList';
+import { IManager } from '@/interfaces/IManager';
 
-const getValue = (obj: { [x: string]: string[] }) => Object.keys(obj).map(key => obj[key]).join(',');
+const ManagerList: React.FC = () => {
+  const actionRef = useRef<ActionType>();
+  const dispatch = useDispatch();
 
-const FormItem = Form.Item;
-const { Option } = Select;
+  const { data: sailorPositions } = useRequest(listManagerAssignerPosition, {
+    cacheKey: 'manager_assigner_pos',
+    initialData: [],
+  });
 
-interface ManagerListProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  loading: boolean;
-  manager: ManagerModelState;
-}
+  const { run: deleteRecord } = useRequest(deleteManager, {
+    manual: true,
+    onSuccess: () => {
+      actionRef.current && actionRef.current.reload();
+      message.success('已成功删除');
+    },
+    onError: err => {
+      console.error(err);
+    },
+  });
 
-@connect(({ manager, loading }: {
-  manager: ManagerModelState,
-  loading: { effects: { [key: string]: boolean } }
-}) => ({
-  manager,
-  loading: loading.effects['manager/fetch'],
-}))
-class ManagerList extends React.Component<ManagerListProps> {
-  state = {
-    modalVisible: false,
-    updateModalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
+  const requestManagerList = async (params: IPageableFilter<IManager>) => {
+    let { current = 0, pageSize = 20 } = params;
+    let extra = {};
+
+    if (params.name !== undefined) {
+      extra['name.contains'] = params.name;
+    }
+
+    if (params.mobile !== undefined) {
+      extra['mobile.contains'] = params.mobile;
+    }
+
+    if (params.identityNumber !== undefined) {
+      extra['identityNumber.contains'] = params.identityNumber;
+    }
+
+    const data = await listManager(current, pageSize, extra);
+
+    return {
+      success: true,
+      total: data.pagination.total,
+      data: data.list,
+    };
   };
 
-  columns = [
+  const handleAddManager = () => {
+    dispatch(routerRedux.push('/person/manager/create'));
+  };
+
+  const handleUpdateManager = (id: number) => {
+    dispatch(routerRedux.push(`/person/manager/update/${id}`));
+  };
+
+  const handleInfoManager = (id: number) => {
+    dispatch(routerRedux.push(`/person/manager/profile/${id}`));
+  };
+
+  const columns: ProColumns<IManager>[] = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -57,10 +78,7 @@ class ManagerList extends React.Component<ManagerListProps> {
     {
       title: '职务',
       dataIndex: 'position',
-    },
-    {
-      title: '手机号码',
-      dataIndex: 'mobile',
+      hideInSearch: false,
     },
     {
       title: '身份证',
@@ -69,216 +87,73 @@ class ManagerList extends React.Component<ManagerListProps> {
     {
       title: '指定职位',
       dataIndex: 'assignerName',
+      hideInSearch: false,
     },
-
+    {
+      title: '手机号码',
+      dataIndex: 'mobile',
+    },
+    {
+      title: '职位类型',
+      hideInTable: true,
+      hideInSearch: false,
+      dataIndex: 'positionId',
+      renderFormItem: (item, props) => {
+        return (
+          <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select.Option key={99} value={-1}>
+              不限类型
+            </Select.Option>
+            {sailorPositions &&
+              sailorPositions.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
+          </Select>
+        );
+      },
+    },
     {
       title: '操作',
-      render: (text: any, record: TableListItem) => (
-        <Fragment>
-          <a onClick={() => this.handleInfoManager(record)}>详情</a>
+      render: (text: any, record: IManager) => (
+        <>
+          <a onClick={() => handleInfoManager(record.id)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateManager(record)}>修改</a>
+          <a onClick={() => handleUpdateManager(record.id)}>更改</a>
           <Divider type="vertical" />
           <span>
-             <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleRemoveManagerCert(record.id)}>
-                <a>删除</a>
-             </Popconfirm>
+            <Popconfirm title="是否要删除此行？" onConfirm={() => deleteRecord(record.id)}>
+              <a>删除</a>
+            </Popconfirm>
           </span>
-        </Fragment>
+        </>
       ),
     },
   ];
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({ type: 'manager/fetchAssignerPositions' });
-    dispatch({ type: 'manager/fetch' });
-  }
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-      manager: { assignerPositions },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 4, lg: 12, xl: 24 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="职位">
-              {getFieldDecorator('assignerId', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请输入指定职位',
-                  },
-                ],
-              })(
-                <Select placeholder="请选择指定职位">
-                  <Option value={undefined} key={99}>不限职位</Option>
-                  {
-                    assignerPositions && assignerPositions.map((item, index) => <Option value={item.id} key={index}>{item.name}</Option>)
-                  }
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  handleInfoManager(record: TableListItem) {
-    this.props.dispatch(routerRedux.push(`/person/manager/profile/${record.id}`))
-  }
-
-  handleUpdateManager(record: TableListItem) {
-    this.props.dispatch(routerRedux.push(`/person/manager/update/${record.id}`))
-  }
-
-  handleRemoveManagerCert(key: number) {
-    this.props.dispatch({
-      type: 'manager/remove',
-      payload: key,
-      callback: this.handleManagerRemoved,
-    })
-  }
-
-  handleManagerRemoved = () => {
-    message.success('管理人员已成功删除')
-  };
-
-  handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const values = {};
-
-      if (fieldsValue.isAdvanced !== undefined) {
-        values['isAdvanced.equals'] = fieldsValue.isAdvanced;
-      }
-
-      if (fieldsValue.name !== undefined) {
-        values['name.contains'] = fieldsValue.name;
-      }
-
-      if (fieldsValue.assignerId !== undefined) {
-        values['assignerId.equals'] = fieldsValue.assignerId;
-      }
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'manager/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'manager/fetch',
-      payload: {},
-    });
-  };
-
-  handleCreateManager = () => {
-    this.props.dispatch(routerRedux.push('/person/manager/create'))
-  };
-
-  handleSelectRows = (rows: TableListItem[]) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleStandardTableChange = (
-    pagination: Partial<TableListPagination>,
-    filtersArg: Record<keyof TableListItem, string[]>,
-    sorter: SorterResult<TableListItem>,
-  ) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      page: pagination.current,
-      size: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-
-    if (sorter.field) {
-      // @ts-ignore
-      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
-    }
-
-    dispatch({
-      type: 'manager/fetch',
-      payload: params,
-    });
-  };
-
-  render() {
-    const {
-      manager: { data },
-      loading,
-    } = this.props;
-
-    const { selectedRows } = this.state;
-
-    return (
-      <PageHeaderWrapper title="管理人员列表">
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-          </div>
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleCreateManager()}>
+  return (
+    <PageHeaderWrapper title="管理人员列表">
+      <Card bordered={false}>
+        <ProTable<IManager>
+          actionRef={actionRef}
+          rowKey="id"
+          columns={columns}
+          //@ts-ignore
+          request={requestManagerList}
+          dateFormatter="string"
+          toolBarRender={() => [
+            <Button key="3" type="primary" onClick={handleAddManager}>
+              <PlusOutlined />
               新建管理人员
-            </Button>
-          </div>
-          <StandardTable
-            selectedRows={selectedRows}
-            loading={loading}
-            data={data as TableListData}
-            columns={this.columns}
-            onSelectRow={this.handleSelectRows}
-            onChange={this.handleStandardTableChange}
-          />
-        </Card>
-      </PageHeaderWrapper>
-    )
-  }
-}
+            </Button>,
+          ]}
+        />
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-export default Form.create<ManagerListProps>()(ManagerList);
+export default ManagerList;

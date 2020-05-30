@@ -1,6 +1,17 @@
 import OSS from 'ali-oss';
 import moment from 'moment';
 import { getStsToken } from '@/services/global';
+import env from '@/constants/env';
+import { UploadFile } from 'antd/lib/upload/interface';
+
+export enum OSSResourceType {
+  CompanyCert = 'CompanyCert',
+  CompanyLicense = 'CompanyLicense',
+  CompanySheet = 'CompanySheet',
+  ShipCert = 'ShipCert',
+  SailorCert = 'SailorCert',
+  ManagerCert = 'MangerCert'
+}
 
 export default class OssClient extends OSS {
   private static instance: OssClient;
@@ -28,28 +39,59 @@ export default class OssClient extends OSS {
     if (data) {
       return new OssClient(
         {
-          region: 'oss-cn-shenzhen',
+          region: env.OSS_REGION,
+          bucket: env.OSS_BUCKET_NAME,
           accessKeyId: data.accessKeyId,
           accessKeySecret: data.accessKeySecret,
           stsToken: data.securityToken,
-          bucket: 'ship-manager',
         },
         data.expiration,
       );
     }
     throw new Error('STS token get error');
   }
+
+  resolveOSSPath(key: string): string {
+    return this.signatureUrl(key);
+  }
 }
 
-export function generateOSSKey(file: File) {
+export function generateOSSKey(file: File, type: OSSResourceType) {
   const fileType = file.name.split('.').pop();
   const fileName = file.name.split('.').unshift();
   const uuid = Math.random()
     .toString(36)
     .substring(2);
-  return `${moment().format('YYYYMMDD')}/${fileName}_${uuid}.${fileType}`;
+  return `${type}/${moment().format('YYYY_MM_DD')}/${fileName}_${uuid}.${fileType}`;
 }
 
-export function resolveOSSPath(bucket: string, key: string) {
-  return `http://${bucket}.oss-cn-shenzhen.aliyuncs.com/${key}`;
+export function parseOSSFile(files: UploadFile[]) {
+  if (files && files.length > 0) {
+    let values = files.map((file, idx) => {
+      return {
+        uid: idx,
+        url: file.url,
+        size: file.size,
+        name: file.name,
+        type: file.type,
+      };
+    });
+    return JSON.stringify(values);
+  }
+  return '';
+}
+
+export function parseUploadData(str: string, client?: OssClient): UploadFile[] {
+  if (str === '') return [];
+  try {
+    let data = JSON.parse(str) as UploadFile[];
+    if (client) {
+      data.forEach(item => {
+        item.thumbUrl = client.signatureUrl(item.url!);
+      });
+    }
+    return data;
+  } catch (e) {
+    return [];
+  }
 }
