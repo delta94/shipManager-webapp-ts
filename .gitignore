@@ -39,6 +39,6 @@ screenshot
 
 # secret
 
-secret.config.js
+secret.config.ts
 
 build

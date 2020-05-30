@@ -1,11 +1,14 @@
-name: Deployment workflow
-on: [push]
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
 jobs:
-  build-shipManager-webapp:
-    name: build dist
+  build:
+    name: Create Release
     runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, '[build]')"
-    timeout-minutes: 10
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
@@ -27,3 +30,14 @@ jobs:
 
       - name: Build dist
         run: 'yarn run build'
+
+      - name: 'generate server config'
+        run: 'echo ${{ secrets.GITHUB_TOKEN }} > secret.config.ts'
+
+      - name: 'upload oss server'
+        run: 'yarn run upload-oss'
+
+      - name: 'upload dev server'
+        run: 'yarn run upload-dev-server'
+
+

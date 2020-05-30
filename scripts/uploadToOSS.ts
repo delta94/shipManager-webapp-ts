@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const configs = require('../secret.config');
+const configs = require('../secret.config').config;
 const OSS = require('ali-oss');
 
 const client = new OSS({
