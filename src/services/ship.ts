@@ -1,6 +1,7 @@
-import { stringify } from 'qs';
 import request from '@/utils/request';
 import IShip, { IShipBusinessArea, IShipCertType } from '@/interfaces/IShip';
+import { PageableData } from '@/interfaces/ITableList';
+import ISailor from '@/interfaces/ISailor';
 
 export async function getShip(id: number): Promise<IShip> {
   return request(`/api/ships/${id}`, {
@@ -8,13 +9,18 @@ export async function getShip(id: number): Promise<IShip> {
   });
 }
 
-export async function listShip(params: any): Promise<IShip[]> {
-  if (params && params.page) {
-    params.page -= 1;
-  }
-
-  return request(`/api/ships/list?${stringify(params)}`, {
+export async function listShip(
+  page: number = 0,
+  size: number = 20,
+  extra: object,
+): Promise<PageableData<ISailor>> {
+  return await request('/api/ships/list', {
     method: 'GET',
+    params: {
+      page: page - 1,
+      size,
+      ...extra,
+    },
   });
 }
 

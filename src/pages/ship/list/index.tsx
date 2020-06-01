@@ -1,69 +1,69 @@
-import { Popconfirm, Button, Card, Col, Divider, Form, Input, Row, Select, message } from 'antd';
-import React, { Component, Fragment } from 'react';
-
-import { Dispatch } from 'redux';
-import { routerRedux } from 'dva/router';
-import { FormComponentProps } from 'antd/es/form';
+import React, { useRef, Fragment } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { SorterResult } from 'antd/es/table';
-import { connect } from 'dva';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { Button, Card, Divider, Select, Popconfirm, message } from 'antd';
+import { useRequest } from '@umijs/hooks';
+import { useDispatch, routerRedux } from 'dva';
+import { PlusOutlined } from '@ant-design/icons';
+import ISailor from '@/interfaces/ISailor';
+import { IPageableFilter } from '@/interfaces/ITableList';
+import { deleteShip, listShip, listShipTypes } from '@/services/ship';
+import IShip from '@/interfaces/IShip';
 
-import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import { TableListData, TableListItem, TableListPagination } from './ship.d';
+const ShipList: React.FC = () => {
+  const actionRef = useRef<ActionType>();
+  const dispatch = useDispatch();
 
-import styles from './style.less';
-import { ShipStateType } from '@/models/ship';
+  const { data: shipTypes } = useRequest(() => listShipTypes(), {
+    cacheKey: 'ship_type',
+    initialData: [],
+  });
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = (obj: { [x: string]: string[] }) =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
+  const { run: handleDeleteShip } = useRequest(deleteShip, {
+    manual: true,
+    onSuccess: () => {
+      actionRef.current && actionRef.current.reload();
+      message.success('船舶已成功删除');
+    },
+    onError: err => {
+      console.error(err);
+    },
+  });
 
-interface TableListProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  loading: boolean;
-  ship: ShipStateType;
-}
+  const requestShipList = async (params: IPageableFilter<IShip>) => {
+    let { current = 0, pageSize = 20 } = params;
+    let extra = {};
 
-interface TableListState {
-  modalVisible: boolean;
-  updateModalVisible: boolean;
-  expandForm: boolean;
-  selectedRows: TableListItem[];
-  formValues: { [key: string]: string };
-  stepFormValues: Partial<TableListItem>;
-}
+    if (params.name !== undefined) {
+      extra['name.contains'] = params.name;
+    }
 
-/* eslint react/no-multi-comp:0 */
-@connect(
-  ({
-    ship,
-    loading,
-  }: {
-    ship: ShipStateType;
-    loading: {
-      models: {
-        [key: string]: boolean;
-      };
+    if (params.typeId !== undefined && params.typeId != -1) {
+      extra['typeId.equals'] = params.typeId;
+    }
+
+    const data = await listShip(current, pageSize, extra);
+
+    return {
+      success: true,
+      total: data.pagination.total,
+      data: data.list,
     };
-  }) => ({
-    ship,
-    loading: loading.models.ship,
-  }),
-)
-class TableList extends Component<TableListProps, TableListState> {
-  state: TableListState = {
-    modalVisible: false,
-    updateModalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
-    stepFormValues: {},
   };
 
-  columns: StandardTableColumnProps[] = [
+  const handleAddShip = () => {
+    dispatch(routerRedux.push('/ship/create'));
+  };
+
+  const handleUpdateShip = (id: number) => {
+    dispatch(routerRedux.push(`/ship/update/${id}`));
+  };
+
+  const handleInfoShip = (id: number) => {
+    dispatch(routerRedux.push(`/ship/profile/${id}`));
+  };
+
+  const columns: ProColumns<IShip>[] = [
     {
       title: '船舶名',
       dataIndex: 'name',
@@ -71,32 +71,59 @@ class TableList extends Component<TableListProps, TableListState> {
     {
       title: '类型',
       dataIndex: 'typeName',
+      hideInSearch: true,
     },
     {
       title: '船舶共有情况',
       dataIndex: 'shareInfo',
+      hideInSearch: true,
     },
     {
       title: '总吨数',
       dataIndex: 'grossTone',
       sorter: true,
       render: val => `${val} 吨`,
+      hideInSearch: true,
     },
     {
       title: '净吨数',
       dataIndex: 'netTone',
       sorter: true,
       render: val => `${val} 吨`,
+      hideInSearch: true,
+    },
+    {
+      title: '职位类型',
+      hideInTable: true,
+      hideInSearch: false,
+      dataIndex: 'typeId',
+      renderFormItem: (item, props) => {
+        return (
+          <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select.Option key={99} value={-1}>
+              不限类型
+            </Select.Option>
+            {shipTypes &&
+              shipTypes.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
+          </Select>
+        );
+      },
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleViewShip(record)}>详情</a>
+          <a onClick={() => handleInfoShip(record)}>详情</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateShip(record)}>修改</a>
+          <a onClick={() => handleUpdateShip(record)}>修改</a>
           <Divider type="vertical" />
-          <Popconfirm title="是否要删除此船舶？" onConfirm={() => this.handleDeleteShip(record)}>
+          <Popconfirm title="是否要删除此船舶？" onConfirm={() => handleDeleteShip(record)}>
             <a>删除</a>
           </Popconfirm>
         </Fragment>
@@ -104,186 +131,26 @@ class TableList extends Component<TableListProps, TableListState> {
     },
   ];
 
-  handleViewShip = (record: TableListItem) => {
-    this.props.dispatch(routerRedux.push(`/ship/profile/${record.id}`));
-  };
+  return (
+    <PageHeaderWrapper title="船舶列表">
+      <Card bordered={false}>
+        <ProTable<IShip>
+          actionRef={actionRef}
+          rowKey="id"
+          columns={columns}
+          //@ts-ignore
+          request={requestShipList}
+          dateFormatter="string"
+          toolBarRender={() => [
+            <Button type="primary" onClick={handleAddShip}>
+              <PlusOutlined />
+              新建船舶
+            </Button>,
+          ]}
+        />
+      </Card>
+    </PageHeaderWrapper>
+  );
+};
 
-  handleUpdateShip = (record: TableListItem) => {
-    this.props.dispatch(routerRedux.push(`/ship/update/${record.id}`));
-  };
-
-  handleDeleteShip = (record: TableListItem) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'ship/remove',
-      payload: record.id,
-      callback: () => {
-        message.success('船舶删除成功');
-      },
-    });
-  };
-
-  componentDidMount() {
-    this.props.dispatch({ type: 'ship/fetch' });
-    this.props.dispatch({ type: 'ship/fetchTypes' });
-  }
-
-  handleStandardTableChange = (
-    pagination: Partial<TableListPagination>,
-    filtersArg: Record<keyof TableListItem, string[]>,
-    sorter: SorterResult<TableListItem>,
-  ) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      page: pagination.current,
-      size: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-
-    if (sorter.field) {
-      // @ts-ignore
-      params.sort = `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`;
-    }
-
-    dispatch({
-      type: 'ship/fetch',
-      payload: params,
-    });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'ship/fetch',
-      payload: {},
-    });
-  };
-
-  handleSelectRows = (rows: TableListItem[]) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {};
-
-      if (fieldsValue.typeId !== undefined) {
-        values['typeId.equals'] = fieldsValue.typeId;
-      }
-
-      if (fieldsValue.name !== undefined) {
-        values['name.contains'] = fieldsValue.name;
-      }
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'ship/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleClickAdd = () => {
-    this.props.dispatch(routerRedux.push('/ship/create/'));
-  };
-
-  renderSimpleForm() {
-    const {
-      ship: { types },
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="船舶名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="船舶类型">
-              {getFieldDecorator('typeId')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {types &&
-                    types.map(val => (
-                      <Option value={val.id} key={val.id}>
-                        {val.name}
-                      </Option>
-                    ))}
-                </Select>,
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  render() {
-    const {
-      ship: { data },
-      loading,
-    } = this.props;
-
-    const { selectedRows } = this.state;
-
-    return (
-      <PageHeaderWrapper>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={this.handleClickAdd}>
-                新建
-              </Button>
-            </div>
-            <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data as TableListData}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
-          </div>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
-
-export default Form.create<TableListProps>()(TableList);
+export default ShipList;
