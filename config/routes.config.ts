@@ -10,7 +10,7 @@ export default [
         redirect: '/user/login',
       },
       {
-        name: 'login',
+        name: '用户登录',
         path: '/user/login',
         component: './user/login',
       },
@@ -102,12 +102,12 @@ export default [
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
             component: './ship/list',
           },
-          // {
-          //   name: '新建船舶',
-          //   path: '/ship/create',
-          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
-          //   component: './ship/create',
-          // },
+          {
+            name: '新建船舶',
+            path: '/ship/create',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './ship/create',
+          },
           // {
           //   name: '船舶详情',
           //   path: '/ship/profile/:id',

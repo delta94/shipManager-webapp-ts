@@ -1,5 +1,10 @@
 import request from '@/utils/request';
-import IShip, { IShipBusinessArea, IShipCertType } from '@/interfaces/IShip';
+import IShip, {
+  IShipBusinessArea,
+  IShipCertType,
+  IShipMaterial,
+  IShipType,
+} from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
 import ISailor from '@/interfaces/ISailor';
 
@@ -56,13 +61,13 @@ export async function updateShip(params: any) {
   });
 }
 
-export async function listShipTypes() {
+export async function listShipTypes(): Promise<IShipType[]> {
   return request('/api/ship-types', {
     method: 'GET',
   });
 }
 
-export async function listShipMaterial() {
+export async function listShipMaterial(): Promise<IShipMaterial[]> {
   return request('/api/ship-materials', {
     method: 'GET',
   });

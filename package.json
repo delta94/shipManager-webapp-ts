@@ -18,6 +18,7 @@
     "@ant-design/pro-table": "^v2.1.4",
     "@antv/data-set": "^0.11.1",
     "@types/ali-oss": "^6.0.4",
+    "@types/uuid": "^8.0.0",
     "@umijs/hooks": "^1.6.2",
     "ali-oss": "^6.1.1",
     "antd": "^4.0.0-rc.1",

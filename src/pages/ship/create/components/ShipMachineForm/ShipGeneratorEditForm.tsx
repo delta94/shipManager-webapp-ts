@@ -1,79 +1,74 @@
-import * as React from 'react';
-import Form from 'antd/es/form/Form';
-import FormItem from 'antd/es/form/FormItem';
-import TextArea from 'antd/es/input/TextArea';
-import Input from 'antd/es/input/Input';
-import { FormComponentProps } from 'antd/es/form';
+import React, { useCallback, useEffect } from 'react';
+import { Form, Input, Button, InputNumber } from 'antd';
 import { IShipGenerator } from '@/interfaces/IShip';
+import styles from '@/pages/ship/create/components/ShipMachineForm/index.less';
 
-interface ShipGeneratorEditFormProps extends FormComponentProps {
-  current: Partial<IShipGenerator> | undefined;
+interface ShipGeneratorEditFormProps {
+  current?: Partial<IShipGenerator>;
+  onSubmit(data: Partial<IShipGenerator>): Promise<any>;
+  onCancel(): void;
 }
 
-class ShipGeneratorEditForm extends React.Component<ShipGeneratorEditFormProps> {
-  formLayout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 13 },
-  };
+const ShipGeneratorEditForm: React.FC<ShipGeneratorEditFormProps> = ({
+  current,
+  onSubmit,
+  onCancel,
+}) => {
+  const [form] = Form.useForm();
 
-  render() {
-    const {
-      form: { getFieldDecorator },
-      current,
-    } = this.props;
+  const onResetForm = useCallback(() => {
+    form.resetFields();
+    onCancel();
+  }, []);
 
-    return (
-      <Form>
-        <FormItem label="发电机编号" {...this.formLayout}>
-          {getFieldDecorator('identityNumber', {
-            initialValue: current ? current.identityNumber : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入发电机编号',
-              },
-            ],
-          })(<Input placeholder="请输入发电机编号" />)}
-        </FormItem>
+  const onSubmitForm = useCallback(async () => {
+    try {
+      let values = await form.validateFields();
+      if (current && current.id) {
+        values.id = current.id;
+      }
+      onSubmit(values);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [current]);
 
-        <FormItem label="发电机种类" {...this.formLayout}>
-          {getFieldDecorator('modelType', {
-            initialValue: current ? current.modelType : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入发电机编号',
-              },
-            ],
-          })(<Input placeholder="请输入发电机种类" />)}
-        </FormItem>
+  useEffect(() => {
+    if (current) {
+      form.setFieldsValue(current);
+    }
+  }, [current]);
 
-        <FormItem label="发电机功率" {...this.formLayout}>
-          {getFieldDecorator('power', {
-            initialValue: current ? current.power : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入发电机功率',
-              },
-            ],
-          })(<Input placeholder="请输入发电机功率 (KW)" />)}
-        </FormItem>
+  return (
+    <div>
+      <Form layout="vertical" form={form}>
+        <Form.Item label="发电机编号" name="identityNumber">
+          <Input placeholder="请输入发电机编号" />
+        </Form.Item>
 
-        <FormItem {...this.formLayout} label="备注">
-          {getFieldDecorator('remark', {
-            rules: [
-              {
-                required: false,
-                message: '请输入备注',
-              },
-            ],
-            initialValue: current ? current.remark : '',
-          })(<TextArea rows={4} placeholder="请输入备注" />)}
-        </FormItem>
+        <Form.Item label="发电机种类" name="modelType">
+          <Input placeholder="请输入发电机种类" />
+        </Form.Item>
+
+        <Form.Item label="发电机功率" name="power">
+          <InputNumber placeholder="请输入发电机功率 (KW)" style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item label="备注" name="remark">
+          <Input.TextArea rows={4} placeholder="请输入备注" />
+        </Form.Item>
       </Form>
-    );
-  }
-}
 
-export default Form.create<ShipGeneratorEditFormProps>()(ShipGeneratorEditForm);
+      <div className={styles.footer}>
+        <Button className={styles.btn} size="middle" onClick={onResetForm}>
+          取消
+        </Button>
+        <Button className={styles.btn} type="primary" size="middle" onClick={onSubmitForm}>
+          保存
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default ShipGeneratorEditForm;

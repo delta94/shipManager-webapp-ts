@@ -1,31 +1,23 @@
 @import '~antd/es/style/themes/default.less';
 
-.editable {
-  td {
-    padding-top: 13px !important;
-    padding-bottom: 12.5px !important;
+.stepForm {
+  margin: 40px auto 0;
+}
+
+.stepFormText {
+  margin-bottom: 24px;
+  :global {
+    .ant-form-item-label,
+    .ant-form-item-control {
+      line-height: 22px;
+    }
   }
 }
 
-.card {
-  margin-bottom: 24px;
-}
-
-.heading {
-  margin: 0 0 16px 0;
-  font-size: 14px;
-  line-height: 22px;
-}
-
-.steps:global(.ant-steps) {
-  max-width: 750px;
-  margin: 12px auto;
-}
-
-.addBtn {
-  width: 100%;
-  margin-top: 12px;
-  margin-bottom: 24px;
+.result {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 0 8px;
 }
 
 .desc {

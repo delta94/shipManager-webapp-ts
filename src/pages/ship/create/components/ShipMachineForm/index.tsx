@@ -1,318 +1,261 @@
-import * as React from 'react';
-import { Card, Row, Form, Button, Divider, Popconfirm, Modal } from 'antd';
-import { FormComponentProps } from 'antd/es/form';
-import { Fragment } from 'react';
-import produce from 'immer';
-import uuidv1 from 'uuid/v1';
-import StandardTable from '@/components/StandardTable';
+import React, { useCallback, useState, useMemo } from 'react';
+import { Card, Divider, Button, Modal, Table, Popconfirm, Tag } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import styles from '../../style.less';
+import uuidv1 from 'uuid/v1';
 import IShip, { IShipGenerator, IShipHost } from '@/interfaces/IShip';
-import { TableListItem } from '../ShipPayloadTable/ShipCert.d';
-import ShipGeneratorEditForm from './ShipGeneratorEditForm';
 import ShipHostEditForm from './ShipHostEditForm';
-import IShipPayload from '@/interfaces/IShipPayload';
-import { ShipCreateStep } from '@/pages/ship/create';
+import ShipGeneratorEditForm from './ShipGeneratorEditForm';
+import { ShipCreateStep } from '@/pages/ship/create/types';
+import { TableListItem } from '@/pages/ship/createX/components/ShipPayloadTable/ShipCert';
 
-interface ShipMachineCreateProps extends FormComponentProps {
-  switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
+interface ShipMachineFormProps {
   ship: Partial<IShip>;
-}
-interface ShipMachineCreateState {
-  generators: Partial<IShipGenerator>[];
-  hosts: Partial<IShipHost>[];
-  hostVisible: boolean;
-  generatorVisible: boolean;
-  current: Partial<IShipGenerator> | Partial<IShipHost> | undefined;
+  switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
 }
 
-class ShipMachineForm extends React.Component<ShipMachineCreateProps, ShipMachineCreateState> {
-  constructor(props: ShipMachineCreateProps) {
-    super(props);
+const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep }) => {
+  const [generatorVisible, updateGeneratorVisible] = useState(false);
+  const [hostVisible, updateHostVisible] = useState(false);
 
-    if (this.props.ship) {
-      this.state = {
-        generators: this.props.ship.generators || [],
-        hosts: this.props.ship.hosts || [],
-        hostVisible: false,
-        generatorVisible: false,
-        current: undefined,
-      };
-    } else {
-      this.state = {
-        generators: [],
-        hosts: [],
-        hostVisible: false,
-        generatorVisible: false,
-        current: undefined,
-      };
-    }
-  }
+  const [currentGenerator, updateCurrentGenerator] = useState<Partial<IShipGenerator>>();
+  const [currentHost, updateCurrentHost] = useState<Partial<IShipHost>>();
 
-  generatorColumns = [
-    {
-      title: '发电机编号',
-      dataIndex: 'identityNumber',
-    },
-    {
-      title: '发电机种类',
-      dataIndex: 'modelType',
-    },
-    {
-      title: '发电机功率',
-      dataIndex: 'power',
-      render: (text: any) => `${text} 千瓦`,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-    },
-    {
-      title: '操作',
-      render: (text: any, record: TableListItem) => (
-        <Fragment>
-          <a onClick={() => this.handlePayloadUpdate(record, 'generator')}>修改</a>
-          <Divider type="vertical" />
-          <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRecordRemove(record, 'generator')}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        </Fragment>
-      ),
-    },
-  ];
+  const [generators, updateGenerators] = useState<Partial<IShipGenerator>[]>([]);
+  const [hosts, updateHosts] = useState<Partial<IShipHost>[]>([]);
 
-  hostColumns = [
-    {
-      title: '主机编号',
-      dataIndex: 'identityNumber',
-    },
-    {
-      title: '主机种类',
-      dataIndex: 'modelType',
-    },
-    {
-      title: '主机功率',
-      dataIndex: 'power',
-      render: (text: any) => `${text} 千瓦`,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-    },
-    {
-      title: '操作',
-      render: (text: any, record: TableListItem) => (
-        <Fragment>
-          <a onClick={() => this.handlePayloadUpdate(record, 'host')}>修改</a>
-          <Divider type="vertical" />
-          <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRecordRemove(record, 'host')}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        </Fragment>
-      ),
-    },
-  ];
-
-  generatorFormRef: any;
-
-  hostFormRef: any;
-
-  saveGeneratorFormRef = (formRef: any) => {
-    this.generatorFormRef = formRef;
-  };
-
-  saveHostFormRef = (formRef: any) => {
-    this.hostFormRef = formRef;
-  };
-
-  onPrev = () => {
-    this.props.switchToStep(ShipCreateStep.Basic, {
-      generators: this.state.generators,
-      hosts: this.state.hosts,
-    });
-  };
-
-  onNext = () => {
-    this.props.switchToStep(ShipCreateStep.Payload, {
-      generators: this.state.generators,
-      hosts: this.state.hosts,
-    });
-  };
-
-  onSelectRow = () => {};
-
-  handleCreateRecord = (type: string) => {
+  const onRecordUpdate = (record: any, type: string) => {
     if (type == 'generator') {
-      this.setState({ generatorVisible: true });
+      updateGeneratorVisible(true);
+      updateCurrentGenerator(record);
     }
     if (type == 'host') {
-      this.setState({ hostVisible: true });
+      updateHostVisible(true);
+      updateCurrentHost(record);
     }
   };
 
-  handlePayloadSubmit = (type: string) => {
-    const { form } = type === 'generator' ? this.generatorFormRef.props : this.hostFormRef.props;
+  const onRecordRemove = (record: any, type: string) => {
+    if (type == 'generator') {
+      let newGenerators = generators.filter(item => item.id != record.id);
+      updateGenerators([...newGenerators]);
+    }
+    if (type == 'host') {
+      let newHost = hosts.filter(item => item.id != record.id);
+      updateHosts([...newHost]);
+    }
+  };
 
-    form.validateFields((err: any, values: Partial<IShipPayload>) => {
-      if (err) return;
+  const onNext = useCallback(() => {
+    switchToStep(ShipCreateStep.Payload, {});
+  }, []);
 
-      const newState = produce(this.state, (draft: ShipMachineCreateState) => {
-        if (this.state.current) {
-          // @ts-ignore
-          const { id } = this.state.current;
+  const onPrev = useCallback(() => {
+    switchToStep(ShipCreateStep.Basic, {});
+  }, []);
 
-          if (type === 'generator') {
-            const index = draft.generators.findIndex(item => item.id == id);
-            draft.generators[index] = values;
-          }
-          if (type === 'host') {
-            const index = draft.hosts.findIndex(item => item.id == id);
-            draft.hosts[index] = values;
-          }
-        } else {
-          // @ts-ignore
-          values.id = uuidv1();
-          if (type === 'generator') {
-            draft.generators.unshift(values);
-          }
-          if (type === 'host') {
-            draft.hosts.unshift(values);
-          }
+  const hostColumns = useMemo(() => {
+    return [
+      {
+        title: '主机编号',
+        dataIndex: 'identityNumber',
+      },
+      {
+        title: '主机种类',
+        dataIndex: 'modelType',
+        render: (text: string) => <Tag color="#108ee9">{text}</Tag>,
+      },
+      {
+        title: '主机功率',
+        dataIndex: 'power',
+        render: (text: string) => `${text} 千瓦`,
+      },
+      {
+        title: '备注',
+        dataIndex: 'remark',
+      },
+      {
+        title: '操作',
+        render: (text: any, record: TableListItem) => (
+          <>
+            <a onClick={() => onRecordUpdate(record, 'host')}>修改</a>
+            <Divider type="vertical" />
+            <span>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => onRecordRemove(record, 'host')}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          </>
+        ),
+      },
+    ];
+  }, [hosts]);
+
+  const generatorColumns = useMemo(() => {
+    return [
+      {
+        title: '发电机编号',
+        dataIndex: 'identityNumber',
+      },
+      {
+        title: '发电机种类',
+        dataIndex: 'modelType',
+        render: (text: string) => <Tag color="#108ee9">{text}</Tag>,
+      },
+      {
+        title: '发电机功率',
+        dataIndex: 'power',
+        render: (text: string) => `${text} 千瓦`,
+      },
+      {
+        title: '备注',
+        dataIndex: 'remark',
+      },
+      {
+        title: '操作',
+        render: (text: any, record: IShipGenerator) => (
+          <>
+            <a onClick={() => onRecordUpdate(record, 'generator')}>修改</a>
+            <Divider type="vertical" />
+            <span>
+              <Popconfirm
+                title="是否要删除此行？"
+                onConfirm={() => onRecordRemove(record, 'generator')}
+              >
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          </>
+        ),
+      },
+    ];
+  }, [generators]);
+
+  const onSubmitHost = useCallback(
+    async (host: Partial<IShipHost>) => {
+      updateHostVisible(false);
+      updateCurrentHost({});
+
+      if (host.id) {
+        let idx = hosts.findIndex(data => host.id == data.id);
+        if (idx > -1) {
+          hosts[idx] = host;
+          updateHosts([...hosts]);
         }
-        draft.current = undefined;
-        draft.generatorVisible = false;
-        draft.hostVisible = false;
-      });
-
-      this.setState(newState);
-      form.resetFields();
-    });
-  };
-
-  handlePayloadCancel = () => {
-    this.setState({
-      generatorVisible: false,
-      hostVisible: false,
-      current: undefined,
-    });
-  };
-
-  handlePayloadUpdate = (record: TableListItem, type: string) => {
-    const newState = produce(this.state, (draft: ShipMachineCreateState) => {
-      draft.current = record;
-      if (type === 'generator') {
-        draft.generatorVisible = true;
+      } else {
+        host.id = uuidv1();
+        updateHosts([...hosts, host]);
       }
-      if (type === 'host') {
-        draft.hostVisible = true;
+    },
+    [hosts],
+  );
+
+  const onSubmitGenerator = useCallback(
+    async (generator: Partial<IShipGenerator>) => {
+      updateGeneratorVisible(false);
+      updateCurrentGenerator({});
+
+      if (generator.id) {
+        let idx = generators.findIndex(data => generator.id == data.id);
+        if (idx > -1) {
+          generators[idx] = generator;
+          updateGenerators([...generators]);
+        }
+      } else {
+        generator.id = uuidv1();
+        updateGenerators([...generators, generator]);
       }
-    });
-    this.setState(newState);
-  };
+    },
+    [generators],
+  );
 
-  handleRecordRemove = (record: TableListItem, type: string) => {
-    const newState = produce(this.state, (draft: ShipMachineCreateState) => {
-      if (type === 'generator') {
-        draft.generators = draft.generators.filter(item => item.id != record.id);
-      }
-      if (type === 'host') {
-        draft.hosts = draft.hosts.filter(item => item.id != record.id);
-      }
-    });
-    this.setState(newState);
-  };
+  return (
+    <>
+      <Card title="船舶发电机" bordered={true}>
+        <Table
+          dataSource={generators as IShipGenerator[]}
+          columns={generatorColumns}
+          key="id"
+          pagination={false}
+        />
+        <Button
+          type="dashed"
+          className={styles.addBtn}
+          icon={<PlusOutlined />}
+          onClick={() => updateGeneratorVisible(true)}
+        >
+          添加发电机信息
+        </Button>
+      </Card>
 
-  render() {
-    return (
-      <div>
-        <Card title="发电机信息" className={styles.card} bordered={false}>
-          <Button
-            type="dashed"
-            onClick={() => this.handleCreateRecord('generator')}
-            style={{ width: '100%', marginTop: 12, marginBottom: 24 }}
-            icon="plus"
-          >
-            添加发电机信息
-          </Button>
+      <div style={{ margin: '20px 0 24px' }} />
 
-          <StandardTable
-            rowKey="id"
-            onSelectRow={this.onSelectRow}
-            selectedRows={[]}
-            columns={this.generatorColumns}
-            data={{ list: this.state.generators as TableListItem[], pagination: false }}
-          />
+      <Card title="船舶主机" bordered={true}>
+        <Table
+          dataSource={hosts as IShipHost[]}
+          columns={hostColumns}
+          key="id"
+          pagination={false}
+        />
+        <Button
+          type="dashed"
+          className={styles.addBtn}
+          icon={<PlusOutlined />}
+          onClick={() => updateHostVisible(true)}
+        >
+          添加主机信息
+        </Button>
+      </Card>
 
-          <Modal
-            title="编辑发动机"
-            width={640}
-            bodyStyle={{ padding: '28px 0' }}
-            destroyOnClose
-            visible={this.state.generatorVisible}
-            onOk={() => this.handlePayloadSubmit('generator')}
-            onCancel={this.handlePayloadCancel}
-          >
-            <ShipGeneratorEditForm
-              wrappedComponentRef={this.saveGeneratorFormRef}
-              current={this.state.current}
-            />
-          </Modal>
-        </Card>
+      <div style={{ margin: '20px 0 24px' }} />
 
-        <Card title="主机信息" className={styles.card} bordered={false}>
-          <Button
-            type="dashed"
-            onClick={() => this.handleCreateRecord('host')}
-            style={{ width: '100%', marginTop: 12, marginBottom: 24 }}
-            icon="plus"
-          >
-            添加主机信息
-          </Button>
-
-          <StandardTable
-            rowKey="id"
-            onSelectRow={this.onSelectRow}
-            selectedRows={[]}
-            columns={this.hostColumns}
-            data={{ list: this.state.hosts as TableListItem[], pagination: false }}
-          />
-
-          <Modal
-            title="编辑主机"
-            width={640}
-            bodyStyle={{ padding: '28px 0' }}
-            destroyOnClose
-            visible={this.state.hostVisible}
-            onOk={() => this.handlePayloadSubmit('host')}
-            onCancel={this.handlePayloadCancel}
-          >
-            <ShipHostEditForm
-              wrappedComponentRef={this.saveHostFormRef}
-              current={this.state.current}
-            />
-          </Modal>
-        </Card>
-
-        <Row style={{ marginTop: 12 }}>
-          <Button type="primary" onClick={this.onNext} style={{ float: 'right' }}>
+      <Card bordered={false}>
+        <div style={{ margin: '12px 0', width: '100%' }}>
+          <Button type="primary" onClick={onNext} style={{ marginRight: 12, float: 'right' }}>
             下一步
           </Button>
-          <Button onClick={this.onPrev} style={{ marginRight: 8, float: 'right' }}>
+          <Button onClick={onPrev} style={{ marginRight: 12, float: 'right' }}>
             上一步
           </Button>
-        </Row>
-      </div>
-    );
-  }
-}
+        </div>
+        <div className={styles.desc}>
+          <h3>说明</h3>
+          <h4>船舶基本信息</h4>
+          <p>如果需要，这里可以放一些关于录入船舶的常见问题说明</p>
+        </div>
+      </Card>
 
-export default Form.create<ShipMachineCreateProps>()(ShipMachineForm);
+      <Modal
+        title="编辑主机"
+        width={640}
+        destroyOnClose
+        visible={hostVisible}
+        footer={null}
+        onCancel={() => updateHostVisible(false)}
+      >
+        <ShipHostEditForm
+          current={currentHost}
+          onCancel={() => updateHostVisible(false)}
+          onSubmit={onSubmitHost}
+        />
+      </Modal>
+
+      <Modal
+        title="编辑发电机"
+        width={640}
+        destroyOnClose
+        visible={generatorVisible}
+        footer={null}
+        onCancel={() => updateGeneratorVisible(false)}
+      >
+        <ShipGeneratorEditForm
+          current={currentGenerator}
+          onSubmit={onSubmitGenerator}
+          onCancel={() => updateGeneratorVisible(false)}
+        />
+      </Modal>
+    </>
+  );
+};
+
+export default ShipMachineForm;

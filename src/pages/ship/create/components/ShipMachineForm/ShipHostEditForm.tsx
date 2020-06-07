@@ -1,79 +1,70 @@
-import * as React from 'react';
-import Form from 'antd/es/form/Form';
-import FormItem from 'antd/es/form/FormItem';
-import TextArea from 'antd/es/input/TextArea';
-import Input from 'antd/es/input/Input';
-import { FormComponentProps } from 'antd/es/form';
-import { IShipHost } from '@/interfaces/IShip';
+import React, { useCallback, useEffect } from 'react';
+import { IShipHost, ShipHostLabels } from '@/interfaces/IShip';
+import { Input, Form, Button, InputNumber } from 'antd';
+import styles from './index.less';
 
-interface ShipHostEditFormProps extends FormComponentProps {
-  current: Partial<IShipHost> | undefined;
+interface ShipHostEditFormProps {
+  current?: Partial<IShipHost>;
+  onSubmit(data: Partial<IShipHost>): Promise<any>;
+  onCancel(): void;
 }
 
-class ShipHostEditForm extends React.Component<ShipHostEditFormProps> {
-  formLayout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 13 },
-  };
+const ShipHostEditForm: React.FC<ShipHostEditFormProps> = ({ current, onSubmit, onCancel }) => {
+  const [form] = Form.useForm();
 
-  render() {
-    const {
-      form: { getFieldDecorator },
-      current,
-    } = this.props;
+  const onResetForm = useCallback(() => {
+    form.resetFields();
+    onCancel();
+  }, []);
 
-    return (
-      <Form>
-        <FormItem label="主机编号" {...this.formLayout}>
-          {getFieldDecorator('identityNumber', {
-            initialValue: current ? current.identityNumber : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入主机编号',
-              },
-            ],
-          })(<Input placeholder="请输入主机编号" />)}
-        </FormItem>
+  const onSubmitForm = useCallback(async () => {
+    try {
+      let values = await form.validateFields();
+      if (current && current.id) {
+        values.id = current.id;
+      }
+      onSubmit(values);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [current]);
 
-        <FormItem label="主机种类" {...this.formLayout}>
-          {getFieldDecorator('modelType', {
-            initialValue: current ? current.modelType : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入主机编号',
-              },
-            ],
-          })(<Input placeholder="请输入主机种类" />)}
-        </FormItem>
+  useEffect(() => {
+    if (current) {
+      form.setFieldsValue(current);
+    }
+  }, [current]);
 
-        <FormItem label="主机功率" {...this.formLayout}>
-          {getFieldDecorator('power', {
-            initialValue: current ? current.power : '',
-            rules: [
-              {
-                required: true,
-                message: '请输入主机功率',
-              },
-            ],
-          })(<Input placeholder="请输入主机功率 (KW)" />)}
-        </FormItem>
+  return (
+    <div>
+      <Form layout="vertical" form={form}>
+        <Form.Item label={ShipHostLabels.identityNumber} name="identityNumber">
+          <Input placeholder="请输入主机编号" />
+        </Form.Item>
 
-        <FormItem {...this.formLayout} label="备注">
-          {getFieldDecorator('remark', {
-            rules: [
-              {
-                required: false,
-                message: '请输入备注',
-              },
-            ],
-            initialValue: current ? current.remark : '',
-          })(<TextArea rows={4} placeholder="请输入备注" />)}
-        </FormItem>
+        <Form.Item label={ShipHostLabels.modelType} name="modelType">
+          <Input placeholder="请输入主机种类" />
+        </Form.Item>
+
+        <Form.Item label={ShipHostLabels.power} name="power">
+          <InputNumber placeholder="请输入主机功率 (KW)" style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item label={ShipHostLabels.remark} name="remark">
+          <Input.TextArea rows={4} placeholder="请输入备注" />
+        </Form.Item>
       </Form>
-    );
-  }
-}
 
-export default Form.create<ShipHostEditFormProps>()(ShipHostEditForm);
+      <div className={styles.footer}>
+        <Button className={styles.btn} size="middle" onClick={onResetForm}>
+          取消
+        </Button>
+        <Button className={styles.btn} type="primary" size="middle" onClick={onSubmitForm}>
+          保存
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default ShipHostEditForm;

@@ -75,6 +75,7 @@ export interface IShipCertificate {
 }
 
 export interface IShipGenerator {
+  id: number;
   shipId: number;
   remark: string;
   power: number;
@@ -90,6 +91,20 @@ export interface IShipHost {
   power: number;
   remark: string;
 }
+
+export const ShipGenerator = {
+  identityNumber: '发动机编号',
+  modelType: '发动机种类',
+  power: '发动机功率',
+  remark: '备注',
+}
+
+export const ShipHostLabels = {
+  identityNumber: '主机编号',
+  modelType: '主机种类',
+  power: '主机功率',
+  remark: '备注',
+};
 
 export const ShipFieldLabels = {
   name: '船舶名',

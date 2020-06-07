@@ -1,211 +1,67 @@
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, Steps } from 'antd';
-import React, { Component } from 'react';
-import { omit } from 'lodash';
-
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { connect } from 'dva';
+import styles from './style.less';
 
-import { FormComponentProps } from 'antd/es/form';
-import { Dispatch } from 'redux';
-import { Moment } from 'moment';
 import ShipBasicForm from './components/ShipBasicForm';
 import ShipPayloadForm from './components/ShipPayloadForm';
 import ShipCertForm from './components/ShipCertForm';
 import ShipMachineForm from './components/ShipMachineForm';
 import ShipSailorForm from './components/ShipSailorForm';
-import ShipCreateResultPage from './components/ShipCreatedPage';
+import ShipResultPage from './components/ShipResultPage';
+import IShip from '@/interfaces/IShip';
+import { ShipCreateStep } from './types';
 
-import { ShipStateType } from '@/models/ship';
-import IShip, {
-  IShipBusinessArea,
-  IShipCertType,
-  IShipMaterial,
-  IShipType,
-} from '@/interfaces/IShip';
-import styles from './style.less';
+const ShipCreate: React.FC = () => {
+  const [currentStep, updateCurrentStep] = useState(ShipCreateStep.Machine);
+  const [ship, updateShip] = useState<Partial<IShip>>({});
 
-import { SailorModelState } from '@/models/sailor';
-import { ISailorPosition } from '@/interfaces/ISailor';
+  const switchToStep = useCallback((index: ShipCreateStep, shipData: Partial<IShip>) => {
+    updateShip({ ...ship, ...shipData });
+    updateCurrentStep(index);
+  }, []);
 
-const { Step } = Steps;
+  const resetStepForm = useCallback(() => {
+    updateShip({});
+    updateCurrentStep(ShipCreateStep.Basic);
+  }, []);
 
-export enum ShipCreateStep {
-  Basic,
-  Machine,
-  Payload,
-  Certificate,
-  Sailor,
-  Result,
-}
+  const onCreateShip = useCallback(() => {}, []);
 
-interface ShipCreateState {
-  current: ShipCreateStep;
-  ship: Partial<IShip>;
-}
-
-interface ShipCreateProps extends FormComponentProps {
-  dispatch: Dispatch<any>;
-  loading: boolean;
-  types: IShipType[];
-  materials: IShipMaterial[];
-  businessAreas: IShipBusinessArea[];
-  certificateTypes: IShipCertType[];
-  sailorPosition: ISailorPosition[];
-}
-
-@connect(
-  ({
-    ship,
-    sailor,
-    loading,
-  }: {
-    ship: ShipStateType;
-    sailor: SailorModelState;
-    loading: { effects: { [key: string]: boolean } };
-  }) => ({
-    types: ship.types,
-    materials: ship.materials,
-    businessAreas: ship.businessAreas,
-    certificateTypes: ship.certificateTypes,
-    sailorPosition: sailor.positions,
-    loading: loading.effects['ship/create'],
-  }),
-)
-class ShipCreate extends Component<ShipCreateProps, ShipCreateState> {
-  state = {
-    current: ShipCreateStep.Basic,
-    ship: {},
-  };
-
-  componentDidMount() {
-    this.props.dispatch({ type: 'ship/fetchTypes' });
-    this.props.dispatch({ type: 'ship/fetchBusinessAreas' });
-    this.props.dispatch({ type: 'ship/fetchMaterial' });
-    this.props.dispatch({ type: 'ship/fetchCertificateType' });
-    this.props.dispatch({ type: 'sailor/fetchPositionTypes' });
-  }
-
-  switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
-    const ship = { ...this.state.ship, ...shipData };
-    this.setState({ current: index, ship });
-  };
-
-  handleCreateShip = (shipData: Partial<IShip>) => {
-    const finalShipData = { ...this.state.ship, ...shipData };
-
-    if (finalShipData.assembleAt) {
-      finalShipData.assembleAt = (finalShipData.assembleAt as Moment).format('YYYY-MM-DD');
+  const stepComponent = useMemo(() => {
+    if (currentStep === ShipCreateStep.Basic) {
+      return <ShipBasicForm ship={ship} switchToStep={switchToStep} />;
+    } else if (currentStep === ShipCreateStep.Machine) {
+      return <ShipMachineForm ship={ship} switchToStep={switchToStep} />;
+    } else if (currentStep === ShipCreateStep.Payload) {
+      return <ShipPayloadForm ship={ship} switchToStep={switchToStep} />;
+    } else if (currentStep === ShipCreateStep.Certificate) {
+      return <ShipCertForm ship={ship} switchToStep={switchToStep} />;
+    } else if (currentStep === ShipCreateStep.Sailor) {
+      return <ShipSailorForm ship={ship} switchToStep={switchToStep} onCreateShip={onCreateShip} />;
+    } else if (currentStep === ShipCreateStep.Result) {
+      return <ShipResultPage ship={ship} onReset={resetStepForm} />;
     }
+    return null;
+  }, [currentStep, ship]);
 
-    if (finalShipData.buildAt) {
-      finalShipData.buildAt = (finalShipData.buildAt as Moment).format('YYYY-MM-DD');
-    }
-
-    if (finalShipData.certificates) {
-      // @ts-ignore
-      finalShipData.certificates = finalShipData.certificates.map(item => omit(item, 'id'));
-    }
-
-    if (finalShipData.generators) {
-      // @ts-ignore
-      finalShipData.generators = finalShipData.generators.map(item => omit(item, 'id'));
-    }
-
-    if (finalShipData.hosts) {
-      // @ts-ignore
-      finalShipData.hosts = finalShipData.hosts.map(item => omit(item, 'id'));
-    }
-
-    if (finalShipData.payloads) {
-      // @ts-ignore
-      finalShipData.payloads = finalShipData.payloads.map(item => omit(item, 'id'));
-    }
-
-    this.props.dispatch({
-      type: 'ship/create',
-      payload: finalShipData,
-      callback: () => {
-        this.setState({ current: ShipCreateStep.Result, ship: finalShipData });
-      },
-    });
-  };
-
-  resetStepForm = () => {
-    this.setState({
-      current: ShipCreateStep.Basic,
-      ship: {},
-    });
-  };
-
-  render() {
-    const { materials, types, businessAreas, certificateTypes, sailorPosition } = this.props;
-    let stepComponent;
-
-    if (this.state.current === ShipCreateStep.Basic) {
-      stepComponent = (
-        <ShipBasicForm
-          ship={this.state.ship}
-          materials={materials}
-          types={types}
-          businessAreas={businessAreas}
-          switchToStep={this.switchToStep}
-        />
-      );
-    } else if (this.state.current === ShipCreateStep.Machine) {
-      stepComponent = <ShipMachineForm ship={this.state.ship} switchToStep={this.switchToStep} />;
-    } else if (this.state.current === ShipCreateStep.Payload) {
-      stepComponent = (
-        <ShipPayloadForm
-          ship={this.state.ship}
-          businessArea={businessAreas}
-          switchToStep={this.switchToStep}
-        />
-      );
-    } else if (this.state.current === ShipCreateStep.Certificate) {
-      stepComponent = (
-        <ShipCertForm
-          ship={this.state.ship}
-          certificateTypes={certificateTypes}
-          switchToStep={this.switchToStep}
-        />
-      );
-    } else if (this.state.current === ShipCreateStep.Sailor) {
-      stepComponent = (
-        <ShipSailorForm
-          ship={this.state.ship}
-          sailorPosition={sailorPosition}
-          switchToStep={this.switchToStep}
-          onCreateShip={this.handleCreateShip}
-        />
-      );
-    } else if (this.state.current === ShipCreateStep.Result) {
-      stepComponent = (
-        <ShipCreateResultPage
-          ship={this.state.ship}
-          onReset={this.resetStepForm}
-          dispatch={this.props.dispatch}
-        />
-      );
-    }
-
-    return (
-      <PageHeaderWrapper title="新船舶信息" content="按表单提示填入相应船舶信息">
-        <Card bordered={false}>
-          <>
-            <Steps current={this.state.current} className={styles.steps}>
-              <Step title="基本信息" />
-              <Step title="船机信息" />
-              <Step title="载重吨信息" />
-              <Step title="证书信息" />
-              <Step title="船员信息" />
-              <Step title="完成" />
-            </Steps>
-            {stepComponent}
-          </>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
-}
+  return (
+    <PageHeaderWrapper content="按表单提示填入相应船舶信息">
+      <Card bordered={false}>
+        <>
+          <Steps current={currentStep} className={styles.steps}>
+            <Steps.Step title="基本信息" />
+            <Steps.Step title="船机信息" />
+            <Steps.Step title="载重吨信息" />
+            <Steps.Step title="证书信息" />
+            <Steps.Step title="船员信息" />
+            <Steps.Step title="完成" />
+          </Steps>
+        </>
+      </Card>
+      <div style={{ marginTop: 24 }}>{stepComponent}</div>
+    </PageHeaderWrapper>
+  );
+};
 
 export default ShipCreate;
