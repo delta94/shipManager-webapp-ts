@@ -16,10 +16,10 @@ const ShipCreate: React.FC = () => {
   const [currentStep, updateCurrentStep] = useState(ShipCreateStep.Machine);
   const [ship, updateShip] = useState<Partial<IShip>>({});
 
-  const switchToStep = useCallback((index: ShipCreateStep, shipData: Partial<IShip>) => {
+  const switchToStep = (index: ShipCreateStep, shipData: Partial<IShip>) => {
     updateShip({ ...ship, ...shipData });
     updateCurrentStep(index);
-  }, []);
+  };
 
   const resetStepForm = useCallback(() => {
     updateShip({});
@@ -30,17 +30,24 @@ const ShipCreate: React.FC = () => {
 
   const stepComponent = useMemo(() => {
     if (currentStep === ShipCreateStep.Basic) {
-      return <ShipBasicForm ship={ship} switchToStep={switchToStep} />;
+      return <ShipBasicForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} />;
     } else if (currentStep === ShipCreateStep.Machine) {
-      return <ShipMachineForm ship={ship} switchToStep={switchToStep} />;
+      return <ShipMachineForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} />;
     } else if (currentStep === ShipCreateStep.Payload) {
-      return <ShipPayloadForm ship={ship} switchToStep={switchToStep} />;
+      return <ShipPayloadForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} />;
     } else if (currentStep === ShipCreateStep.Certificate) {
-      return <ShipCertForm ship={ship} switchToStep={switchToStep} />;
+      return <ShipCertForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} />;
     } else if (currentStep === ShipCreateStep.Sailor) {
-      return <ShipSailorForm ship={ship} switchToStep={switchToStep} onCreateShip={onCreateShip} />;
+      return (
+        <ShipSailorForm
+          ship={ship}
+          currentStep={currentStep}
+          switchToStep={switchToStep}
+          onCreateShip={onCreateShip}
+        />
+      );
     } else if (currentStep === ShipCreateStep.Result) {
-      return <ShipResultPage ship={ship} onReset={resetStepForm} />;
+      return <ShipResultPage ship={ship} currentStep={currentStep} onReset={resetStepForm} />;
     }
     return null;
   }, [currentStep, ship]);

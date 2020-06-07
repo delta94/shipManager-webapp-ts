@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import { Card, Divider, Button, Modal, Table, Popconfirm, Tag } from 'antd';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Card, Divider, Modal, Popconfirm, Table, Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import styles from '../../style.less';
 import uuidv1 from 'uuid/v1';
@@ -11,10 +11,11 @@ import { TableListItem } from '@/pages/ship/createX/components/ShipPayloadTable/
 
 interface ShipMachineFormProps {
   ship: Partial<IShip>;
+  currentStep: ShipCreateStep;
   switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
 }
 
-const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep }) => {
+const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep, currentStep }) => {
   const [generatorVisible, updateGeneratorVisible] = useState(false);
   const [hostVisible, updateHostVisible] = useState(false);
 
@@ -23,6 +24,18 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep })
 
   const [generators, updateGenerators] = useState<Partial<IShipGenerator>[]>([]);
   const [hosts, updateHosts] = useState<Partial<IShipHost>[]>([]);
+
+  useEffect(() => {
+    if (ship && currentStep == ShipCreateStep.Machine) {
+      if (ship.hosts && ship.hosts.length > 0) {
+        updateHosts([...ship.hosts]);
+      }
+
+      if (ship.generators && ship.generators.length > 0) {
+        updateGenerators([...ship.generators]);
+      }
+    }
+  }, [ship, currentStep]);
 
   const onRecordUpdate = (record: any, type: string) => {
     if (type == 'generator') {
@@ -47,12 +60,26 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep })
   };
 
   const onNext = useCallback(() => {
-    switchToStep(ShipCreateStep.Payload, {});
-  }, []);
+    let shipData: Partial<IShip> = { generators: [], hosts: [] };
+    if (hosts && hosts.length > 0) {
+      shipData.hosts = [...hosts];
+    }
+    if (generators && generators.length > 0) {
+      shipData.generators = [...generators];
+    }
+    switchToStep(ShipCreateStep.Payload, shipData);
+  }, [hosts, generators]);
 
   const onPrev = useCallback(() => {
-    switchToStep(ShipCreateStep.Basic, {});
-  }, []);
+    let shipData: Partial<IShip> = { generators: [], hosts: [] };
+    if (hosts && hosts.length > 0) {
+      shipData.hosts = [...hosts];
+    }
+    if (generators && generators.length > 0) {
+      shipData.generators = [...generators];
+    }
+    switchToStep(ShipCreateStep.Basic, shipData);
+  }, [hosts, generators]);
 
   const hostColumns = useMemo(() => {
     return [

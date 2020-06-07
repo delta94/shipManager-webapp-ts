@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import IShip, { ShipFieldLabels as fieldLabels } from '@/interfaces/IShip';
 import styles from './index.less';
 import { useRequest } from '@umijs/hooks';
@@ -8,20 +8,21 @@ import { listShipMaterial, listShipTypes } from '@/services/ship';
 
 interface ShipBasicFormProps {
   ship: Partial<IShip>;
+  currentStep: ShipCreateStep;
   switchToStep(index: ShipCreateStep, ship: Partial<IShip>): void;
 }
 
-const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, switchToStep }) => {
+const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, switchToStep, currentStep }) => {
   const [form] = Form.useForm();
 
-  const onValidateForm = useCallback(async () => {
+  const onValidateForm = async () => {
     try {
       let values = await form.validateFields();
       switchToStep(ShipCreateStep.Machine, values);
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  };
 
   const { data: shipTypes } = useRequest(listShipTypes, {
     manual: false,
@@ -32,6 +33,12 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, switchToStep }) => 
     manual: false,
     cacheKey: 'ship_material',
   });
+
+  useEffect(() => {
+    if (ship && currentStep == ShipCreateStep.Basic) {
+      form.setFieldsValue(ship);
+    }
+  }, [currentStep, ship]);
 
   return (
     <>
