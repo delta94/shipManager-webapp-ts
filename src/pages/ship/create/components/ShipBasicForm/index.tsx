@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import IShip, { ShipFieldLabels as fieldLabels } from '@/interfaces/IShip';
 import styles from './index.less';
 import { useRequest } from '@umijs/hooks';

@@ -49,7 +49,7 @@ export default {
   contentWidth: 'Fluid',
   fixedHeader: true,
   autoHideHeader: false,
-  fixSiderbar: false,
+  fixSiderbar: true,
   colorWeak: false,
   menu: {
     locale: false,
