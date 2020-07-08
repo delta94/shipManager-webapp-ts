@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Table } from 'antd';
 import { connect } from 'dva';
 import { Dispatch } from 'redux';
@@ -7,49 +7,37 @@ import { TableListPagination } from '@/pages/sailor/list/sailor';
 import ISailor from '@/interfaces/ISailor';
 
 interface SailorListTableProps {
-  previousSelectedKeys?: any[]
-  sailor?: SailorModelState
-  loading?: boolean
+  previousSelectedKeys?: any[];
+  sailor?: SailorModelState;
+  loading?: boolean;
   dispatch?: Dispatch<any>;
-  onChange(sailors: Partial<ISailor>[]): void
+  onChange(sailors: Partial<ISailor>[]): void;
 }
 
 interface SailorListTableState {
-  selectedRowKeys: any[]
+  selectedRowKeys: any[];
 }
 
-@connect(
-  ({
-     sailor,
-     loading,
-   }: {
-    sailor: SailorModelState;
-    loading: {
-      models: {
-        [key: string]: boolean;
-      };
-    };
-  }) => ({
-    sailor,
-    loading: loading.models.ship,
-  }),
-)
+@connect(({ sailor, loading }: { sailor: SailorModelState; loading: { models: { [key: string]: boolean } } }) => ({
+  sailor,
+  loading: loading.models.ship,
+}))
 class SailorListTable extends React.Component<SailorListTableProps, SailorListTableState> {
   constructor(props: SailorListTableProps) {
-    super(props)
+    super(props);
 
     if (props.previousSelectedKeys && props.previousSelectedKeys.length > 0) {
       this.state = {
         selectedRowKeys: props.previousSelectedKeys,
-      }
+      };
     } else {
       this.state = {
         selectedRowKeys: [],
-      }
+      };
     }
   }
 
-  columns= [
+  columns = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -80,15 +68,16 @@ class SailorListTable extends React.Component<SailorListTableProps, SailorListTa
       page: pagination.current,
       size: pagination.pageSize,
     };
-    dispatch && dispatch({
-      type: 'sailor/fetch',
-      payload: params,
-    });
+    dispatch &&
+      dispatch({
+        type: 'sailor/fetch',
+        payload: params,
+      });
   };
 
   onSelectChange = (selectedRowKeys: any[], selectedRows: any[]) => {
     this.setState({ selectedRowKeys });
-    this.props.onChange(selectedRows)
+    this.props.onChange(selectedRows);
   };
 
   componentDidMount() {
@@ -109,9 +98,7 @@ class SailorListTable extends React.Component<SailorListTableProps, SailorListTa
     return (
       <>
         <div style={{ marginBottom: 16 }}>
-          <span style={{ marginLeft: 24 }}>
-            选择了 {hasSelected ? ` ${selectedRowKeys.length} ` : 0} 名船员
-          </span>
+          <span style={{ marginLeft: 24 }}>选择了 {hasSelected ? ` ${selectedRowKeys.length} ` : 0} 名船员</span>
         </div>
         <Table
           rowKey="id"
@@ -124,9 +111,8 @@ class SailorListTable extends React.Component<SailorListTableProps, SailorListTa
           onChange={this.handleStandardTableChange}
         />
       </>
-
     );
   }
 }
 
-export default SailorListTable
+export default SailorListTable;

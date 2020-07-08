@@ -30,9 +30,7 @@ const SailorDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match: {
       <Card bordered={false}>
         <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
           <Descriptions.Item label="船员名">{sailor?.name}</Descriptions.Item>
-          <Descriptions.Item label="是否高级船员">
-            {sailor?.isAdvanced ? '是' : '否'}
-          </Descriptions.Item>
+          <Descriptions.Item label="是否高级船员">{sailor?.isAdvanced ? '是' : '否'}</Descriptions.Item>
           <Descriptions.Item label="身份证号码">{sailor?.identityNumber}</Descriptions.Item>
           <Descriptions.Item label="职位">{sailor?.positionName}</Descriptions.Item>
           <Descriptions.Item label="住址">{sailor?.address}</Descriptions.Item>

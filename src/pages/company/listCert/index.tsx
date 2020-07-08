@@ -3,7 +3,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
-import { useDispatch, routerRedux } from 'dva'
+import { useDispatch, routerRedux } from 'dva';
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { deleteCompanyCert, listCompanyCert, listCompanyCertType } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';
@@ -86,13 +86,13 @@ const CompanyCertList: React.FC = () => {
               不限证书类型
             </Select.Option>
             {data &&
-            data.map((item, index) => {
-              return (
-                <Select.Option value={item.id} key={index}>
-                  {item.name}
-                </Select.Option>
-              );
-            })}
+              data.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
           </Select>
         );
       },

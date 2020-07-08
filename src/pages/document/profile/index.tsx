@@ -7,12 +7,10 @@ import { Descriptions, Divider, Typography, Card, List } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import OSSClient from '@/utils/OSSClient';
 import { bytesToSize } from '@/utils/utils';
-import {infoCompanySheet} from "@/services/sheet";
-import {ICompanySheet} from "@/interfaces/ICompanySheet";
+import { infoCompanySheet } from '@/services/sheet';
+import { ICompanySheet } from '@/interfaces/ICompanySheet';
 
-const CompanySheetProfile: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match: { params },
-}) => {
+const CompanySheetProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   var { data } = useRequest(() => infoCompanySheet(parseInt(params.id)), {
     cacheKey: `company_sheet_${params.id}`,
     refreshDeps: [params.id],

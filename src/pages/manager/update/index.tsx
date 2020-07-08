@@ -6,12 +6,7 @@ import { RouteComponentProps } from 'react-router';
 import { Form, Card, Input, Button, Icon, Modal, Select, Popover, message } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { routerRedux } from 'dva/router';
-import {
-  IManager,
-  IManagerAssignerPosition,
-  IManagerCert,
-  IManagerCertType,
-} from '@/interfaces/IManager';
+import { IManager, IManagerAssignerPosition, IManagerCert, IManagerCertType } from '@/interfaces/IManager';
 import ManagerCertList from '@/pages/manager/components/ManagerCertList';
 import FooterToolbar from '@/components/FooterToolbar';
 import ManagerCertEditForm from '@/pages/manager/components/ManagerCertEditForm';
@@ -53,21 +48,13 @@ interface ManagerUpdateState {
   current: IManagerCert | undefined;
 }
 
-@connect(
-  ({
-    manager,
-    loading,
-  }: {
-    manager: ManagerModelState;
-    loading: { effects: { [key: string]: boolean } };
-  }) => ({
-    loading: loading.effects['manager/target'],
-    submitting: loading.effects['manager/update'],
-    manager: manager.target,
-    certType: manager.certificateTypes,
-    assignerPositions: manager.assignerPositions,
-  }),
-)
+@connect(({ manager, loading }: { manager: ManagerModelState; loading: { effects: { [key: string]: boolean } } }) => ({
+  loading: loading.effects['manager/target'],
+  submitting: loading.effects['manager/update'],
+  manager: manager.target,
+  certType: manager.certificateTypes,
+  assignerPositions: manager.assignerPositions,
+}))
 class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateState> {
   state = {
     width: '100%',
@@ -195,9 +182,7 @@ class ManagerUpdate extends React.Component<ManagerUpdateProps, ManagerUpdateSta
     const values = form.getFieldValue('certs');
 
     if (values && values.certList) {
-      const certList: IManagerCert[] = values.certList.filter(
-        (item: IManagerCert) => item.id !== id,
-      );
+      const certList: IManagerCert[] = values.certList.filter((item: IManagerCert) => item.id !== id);
       this.props.form.setFieldsValue({ certs: { certList } });
     }
   };

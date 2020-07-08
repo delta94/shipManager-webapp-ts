@@ -5,7 +5,7 @@ import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useDispatch, routerRedux } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
-import {deleteCompanySheet, listCompanyCommonSheets, listCompanySheetTypes} from '@/services/sheet';
+import { deleteCompanySheet, listCompanyCommonSheets, listCompanySheetTypes } from '@/services/sheet';
 import { ICompanySheet } from '@/interfaces/ICompanySheet';
 
 const CommonList: React.FC = () => {

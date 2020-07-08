@@ -71,13 +71,7 @@ const MangerCreate: React.FC = () => {
 
   return (
     <PageHeaderWrapper title="新管理人员信息" content="按表单提示填入相应信息">
-      <Form
-        form={form}
-        onFinish={onFinish}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 8 }}
-        hideRequiredMark
-      >
+      <Form form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 8 }} hideRequiredMark>
         <Card bordered={false} title="基本信息">
           <Form.Item
             name="name"

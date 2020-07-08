@@ -18,22 +18,22 @@ const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: 
     {
       title: '证书名',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
     },
     {
       title: '证书类型',
       dataIndex: 'typeName',
-      key: 'typeName'
+      key: 'typeName',
     },
     {
       title: '证书编号',
       dataIndex: 'identityNumber',
-      key: 'identityNumber'
+      key: 'identityNumber',
     },
     {
       title: '到期时间',
       dataIndex: 'expiredAt',
-      key: 'expiredAt'
+      key: 'expiredAt',
     },
   ];
 

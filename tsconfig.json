@@ -14,21 +14,13 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "allowJs": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true,
     "strict": true,
-    "typeRoots": ["node_modules/@types", "typings"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@@/*": ["./src/.umi/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts",
-    "tslint:latest",
-    "tslint-config-prettier"
-  ]
+  "exclude": ["node_modules", "build", "dist", "scripts", "src/.umi/*", "webpack", "jest"]
 }

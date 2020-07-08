@@ -65,6 +65,10 @@ export function generateOSSKey(file: File, type: OSSResourceType) {
   return `${type}/${moment().format('YYYY_MM_DD')}/${fileName}_${uuid}.${fileType}`;
 }
 
+export function generateOSSFullPath(ossKey: string): string {
+  return `${env.OSS_ASSET_URL}/${ossKey}`
+}
+
 export function parseOSSFile(files: UploadFile[]) {
   if (files && files.length > 0) {
     let values = files.map((file, idx) => {

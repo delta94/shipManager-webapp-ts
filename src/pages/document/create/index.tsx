@@ -11,9 +11,7 @@ import { ICompanySheet } from '@/interfaces/ICompanySheet';
 import moment from 'moment';
 import { ConnectState } from '@/models/connect';
 
-const CompanySheetCreate: React.FC<RouteComponentProps<{ type: string }>> = ({
-  match: { params },
-}) => {
+const CompanySheetCreate: React.FC<RouteComponentProps<{ type: string }>> = ({ match: { params } }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
@@ -29,11 +27,7 @@ const CompanySheetCreate: React.FC<RouteComponentProps<{ type: string }>> = ({
     onSuccess: () => {
       message.success('模版信息已录入');
 
-      dispatch(
-        routerRedux.push(
-          params.type == 'template' ? '/document/template/list' : '/document/common/list',
-        ),
-      );
+      dispatch(routerRedux.push(params.type == 'template' ? '/document/template/list' : '/document/common/list'));
     },
     onError: error => {
       console.error(error);
@@ -61,13 +55,7 @@ const CompanySheetCreate: React.FC<RouteComponentProps<{ type: string }>> = ({
   return (
     <PageHeaderWrapper title="新建模版" content="按表单提示填入相应信息">
       <Card title="模版信息" bordered={false}>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 8 }}
-          hideRequiredMark
-        >
+        <Form form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 8 }} hideRequiredMark>
           <Form.Item
             name="name"
             label="证书名"

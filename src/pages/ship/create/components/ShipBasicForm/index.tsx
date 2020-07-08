@@ -46,11 +46,7 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, switchToStep, curre
         <Form form={form} layout="vertical" className={styles.stepForm}>
           <Row gutter={16}>
             <Col lg={6} md={12} sm={24}>
-              <Form.Item
-                label={fieldLabels.name}
-                name="name"
-                rules={[{ required: true, message: '请输入船舶名称' }]}
-              >
+              <Form.Item label={fieldLabels.name} name="name" rules={[{ required: true, message: '请输入船舶名称' }]}>
                 <Input placeholder="请输入船舶名称" />
               </Form.Item>
             </Col>
@@ -133,21 +129,13 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, switchToStep, curre
 
             <Col lg={6} md={12} sm={24}>
               <Form.Item label={fieldLabels.buildAt} name="buildAt">
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  placeholder="请输入建造完工日期"
-                  style={{ width: '100%' }}
-                />
+                <DatePicker format="YYYY-MM-DD" placeholder="请输入建造完工日期" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
 
             <Col lg={6} md={12} sm={24}>
               <Form.Item label={fieldLabels.assembleAt} name="assembleAt">
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  placeholder="请输入安放龙骨日期"
-                  style={{ width: '100%' }}
-                />
+                <DatePicker format="YYYY-MM-DD" placeholder="请输入安放龙骨日期" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
           </Row>

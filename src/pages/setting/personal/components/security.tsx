@@ -81,8 +81,7 @@ class SecurityView extends Component<SecurityViewProps, SecurityViewState> {
       title: formatMessage({ id: 'app.settings.security.password' }, {}),
       description: (
         <Fragment>
-          {formatMessage({ id: 'app.settings.security.password-description' })}：
-          {passwordStrength.strong}
+          {formatMessage({ id: 'app.settings.security.password-description' })}：{passwordStrength.strong}
         </Fragment>
       ),
       actions: [

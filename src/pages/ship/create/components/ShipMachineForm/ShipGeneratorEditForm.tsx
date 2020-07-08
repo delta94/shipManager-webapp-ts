@@ -9,11 +9,7 @@ interface ShipGeneratorEditFormProps {
   onCancel(): void;
 }
 
-const ShipGeneratorEditForm: React.FC<ShipGeneratorEditFormProps> = ({
-  current,
-  onSubmit,
-  onCancel,
-}) => {
+const ShipGeneratorEditForm: React.FC<ShipGeneratorEditFormProps> = ({ current, onSubmit, onCancel }) => {
   const [form] = Form.useForm();
 
   const onResetForm = useCallback(() => {

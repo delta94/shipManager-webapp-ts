@@ -91,13 +91,7 @@ class ShipEditCertForm extends React.Component<ShipEditCertFormProps> {
         <FormItem label="证书过期日期" {...this.formLayout}>
           {getFieldDecorator('expiredAt', {
             rules: [{ required: true, type: 'object', message: '请输入证书过期日期' }],
-          })(
-            <DatePicker
-              format="YYYY-MM-DD"
-              style={{ width: '100%' }}
-              placeholder="请选择过期日期"
-            />,
-          )}
+          })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} placeholder="请选择过期日期" />)}
         </FormItem>
 
         <FormItem {...this.formLayout} label="备注">

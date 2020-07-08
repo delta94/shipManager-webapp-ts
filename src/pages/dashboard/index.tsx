@@ -57,9 +57,7 @@ const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser })
           {currentUser.login}
           ，祝你开心每一天！
         </div>
-        <div>
-          船务系统管理人员
-        </div>
+        <div>船务系统管理人员</div>
       </div>
     </div>
   );
@@ -123,10 +121,7 @@ class DashBoard extends Component<DashBoardProps> {
       return null;
     }
     return (
-      <PageHeaderWrapper
-        content={<PageHeaderContent currentUser={currentUser} />}
-        extraContent={<ExtraContent />}
-      >
+      <PageHeaderWrapper content={<PageHeaderContent currentUser={currentUser} />} extraContent={<ExtraContent />}>
         <Row gutter={24}>
           <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
@@ -178,12 +173,7 @@ class DashBoard extends Component<DashBoardProps> {
             </Card>
           </Col>
           <Col xl={8} lg={24} md={24} sm={24} xs={24}>
-            <Card
-              style={{ marginBottom: 24 }}
-              title="快速开始 / 便捷导航"
-              bordered={false}
-              bodyStyle={{ padding: 0 }}
-            >
+            <Card style={{ marginBottom: 24 }} title="快速开始 / 便捷导航" bordered={false} bodyStyle={{ padding: 0 }}>
               <div></div>
             </Card>
             <Card

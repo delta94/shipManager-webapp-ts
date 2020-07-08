@@ -86,13 +86,6 @@ export default [
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
             component: './document/listTemplate',
           },
-          // {
-          //   path: '/document/template/generate/:id',
-          //   name: '自定义表单生成',
-          //   hideInMenu: true,
-          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
-          //   component: './document/template/generate',
-          // },
           {
             path: '/document/profile/:id',
             name: '表单详情',
@@ -117,7 +110,7 @@ export default [
           {
             path: '/',
             redirect: '/person/sailor/list',
-          }, // sailor
+          },
           {
             path: '/person/sailor/list',
             name: '船员管理',
@@ -182,59 +175,7 @@ export default [
             path: '/company/infoCompany',
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
             component: './company/infoCompany',
-          },
-          {
-            name: '证照列表',
-            path: '/company/listCert',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/listCert',
-          },
-          {
-            name: '新增证照',
-            path: '/company/addCert',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/addCert',
-          },
-          {
-            name: '更新证照',
-            path: '/company/updateCert/:id',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
-            component: './company/updateCert',
-          },
-          {
-            name: '证照详情',
-            path: '/company/infoCert/:id',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
-            component: './company/infoCert',
-          },
-          {
-            name: '批文列表',
-            path: '/company/listLicense',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/listLicense',
-          },
-          {
-            name: '新增批文',
-            path: '/company/addLicense',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/addLicense',
-          },
-          {
-            name: '批文详情',
-            path: '/company/infoLicense/:id',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
-            component: './company/infoLicense',
-          },
-          {
-            name: '更新批文',
-            path: '/company/updateLicense/:id',
-            hideInMenu: true,
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/updateLicense',
-          },
+          }
         ],
       },
       // {

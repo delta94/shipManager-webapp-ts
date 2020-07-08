@@ -1,18 +1,16 @@
-import {Button, Card, DatePicker, Form, Input, message, Select} from 'antd';
+import { Button, Card, DatePicker, Form, Input, message, Select } from 'antd';
 import React from 'react';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {infoCompanyCert, listCompanyCertType, updateCompanyCert} from '@/services/company';
-import {useRequest} from '@umijs/hooks';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { infoCompanyCert, listCompanyCertType, updateCompanyCert } from '@/services/company';
+import { useRequest } from '@umijs/hooks';
 import FileUpload from '@/components/FileUpload';
-import {ICompanyCert} from '@/interfaces/ICompany';
-import OSSClient, {OSSResourceType, parseOSSFile, parseUploadData} from '@/utils/OSSClient';
-import {routerRedux, useDispatch} from 'dva';
-import {RouteComponentProps} from 'react-router';
+import { ICompanyCert } from '@/interfaces/ICompany';
+import OSSClient, { OSSResourceType, parseOSSFile, parseUploadData } from '@/utils/OSSClient';
+import { routerRedux, useDispatch } from 'dva';
+import { RouteComponentProps } from 'react-router';
 import moment from 'moment';
 
-const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match: { params },
-}) => {
+const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
@@ -72,13 +70,7 @@ const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
   return (
     <PageHeaderWrapper title="公司证书信息" content="按表单提示填入相应信息">
       <Card title="更新证书信息" bordered={false}>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 8 }}
-          hideRequiredMark
-        >
+        <Form form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 8 }} hideRequiredMark>
           <Form.Item
             name="name"
             label="证书名"
@@ -130,11 +122,7 @@ const CompanyCertUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({
             name="expiredAt"
             rules={[{ required: true, type: 'object', message: '请输入证书过期日期' }]}
           >
-            <DatePicker
-              format="YYYY-MM-DD"
-              style={{ width: '100%' }}
-              placeholder="请选择证书过期日期"
-            />
+            <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} placeholder="请选择证书过期日期" />
           </Form.Item>
 
           <Form.Item label="证书电子件" name="ossFile">

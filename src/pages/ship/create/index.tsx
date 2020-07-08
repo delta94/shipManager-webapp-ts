@@ -39,12 +39,7 @@ const ShipCreate: React.FC = () => {
       return <ShipCertForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} />;
     } else if (currentStep === ShipCreateStep.Sailor) {
       return (
-        <ShipSailorForm
-          ship={ship}
-          currentStep={currentStep}
-          switchToStep={switchToStep}
-          onCreateShip={onCreateShip}
-        />
+        <ShipSailorForm ship={ship} currentStep={currentStep} switchToStep={switchToStep} onCreateShip={onCreateShip} />
       );
     } else if (currentStep === ShipCreateStep.Result) {
       return <ShipResultPage ship={ship} currentStep={currentStep} onReset={resetStepForm} />;

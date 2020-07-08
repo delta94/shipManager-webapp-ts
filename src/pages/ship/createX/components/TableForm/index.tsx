@@ -17,7 +17,7 @@ interface TableFormDateType {
 }
 
 interface TableFormProps {
-  areaList: IShipBusinessArea[]
+  areaList: IShipBusinessArea[];
   loading?: boolean;
   value?: TableFormDateType[];
   onChange?: (value: TableFormDateType[]) => void;
@@ -25,7 +25,7 @@ interface TableFormProps {
 
 interface TableFormState {
   loading?: boolean;
-  areaListMap: {[key: number]: IShipBusinessArea};
+  areaListMap: { [key: number]: IShipBusinessArea };
   value?: TableFormDateType[];
   data?: TableFormDateType[];
 }
@@ -64,9 +64,13 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
-            <Select placeholder="请选择航区名"
-                    onChange={value => this.handleFieldChange(value, 'area', record.key)}>
-              {this.props.areaList && this.props.areaList.map(val => <Option value={val.id} key={val.id}>{val.name}</Option>)}
+            <Select placeholder="请选择航区名" onChange={value => this.handleFieldChange(value, 'area', record.key)}>
+              {this.props.areaList &&
+                this.props.areaList.map(val => (
+                  <Option value={val.id} key={val.id}>
+                    {val.name}
+                  </Option>
+                ))}
             </Select>
           );
         }
@@ -82,9 +86,10 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
-            <InputNumber defaultValue={record.payload}
-                         min={0}
-                         onChange={e => this.handleFieldChange(e, 'payload', record.key)}
+            <InputNumber
+              defaultValue={record.payload}
+              min={0}
+              onChange={e => this.handleFieldChange(e, 'payload', record.key)}
             />
           );
         }
@@ -289,15 +294,17 @@ export class TableForm extends PureComponent<TableFormProps, TableFormState> {
           columns={this.columns}
           dataSource={data}
           pagination={false}
-          rowClassName={(record: TableFormDateType) => (record.editable ? styles.editable : '')} />
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="dashed"
-            onClick={this.handleCreateNewItem}
-            icon="plus">
-            新增记录
-          </Button>
+          rowClassName={(record: TableFormDateType) => (record.editable ? styles.editable : '')}
+        />
+        <Button
+          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          type="dashed"
+          onClick={this.handleCreateNewItem}
+          icon="plus"
+        >
+          新增记录
+        </Button>
       </Fragment>
-    )
+    );
   }
 }

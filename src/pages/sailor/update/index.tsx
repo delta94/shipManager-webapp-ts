@@ -63,13 +63,7 @@ const SailorUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { 
   return (
     <PageHeaderWrapper title="更新船员信息" content="按表单提示填入相应信息">
       <Card bordered={false}>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 8 }}
-          hideRequiredMark
-        >
+        <Form form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 8 }} hideRequiredMark>
           <Form.Item
             name="name"
             label="船员姓名"
@@ -149,7 +143,9 @@ const SailorUpdate: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { 
 
           <Form.Item label="是否为高级船员" name="isAdvanced">
             <Radio.Group>
-              <Radio value={true} defaultChecked>是</Radio>
+              <Radio value={true} defaultChecked>
+                是
+              </Radio>
               <Radio value={false}>不是</Radio>
             </Radio.Group>
           </Form.Item>

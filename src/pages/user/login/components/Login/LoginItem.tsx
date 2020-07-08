@@ -33,12 +33,7 @@ export interface LoginItemProps extends Partial<FormItemProps> {
 
 const FormItem = Form.Item;
 
-const getFormItemOptions = ({
-                              onChange,
-                              defaultValue,
-                              customProps = {},
-                              rules,
-                            }: LoginItemProps) => {
+const getFormItemOptions = ({ onChange, defaultValue, customProps = {}, rules }: LoginItemProps) => {
   const options: {
     rules?: LoginItemProps['rules'];
     onChange?: LoginItemProps['onChange'];

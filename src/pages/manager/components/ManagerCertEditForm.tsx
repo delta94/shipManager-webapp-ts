@@ -61,13 +61,7 @@ class ManagerCertEditForm extends React.Component<ManagerCertEditFormProps> {
           {getFieldDecorator('cert_expiredAt', {
             rules: [{ required: true, message: '请选择证书过期时间' }],
             initialValue: current ? (current.expiredAt ? moment(current.expiredAt) : null) : null,
-          })(
-            <DatePicker
-              placeholder="请选择证书过期日期"
-              format="YYYY-MM-DD"
-              style={{ width: '100%' }}
-            />,
-          )}
+          })(<DatePicker placeholder="请选择证书过期日期" format="YYYY-MM-DD" style={{ width: '100%' }} />)}
         </FormItem>
         <FormItem label="证书类型" {...this.formLayout}>
           {getFieldDecorator('cert_typeId', {

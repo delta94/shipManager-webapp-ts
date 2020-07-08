@@ -8,11 +8,9 @@ import { Descriptions, Divider, Typography, Card, List } from 'antd';
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { UploadFile } from 'antd/lib/upload/interface';
 import OSSClient from '@/utils/OSSClient';
-import {bytesToSize} from "@/utils/utils";
+import { bytesToSize } from '@/utils/utils';
 
-const CompanyCertProfile: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match: { params },
-}) => {
+const CompanyCertProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   var { data } = useRequest(() => infoCompanyCert(parseInt(params.id)), {
     cacheKey: `company_cert_${params.id}`,
     refreshDeps: [params.id],

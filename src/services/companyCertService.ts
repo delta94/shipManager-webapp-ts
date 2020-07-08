@@ -7,6 +7,26 @@ export async function getCompanyCertInfo(): Promise<ICompanyCert[]> {
   });
 }
 
+export async function createCompanyCert(cert: ICompanyCert): Promise<ICompanyCert> {
+  return await request(`/api/company-certs/`, {
+    method: 'POST',
+    data: cert,
+  });
+}
+
+export async function updateCompanyCert(cert: ICompanyCert): Promise<ICompanyCert> {
+  return await request(`/api/company-certs/`, {
+    method: 'PUT',
+    data: cert,
+  });
+}
+
+export async function deleteCompanyCert(id: number): Promise<ICompanyCert> {
+  return await request(`/api/company-certs/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function getCompanyCertType(): Promise<ICompanyCertType[]> {
   return await request(`/api/company-cert-types`, {
     method: 'GET',

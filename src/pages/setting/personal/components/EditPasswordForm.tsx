@@ -15,12 +15,8 @@ class EditPasswordForm extends React.Component<EditPasswordFormProps> {
     return (
       <Modal visible={visible} title="更改密码" okText="更改" onCancel={onCancel} onOk={onCreate}>
         <Form layout="vertical">
-          <Form.Item label="当前密码">
-            {getFieldDecorator('currentPassword')(<Input type="password" />)}
-          </Form.Item>
-          <Form.Item label="新的密码">
-            {getFieldDecorator('newPassword')(<Input type="password" />)}
-          </Form.Item>
+          <Form.Item label="当前密码">{getFieldDecorator('currentPassword')(<Input type="password" />)}</Form.Item>
+          <Form.Item label="新的密码">{getFieldDecorator('newPassword')(<Input type="password" />)}</Form.Item>
           <Form.Item label="重复新的密码">
             {getFieldDecorator('newPasswordRepeated')(<Input type="password" />)}
           </Form.Item>

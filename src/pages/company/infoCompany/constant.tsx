@@ -1,4 +1,8 @@
 import { CompanyCertKeyMap as CompanyCertKeys } from '@/services/companyCertService';
+import { ICompanyCert } from '@/interfaces/ICompany';
+import React from 'react';
+import { Divider, Popconfirm } from 'antd';
+import hooks from '@/pages/company/infoCompany/hooks';
 
 export const tabList = [
   {
@@ -36,5 +40,22 @@ export const columns = [
     title: CompanyCertKeys.issueDepartmentTypeName,
     dataIndex: 'issueDepartmentTypeName',
     key: 'issueDepartmentTypeName',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (text: any, record: ICompanyCert) => (
+      <>
+        <a onClick={() => hooks.InfoCompanyCert.call(record)}>详情</a>
+        <Divider type="vertical" />
+        <a onClick={() => hooks.EditCompanyCert.call(record)}>修改</a>
+        <Divider type="vertical" />
+        <span>
+          <Popconfirm title="是否要删除此行？" onConfirm={() => hooks.DeleteCompanyCert.call(record)}>
+            <a>删除</a>
+          </Popconfirm>
+        </span>
+      </>
+    ),
   },
 ];

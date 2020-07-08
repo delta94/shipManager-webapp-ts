@@ -3,7 +3,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { Button, Card, Divider, Popconfirm, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
-import { useDispatch, routerRedux } from 'dva'
+import { useDispatch, routerRedux } from 'dva';
 import { ICompanyLicense } from '@/interfaces/ICompany';
 import { deleteCompanyLicense, listCompanyLicense } from '@/services/company';
 import { PlusOutlined } from '@ant-design/icons';

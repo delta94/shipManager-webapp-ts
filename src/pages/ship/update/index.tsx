@@ -14,12 +14,7 @@ import ShipCertForm from '../create/components/ShipCertForm';
 import ShipCreateResultPage from '../create/components/ShipCreatedPage';
 
 import { ShipStateType } from '@/models/ship';
-import IShip, {
-  IShipBusinessArea,
-  IShipCertType,
-  IShipMaterial,
-  IShipType,
-} from '@/interfaces/IShip';
+import IShip, { IShipBusinessArea, IShipCertType, IShipMaterial, IShipType } from '@/interfaces/IShip';
 import styles from './style.less';
 import ShipSailorForm from '@/pages/ship/create/components/ShipSailorForm';
 import { SailorModelState } from '@/models/sailor';
@@ -167,19 +162,11 @@ class ShipUpdate extends Component<ShipUpdateProps, ShipUpdateState> {
       );
     } else if (this.state.current === ShipCreateStep.Payload) {
       stepComponent = (
-        <ShipPayloadForm
-          ship={this.state.ship}
-          businessArea={businessAreas}
-          switchToStep={this.switchToStep}
-        />
+        <ShipPayloadForm ship={this.state.ship} businessArea={businessAreas} switchToStep={this.switchToStep} />
       );
     } else if (this.state.current === ShipCreateStep.Certificate) {
       stepComponent = (
-        <ShipCertForm
-          ship={this.state.ship}
-          certificateTypes={certificateTypes}
-          switchToStep={this.switchToStep}
-        />
+        <ShipCertForm ship={this.state.ship} certificateTypes={certificateTypes} switchToStep={this.switchToStep} />
       );
     } else if (this.state.current === ShipCreateStep.Sailor) {
       stepComponent = (
@@ -192,11 +179,7 @@ class ShipUpdate extends Component<ShipUpdateProps, ShipUpdateState> {
       );
     } else if (this.state.current === ShipCreateStep.Result) {
       stepComponent = (
-        <ShipCreateResultPage
-          ship={this.state.ship}
-          onReset={this.resetStepForm}
-          dispatch={this.props.dispatch}
-        />
+        <ShipCreateResultPage ship={this.state.ship} onReset={this.resetStepForm} dispatch={this.props.dispatch} />
       );
     }
 

@@ -102,20 +102,10 @@ interface ShipProfileProps extends RouteComponentProps<ShipProfileParams> {
 
 interface ShipProfileState {}
 
-@connect(
-  ({
-    ship,
-    loading,
-  }: {
-    ship: ShipStateType;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    ship,
-    loading: loading.effects['ship/target'],
-  }),
-)
+@connect(({ ship, loading }: { ship: ShipStateType; loading: { effects: { [key: string]: boolean } } }) => ({
+  ship,
+  loading: loading.effects['ship/target'],
+}))
 class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
   componentWillMount() {
     if (this.props.match.params) {
@@ -137,21 +127,15 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
         <Card style={{ marginBottom: 24 }} bordered={false}>
           <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
             <Descriptions.Item label={fieldLabels.name}>{ship.name}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.carrierIdentifier}>
-              {ship.carrierIdentifier}
-            </Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.carrierIdentifier}>{ship.carrierIdentifier}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.owner}>{ship.owner}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.type}>{ship.typeName}</Descriptions.Item>
           </Descriptions>
 
           <Descriptions title="其他信息" style={{ marginBottom: 32 }}>
             <Descriptions.Item label={fieldLabels.shareInfo}>{ship.shareInfo}</Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.registerIdentifier}>
-              {ship.registerIdentifier}
-            </Descriptions.Item>
-            <Descriptions.Item label={fieldLabels.examineIdentifier}>
-              {ship.examineIdentifier}
-            </Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.registerIdentifier}>{ship.registerIdentifier}</Descriptions.Item>
+            <Descriptions.Item label={fieldLabels.examineIdentifier}>{ship.examineIdentifier}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.material}>{ship.materialName}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.harbor}>{ship.harbor}</Descriptions.Item>
             <Descriptions.Item label={fieldLabels.formerName}>{ship.formerName}</Descriptions.Item>
@@ -178,24 +162,12 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
 
         <Card style={{ marginBottom: 24 }} bordered={false}>
           <div className={styles.title}>船员信息</div>
-          <Table
-            size="middle"
-            bordered={false}
-            pagination={false}
-            dataSource={ship.sailors}
-            columns={sailorColumn}
-          />
+          <Table size="middle" bordered={false} pagination={false} dataSource={ship.sailors} columns={sailorColumn} />
         </Card>
 
         <Card style={{ marginBottom: 24 }} bordered={false}>
           <div className={styles.title}>载重吨信息</div>
-          <Table
-            size="middle"
-            bordered={false}
-            pagination={false}
-            dataSource={ship.payloads}
-            columns={payloadColumn}
-          />
+          <Table size="middle" bordered={false} pagination={false} dataSource={ship.payloads} columns={payloadColumn} />
         </Card>
 
         <Card style={{ marginBottom: 24 }} bordered={false}>
@@ -211,13 +183,7 @@ class ShipProfile extends Component<ShipProfileProps, ShipProfileState> {
 
         <Card style={{ marginBottom: 24 }} bordered={false}>
           <div className={styles.title}>主机信息</div>
-          <Table
-            size="middle"
-            bordered={false}
-            pagination={false}
-            dataSource={ship.hosts}
-            columns={hostColumn}
-          />
+          <Table size="middle" bordered={false} pagination={false} dataSource={ship.hosts} columns={hostColumn} />
         </Card>
       </PageHeaderWrapper>
     );

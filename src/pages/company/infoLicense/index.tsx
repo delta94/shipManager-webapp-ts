@@ -10,9 +10,7 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import OSSClient from '@/utils/OSSClient';
 import { bytesToSize } from '@/utils/utils';
 
-const CompanyLicenseProfile: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match: { params },
-}) => {
+const CompanyLicenseProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   var { data } = useRequest(() => infoCompanyLicense(parseInt(params.id)), {
     cacheKey: `company_lic_${params.id}`,
     refreshDeps: [params.id],

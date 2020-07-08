@@ -73,10 +73,7 @@ class ShipMachineForm extends React.Component<ShipMachineCreateProps, ShipMachin
           <a onClick={() => this.handlePayloadUpdate(record, 'generator')}>修改</a>
           <Divider type="vertical" />
           <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRecordRemove(record, 'generator')}
-            >
+            <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleRecordRemove(record, 'generator')}>
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -110,10 +107,7 @@ class ShipMachineForm extends React.Component<ShipMachineCreateProps, ShipMachin
           <a onClick={() => this.handlePayloadUpdate(record, 'host')}>修改</a>
           <Divider type="vertical" />
           <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => this.handleRecordRemove(record, 'host')}
-            >
+            <Popconfirm title="是否要删除此行？" onConfirm={() => this.handleRecordRemove(record, 'host')}>
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -261,10 +255,7 @@ class ShipMachineForm extends React.Component<ShipMachineCreateProps, ShipMachin
             onOk={() => this.handlePayloadSubmit('generator')}
             onCancel={this.handlePayloadCancel}
           >
-            <ShipGeneratorEditForm
-              wrappedComponentRef={this.saveGeneratorFormRef}
-              current={this.state.current}
-            />
+            <ShipGeneratorEditForm wrappedComponentRef={this.saveGeneratorFormRef} current={this.state.current} />
           </Modal>
         </Card>
 
@@ -295,10 +286,7 @@ class ShipMachineForm extends React.Component<ShipMachineCreateProps, ShipMachin
             onOk={() => this.handlePayloadSubmit('host')}
             onCancel={this.handlePayloadCancel}
           >
-            <ShipHostEditForm
-              wrappedComponentRef={this.saveHostFormRef}
-              current={this.state.current}
-            />
+            <ShipHostEditForm wrappedComponentRef={this.saveHostFormRef} current={this.state.current} />
           </Modal>
         </Card>
 

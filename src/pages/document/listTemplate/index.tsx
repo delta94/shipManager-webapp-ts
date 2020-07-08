@@ -5,7 +5,7 @@ import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useDispatch, routerRedux } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
-import {deleteCompanySheet, listCompanyTemplateSheets, listCompanySheetTypes} from '@/services/sheet';
+import { deleteCompanySheet, listCompanyTemplateSheets, listCompanySheetTypes } from '@/services/sheet';
 import { ICompanySheet } from '@/interfaces/ICompanySheet';
 
 const TemplateList: React.FC = () => {
@@ -87,13 +87,13 @@ const TemplateList: React.FC = () => {
               不限类型
             </Select.Option>
             {data &&
-            data.map((item, index) => {
-              return (
-                <Select.Option value={item.id} key={index}>
-                  {item.name}
-                </Select.Option>
-              );
-            })}
+              data.map((item, index) => {
+                return (
+                  <Select.Option value={item.id} key={index}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
           </Select>
         );
       },

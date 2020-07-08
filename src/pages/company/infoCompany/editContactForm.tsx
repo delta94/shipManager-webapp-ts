@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import {
-  CompanyKeyMap as CompanyKeys,
-  updateCompanyInfo,
-} from '@/services/companyService';
+import { CompanyKeyMap as CompanyKeys, updateCompanyInfo } from '@/services/companyService';
 import { useRequest } from '@umijs/hooks';
 import styles from './style.less';
 import { ICompany } from '@/interfaces/ICompany';
 
-const EditContactForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
-  company,
-  onUpdate,
-}) => {
+interface EditContactFormProps {
+  company?: ICompany;
+  onUpdate: Function;
+  onCancel: Function;
+}
+
+const EditContactForm: React.FC<EditContactFormProps> = ({ company, onUpdate, onCancel }) => {
   const [form] = Form.useForm();
 
   const { loading, run: updateCompany } = useRequest(updateCompanyInfo, {
@@ -31,6 +31,7 @@ const EditContactForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
     } else {
       form.resetFields();
     }
+    onCancel();
   };
 
   const onFinish = (values: any) => {
@@ -44,13 +45,7 @@ const EditContactForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
   }, [company]);
 
   return (
-    <Form
-      form={form}
-      onFinish={onFinish}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 12 }}
-      hideRequiredMark
-    >
+    <Form form={form} onFinish={onFinish} labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
       <Form.Item label="id" name="id" noStyle>
         <Input type="hidden" />
       </Form.Item>
@@ -86,7 +81,7 @@ const EditContactForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
         label={CompanyKeys.phone}
         rules={[
           {
-            required: true,
+            required: false,
             message: `请输入 ${CompanyKeys.phone}`,
           },
         ]}
@@ -124,7 +119,7 @@ const EditContactForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
 
       <div className={styles.footer}>
         <Button style={{ marginRight: 12 }} onClick={onReset}>
-           重置
+          取消
         </Button>
         <Button type="primary" loading={loading} htmlType="submit">
           保存

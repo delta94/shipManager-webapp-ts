@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Select, Button, message } from 'antd';
-import {
-  CompanyKeyMap as CompanyKeys,
-  getCompanyType,
-  updateCompanyInfo,
-} from '@/services/companyService';
+import { CompanyKeyMap as CompanyKeys, getCompanyType, updateCompanyInfo } from '@/services/companyService';
 import { useRequest } from '@umijs/hooks';
 import styles from './style.less';
 import { ICompany } from '@/interfaces/ICompany';
 
-const EditBasicForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
-  company,
-  onUpdate,
-}) => {
+interface EditBasicFormProps {
+  company?: ICompany;
+  onUpdate: Function;
+  onCancel: Function;
+}
+
+const EditBasicForm: React.FC<EditBasicFormProps> = ({ company, onUpdate, onCancel }) => {
   const [form] = Form.useForm();
 
   const { data: companyTypes } = useRequest(getCompanyType, {
@@ -37,6 +36,7 @@ const EditBasicForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
     } else {
       form.resetFields();
     }
+    onCancel();
   };
 
   const onFinish = (values: any) => {
@@ -50,13 +50,7 @@ const EditBasicForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
   }, [company]);
 
   return (
-    <Form
-      form={form}
-      onFinish={onFinish}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 12 }}
-      hideRequiredMark
-    >
+    <Form form={form} onFinish={onFinish} labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
       <Form.Item label="id" name="id" noStyle>
         <Input type="hidden" />
       </Form.Item>
@@ -99,10 +93,10 @@ const EditBasicForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
       >
         <Select placeholder={`请选择${CompanyKeys.companyTypeName}`}>
           {companyTypes?.map((item, index) => (
-              <Select.Option value={item.id} key={index}>
-                {item.name}
-              </Select.Option>
-            ))}
+            <Select.Option value={item.id} key={index}>
+              {item.name}
+            </Select.Option>
+          ))}
         </Select>
       </Form.Item>
 
@@ -162,7 +156,7 @@ const EditBasicForm: React.FC<{ company?: ICompany; onUpdate: Function }> = ({
 
       <div className={styles.footer}>
         <Button style={{ marginRight: 12 }} onClick={onReset}>
-          重置
+          取消
         </Button>
         <Button type="primary" loading={loading} htmlType="submit">
           保存

@@ -5,11 +5,7 @@ import { Button, Card, Divider, Popconfirm, Select, message } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useDispatch, routerRedux } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
-import {
-  listManager,
-  deleteManager,
-  listManagerAssignerPosition,
-} from '@/services/manager';
+import { listManager, deleteManager, listManagerAssignerPosition } from '@/services/manager';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import { IManager } from '@/interfaces/IManager';
 

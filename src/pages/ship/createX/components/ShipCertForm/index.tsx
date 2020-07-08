@@ -130,12 +130,7 @@ class ShipCertCreateForm extends React.Component<ShipCertCreateProps, ShipCertCr
           style={{ marginTop: 24 }}
           bodyStyle={{ padding: '0 32px 40px 32px' }}
         >
-          <Button
-            type="dashed"
-            style={{ width: '100%', marginBottom: 8 }}
-            icon="plus"
-            onClick={this.showModal}
-          >
+          <Button type="dashed" style={{ width: '100%', marginBottom: 8 }} icon="plus" onClick={this.showModal}>
             添加证书
           </Button>
           <List

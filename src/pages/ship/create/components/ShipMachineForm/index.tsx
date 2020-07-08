@@ -145,10 +145,7 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep, c
             <a onClick={() => onRecordUpdate(record, 'generator')}>修改</a>
             <Divider type="vertical" />
             <span>
-              <Popconfirm
-                title="是否要删除此行？"
-                onConfirm={() => onRecordRemove(record, 'generator')}
-              >
+              <Popconfirm title="是否要删除此行？" onConfirm={() => onRecordRemove(record, 'generator')}>
                 <a>删除</a>
               </Popconfirm>
             </span>
@@ -199,12 +196,7 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep, c
   return (
     <>
       <Card title="船舶发电机" bordered={true}>
-        <Table
-          dataSource={generators as IShipGenerator[]}
-          columns={generatorColumns}
-          key="id"
-          pagination={false}
-        />
+        <Table dataSource={generators as IShipGenerator[]} columns={generatorColumns} key="id" pagination={false} />
         <Button
           type="dashed"
           className={styles.addBtn}
@@ -218,18 +210,8 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep, c
       <div style={{ margin: '20px 0 24px' }} />
 
       <Card title="船舶主机" bordered={true}>
-        <Table
-          dataSource={hosts as IShipHost[]}
-          columns={hostColumns}
-          key="id"
-          pagination={false}
-        />
-        <Button
-          type="dashed"
-          className={styles.addBtn}
-          icon={<PlusOutlined />}
-          onClick={() => updateHostVisible(true)}
-        >
+        <Table dataSource={hosts as IShipHost[]} columns={hostColumns} key="id" pagination={false} />
+        <Button type="dashed" className={styles.addBtn} icon={<PlusOutlined />} onClick={() => updateHostVisible(true)}>
           添加主机信息
         </Button>
       </Card>
@@ -260,11 +242,7 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, switchToStep, c
         footer={null}
         onCancel={() => updateHostVisible(false)}
       >
-        <ShipHostEditForm
-          current={currentHost}
-          onCancel={() => updateHostVisible(false)}
-          onSubmit={onSubmitHost}
-        />
+        <ShipHostEditForm current={currentHost} onCancel={() => updateHostVisible(false)} onSubmit={onSubmitHost} />
       </Modal>
 
       <Modal

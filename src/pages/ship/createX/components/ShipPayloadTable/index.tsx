@@ -64,12 +64,7 @@ class StandardTable extends Component<StandardTableProps<TableListItem>, Standar
     };
   }
 
-  handleTableChange: TableProps<TableListItem>['onChange'] = (
-    pagination,
-    filters,
-    sorter,
-    ...rest
-  ) => {
+  handleTableChange: TableProps<TableListItem>['onChange'] = (pagination, filters, sorter, ...rest) => {
     const { onChange } = this.props;
     if (onChange) {
       onChange(pagination, filters, sorter, ...rest);

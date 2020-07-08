@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {ShipCreateStep} from '@/pages/ship/create/types';
+import React, { useEffect } from 'react';
+import { ShipCreateStep } from '@/pages/ship/create/types';
 import IShip from '@/interfaces/IShip';
 
 interface ShipCertFormProps {
@@ -11,7 +11,6 @@ interface ShipCertFormProps {
 const ShipCertForm: React.FC<ShipCertFormProps> = ({ ship, currentStep, switchToStep }) => {
   useEffect(() => {
     if (ship && currentStep == ShipCreateStep.Certificate) {
-
     }
   }, [ship, currentStep]);
   return <></>;

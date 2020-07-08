@@ -36,9 +36,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
     super(props);
     const menuMap = {
       base: <FormattedMessage id="app.settings.menuMap.basic" defaultMessage="Basic Settings" />,
-      security: (
-        <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />
-      ),
+      security: <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />,
     };
     this.state = {
       mode: 'inline',

@@ -114,10 +114,7 @@ class BaseView extends Component<BaseViewProps> {
               })(<Input />)}
             </FormItem>
             <Button type="primary" onClick={this.handlerSubmit}>
-              <FormattedMessage
-                id="app.settings.basic.update"
-                defaultMessage="Update Information"
-              />
+              <FormattedMessage id="app.settings.basic.update" defaultMessage="Update Information" />
             </Button>
           </Form>
         </div>
