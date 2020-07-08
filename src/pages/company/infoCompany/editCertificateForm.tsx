@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Button, DatePicker, Form, Input, message, Select } from 'antd';
-import moment from 'moment';
 import { useRequest } from '@umijs/hooks';
 import styles from './style.less';
 import {
@@ -12,27 +11,13 @@ import {
 import { getIssueDepartmentType } from '@/services/commonService';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { ICompanyCert } from '@/interfaces/ICompany';
+import { dateFormatter, formatUploadFileToOSSFiles } from '@/utils/parser';
 
 interface EditCertificateFormProps {
   certificate?: ICompanyCert;
   onUpdate: Function;
   onCancel: Function;
 }
-
-let fieldFormatter = (values: ICompanyCert): any => {
-  if (values.expiredAt) {
-    //@ts-ignore
-    values.expiredAt = moment(values.expiredAt);
-  }
-  if (values.issuedAt) {
-    //@ts-ignore
-    values.issuedAt = moment(values.issuedAt);
-  }
-  if (values.ossFiles) {
-
-  }
-  return values;
-};
 
 const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, onUpdate, onCancel }) => {
   const [form] = Form.useForm();
@@ -68,25 +53,22 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
   });
 
   const onReset = () => {
-    if (certificate?.id) {
-      form.setFieldsValue(fieldFormatter(certificate));
-    } else {
-      form.resetFields();
-    }
+    form.resetFields();
     onCancel();
   };
 
   const onFinish = (values: any) => {
+    let certificate = formatUploadFileToOSSFiles(values) as ICompanyCert;
     if (values.id) {
-      updateCert(values);
+      updateCert(certificate);
     } else {
-      addCert(values);
+      addCert(certificate);
     }
   };
 
   useEffect(() => {
     if (certificate?.id) {
-      form.setFieldsValue(fieldFormatter(certificate));
+      form.setFieldsValue(dateFormatter(certificate));
     } else {
       form.resetFields();
     }

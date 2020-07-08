@@ -5,6 +5,7 @@ import { UploadFile, UploadChangeParam } from 'antd/lib/upload/interface';
 import OssClient, { generateOSSFullPath, generateOSSKey, OSSResourceType } from '@/utils/OSSClient';
 import { usePrevious } from '@umijs/hooks';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
+import {formatOSSFilesToUploadFile} from "@/utils/parser";
 
 interface AliyunOSSUploadProps {
   value?: IOSSMetaFile[];
@@ -12,27 +13,6 @@ interface AliyunOSSUploadProps {
   onChange?(value: UploadFile[]): void;
   ossResourceType?: OSSResourceType;
 }
-
-let formatOSSFiles = (files: IOSSMetaFile[]): UploadFile[] => {
-  if (files && Array.isArray(files) && files.length > 0) {
-    return files.map(file => {
-      return {
-        uid: `uploaded_${file.id.toString()}`,
-        type: file.type,
-        size: file.size,
-        name: file.name,
-        url: file.ossKey,
-        linkProps: {
-          uploadBy: file.uploadBy,
-          uploadAt: file.uploadAt,
-          remark: file.remark,
-          id: file.id,
-        },
-      };
-    });
-  }
-  return [];
-};
 
 const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
   const [fileList, setFileList] = useState<UploadFile[]>();
@@ -80,8 +60,11 @@ const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
 
   useEffect(() => {
     if (previousValue == undefined && props.value) {
-      let fileList = formatOSSFiles(props.value);
+      let fileList = formatOSSFilesToUploadFile(props.value);
       setFileList(fileList);
+      if (props.onChange) {
+        props.onChange(fileList);
+      }
     }
   }, [previousValue, props.value]);
 

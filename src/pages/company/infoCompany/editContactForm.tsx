@@ -26,11 +26,7 @@ const EditContactForm: React.FC<EditContactFormProps> = ({ company, onUpdate, on
   });
 
   const onReset = () => {
-    if (company?.id) {
-      form.setFieldsValue(company);
-    } else {
-      form.resetFields();
-    }
+    form.resetFields();
     onCancel();
   };
 

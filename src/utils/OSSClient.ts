@@ -66,7 +66,7 @@ export function generateOSSKey(file: File, type: OSSResourceType) {
 }
 
 export function generateOSSFullPath(ossKey: string): string {
-  return `${env.OSS_ASSET_URL}/${ossKey}`
+  return `http://${env.OSS_ASSET_URL}/${ossKey}`
 }
 
 export function parseOSSFile(files: UploadFile[]) {

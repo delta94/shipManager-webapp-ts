@@ -31,11 +31,7 @@ const EditBasicForm: React.FC<EditBasicFormProps> = ({ company, onUpdate, onCanc
   });
 
   const onReset = () => {
-    if (company?.id) {
-      form.setFieldsValue(company);
-    } else {
-      form.resetFields();
-    }
+    form.resetFields();
     onCancel();
   };
 
