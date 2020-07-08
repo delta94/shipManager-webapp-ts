@@ -1,41 +1,47 @@
+import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
+
 export interface IManager {
   id: number;
   name: string;
-  dept: string;
-  position: string;
   identityNumber: string;
+  educationLevel: string;
   mobile: string;
-  phone: string;
-  certs: IManagerCert[];
-  assignerName: string;
-  assignerId: number;
+  remark: string;
+  managerDutyId: number;
+  managerDutyName: string;
+  managerPositionId: number;
+  managerPositionName: string;
+  managerCerts: IManagerCert[];
 }
 
 export interface IManagerCert {
-  id: number | string;
+  id: number;
   name: string;
   identityNumber: string;
   expiredAt: string;
-
+  issuedAt: string;
   remark: string;
   managerId: number;
-  typeName: string;
-  typeId: number;
-
-  ossFile?: string;
-  icon?: string,
-  managerName?: string
-  typeRemark?: string
+  managerCertTypeId: number;
+  managerCertTypeName: string;
+  issueDepartmentTypeId: number;
+  issueDepartmentTypeName: string;
+  ossFiles: IOSSMetaFile[];
 }
 
 export interface IManagerCertType {
   id: number;
   name: string;
   remark: string;
-  icon: string;
 }
 
-export interface IManagerAssignerPosition {
+export interface IManagerPositionType {
+  id: number;
+  name: string;
+  remark: string;
+}
+
+export interface IManagerDutyType {
   id: number;
   name: string;
   remark: string;

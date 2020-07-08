@@ -46,10 +46,12 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
 
   const { data: companyCertType } = useRequest(getCompanyCertType, {
     manual: false,
+    cacheKey: 'company_cert_type'
   });
 
   const { data: issueDepartmentType } = useRequest(getIssueDepartmentType, {
     manual: false,
+    cacheKey: 'issue_department_type'
   });
 
   const onReset = () => {

@@ -2,7 +2,7 @@ import { CompanyCertKeyMap as CompanyCertKeys } from '@/services/companyCertServ
 import { ICompanyCert } from '@/interfaces/ICompany';
 import React from 'react';
 import { Divider, Popconfirm } from 'antd';
-import hooks from '@/pages/company/infoCompany/hooks';
+import hooks from './hooks';
 
 export const tabList = [
   {

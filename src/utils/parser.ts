@@ -1,6 +1,7 @@
 import moment from 'moment';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { UploadFile } from 'antd/lib/upload/interface';
+import { Pagination } from '@/interfaces/ITableList';
 
 export const dateFormatter = (values: any): any => {
   if (values.expiredAt && typeof values.expiredAt == 'string') {
@@ -62,4 +63,12 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
   }
 
   return value;
+};
+
+export const parsePagination = (headers: Headers): Pagination => {
+  return {
+    current: parseInt(headers.get('X-Page-Current') || '0'),
+    total: parseInt(headers.get('X-Page-Total') || '0'),
+    pageSize: parseInt(headers.get('X-Page-Size') || '0'),
+  };
 };

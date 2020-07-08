@@ -109,37 +109,12 @@ export default [
         routes: [
           {
             path: '/',
-            redirect: '/person/sailor/list',
+            redirect: '/person/manager/list',
           },
-          {
-            path: '/person/sailor/list',
-            name: '船员管理',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './sailor/list',
-          },
-          {
-            path: '/person/sailor/create',
-            name: '新建船员',
-            component: './sailor/create',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-          },
-          {
-            path: '/person/sailor/profile/:id',
-            name: '船员详情',
-            component: './sailor/profile',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
-          },
-          {
-            name: '更新船员',
-            path: '/person/sailor/update/:id',
-            component: './sailor/update',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
-          },
+
           {
             path: '/person/manager/list',
-            name: '管理人员列表',
+            name: '管理人员',
             component: './manager/list',
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
           },
@@ -150,19 +125,46 @@ export default [
             authority: ['ROLE_USER', 'ROLE_ADMIN'],
             component: './manager/profile',
           },
-          {
-            path: '/person/manager/create',
-            name: '新增管理人员',
-            component: './manager/create',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-          },
-          {
-            path: '/person/manager/update/:id',
-            name: '更新管理人员',
-            hideInMenu: true,
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './manager/update',
-          },
+          //
+          // {
+          //   path: '/person/sailor/list',
+          //   name: '船员管理',
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          //   component: './sailor/list',
+          // },
+          // {
+          //   path: '/person/sailor/create',
+          //   name: '新建船员',
+          //   component: './sailor/create',
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          // },
+          // {
+          //   path: '/person/sailor/profile/:id',
+          //   name: '船员详情',
+          //   component: './sailor/profile',
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          //   hideInMenu: true,
+          // },
+          // {
+          //   name: '更新船员',
+          //   path: '/person/sailor/update/:id',
+          //   component: './sailor/update',
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          //   hideInMenu: true,
+          // },
+          // {
+          //   path: '/person/manager/create',
+          //   name: '新增管理人员',
+          //   component: './manager/create',
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          // },
+          // {
+          //   path: '/person/manager/update/:id',
+          //   name: '更新管理人员',
+          //   hideInMenu: true,
+          //   authority: ['ROLE_USER', 'ROLE_ADMIN'],
+          //   component: './manager/update',
+          // },
         ],
       },
       {
