@@ -4,11 +4,26 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import { Pagination } from '@/interfaces/ITableList';
 
 export const dateFormatter = (values: any): any => {
-  if (values.expiredAt && typeof values.expiredAt == 'string') {
-    values.expiredAt = moment(values.expiredAt);
+  if (values.expiredAt) {
+    if (typeof values.expiredAt == 'string') {
+      values.expiredAt = moment(values.expiredAt);
+    }
   }
-  if (values.issuedAt && typeof values.issuedAt == 'string') {
-    values.issuedAt = moment(values.issuedAt);
+  if (values.issuedAt) {
+    if (typeof values.issuedAt == 'string') {
+      values.issuedAt = moment(values.issuedAt);
+    }
+  }
+  return values;
+};
+
+export const dateFormatterToString = (values: any): any => {
+  if (values.expiredAt && moment.isMoment(values.expiredAt)) {
+    values.expiredAt = values.expiredAt.format('YYYY-MM-DD');
+  }
+
+  if (values.issuedAt && moment.isMoment(values.issuedAt)) {
+    values.issuedAt = values.issuedAt.format('YYYY-MM-DD');
   }
   return values;
 };
@@ -53,7 +68,7 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
       if (file.linkProps) {
         meta.id = file.linkProps.id;
         meta.uploadBy = file.linkProps.uploadBy ? file.linkProps.uploadBy : '';
-        meta.uploadAt = file.linkProps.uploadAt ? file.linkProps.uploadBy : '';
+        meta.uploadAt = file.linkProps.uploadAt ? file.linkProps.uploadAt : '';
         meta.remark = file.linkProps.remark ? file.linkProps.remark : '';
       }
       return meta;

@@ -20,9 +20,29 @@ export async function listManager(page: number = 1, size: number = 20, extra: an
   });
 }
 
+export async function createManager(manager: IManager) {
+  return request(`/api/managers/`, {
+    method: 'POST',
+    data: manager
+  });
+}
+
+export async function updateManager(manager: IManager) {
+  return request(`/api/managers/`, {
+    method: 'PUT',
+    data: manager
+  });
+}
+
 export async function deleteManager(id: number) {
   return request(`/api/managers/${id}`, {
     method: 'DELETE',
+  });
+}
+
+export async function infoManager(id: number): Promise<IManager> {
+  return request(`/api/managers/${id}`, {
+    method: 'GET',
   });
 }
 

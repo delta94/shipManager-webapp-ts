@@ -27,6 +27,7 @@ export interface IManagerCert {
   issueDepartmentTypeId: number;
   issueDepartmentTypeName: string;
   ossFiles: IOSSMetaFile[];
+  isRemoved: boolean;
 }
 
 export interface IManagerCertType {
