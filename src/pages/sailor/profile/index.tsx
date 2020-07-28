@@ -1,75 +1,89 @@
-import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Descriptions, Divider, List } from 'antd';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { useRequest } from '@umijs/hooks';
-import { FilePdfTwoTone } from '@ant-design/icons';
-import { UploadFile } from 'antd/lib/upload/interface';
-import { infoSailor } from '@/services/sailor';
-import OSSClient from '@/utils/OSSClient';
-import { bytesToSize } from '@/utils/utils';
+import { Descriptions, Card, List, Typography, Button } from 'antd';
+import { infoSailor, SailorKeyMap } from '@/services/sailorService';
+import { ISailorCert } from '@/interfaces/ISailor';
+import { SailorCertKeyMap } from '@/services/sailorCertService';
 
-const SailorDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
-  const { data: sailor } = useRequest(() => infoSailor(parseInt(params.id)), {
-    cacheKey: `sailor_info_${params.id}`,
-    refreshDeps: [params.id],
+const SailorProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
+  const { data, run: fetchSailor, loading } = useRequest(infoSailor, {
+    manual: true,
   });
 
-  const downloadFile = async (file: UploadFile) => {
-    let client = await OSSClient.getInstance();
-    let downloadUrl = client.signatureUrl(file.url || '');
-    var anchor = document.createElement('a');
-    anchor.href = downloadUrl;
-    anchor.target = '_blank';
-    anchor.download = file.name;
-    anchor.click();
-  };
+  useEffect(() => {
+    if (params.id) {
+      fetchSailor(parseInt(params.id));
+    }
+  }, [params.id]);
 
   return (
     <PageHeaderWrapper title="船员详情页">
-      <Card bordered={false}>
+      <Card bordered={false} loading={loading}>
         <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
-          <Descriptions.Item label="船员名">{sailor?.name}</Descriptions.Item>
-          <Descriptions.Item label="是否高级船员">{sailor?.isAdvanced ? '是' : '否'}</Descriptions.Item>
-          <Descriptions.Item label="身份证号码">{sailor?.identityNumber}</Descriptions.Item>
-          <Descriptions.Item label="职位">{sailor?.positionName}</Descriptions.Item>
-          <Descriptions.Item label="住址">{sailor?.address}</Descriptions.Item>
-        </Descriptions>
+          <Descriptions.Item label={SailorKeyMap.name}>{data?.name}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.gender}>{data?.gender ?? 0 ? '男' : '女'}</Descriptions.Item>
 
-        <Divider style={{ marginBottom: 32 }} />
+          <Descriptions.Item label={SailorKeyMap.sailorDutyTypeName}>{data?.sailorDutyTypeName}</Descriptions.Item>
 
-        <Descriptions title="船员电子件信息" style={{ marginBottom: 32 }}>
-          <div>
-            <List
-              bordered
-              itemLayout="horizontal"
-              dataSource={(sailor && sailor.ex_certFile) || []}
-              renderItem={item => (
-                <List.Item
-                  actions={[
-                    <a
-                      key="list-edit"
-                      onClick={() => {
-                        downloadFile(item);
-                      }}
-                    >
-                      下载
-                    </a>,
-                  ]}
-                >
-                  <List.Item.Meta
-                    avatar={<FilePdfTwoTone style={{ fontSize: '32px' }} />}
-                    title={item.name}
-                    description={bytesToSize(item.size)}
-                  />
-                </List.Item>
-              )}
-            />
-          </div>
+          <Descriptions.Item label={SailorKeyMap.identityNumber}>{data?.identityNumber}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.licenseNumber}>{data?.licenseNumber}</Descriptions.Item>
+
+          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.birthDate}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.contractWorkAt}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.contractExpiryAt}</Descriptions.Item>
+
+          <Descriptions.Item label={SailorKeyMap.mobile}>{data?.mobile}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.region}>{data?.region}</Descriptions.Item>
+          <Descriptions.Item label={SailorKeyMap.address}>{data?.address}</Descriptions.Item>
+
+          <Descriptions.Item label={SailorKeyMap.isAdvanced}>
+            {data?.isAdvanced ?? false ? '是' : '否'}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={SailorKeyMap.remark}>{data?.remark}</Descriptions.Item>
         </Descriptions>
+      </Card>
+
+      <Card style={{ marginTop: 24 }} loading={loading}>
+        <Descriptions title="证书信息" />
+        <List
+          grid={{ gutter: 12, column: 3 }}
+          dataSource={data?.sailorCerts}
+          renderItem={(item: ISailorCert) => (
+            <List.Item>
+              <Card title={item.name}>
+                <Typography.Text strong>{SailorCertKeyMap.identityNumber}</Typography.Text>: {item.identityNumber}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.expiredAt}</Typography.Text>: {item.expiredAt}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.issuedAt}</Typography.Text>: {item.issuedAt}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.sailorCertTypeName}</Typography.Text>:{' '}
+                {item.sailorCertTypeName}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.issueDepartmentTypeName}</Typography.Text>:{' '}
+                {item.issueDepartmentTypeName}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.remark}</Typography.Text>: {item.remark || '无'}
+                <br />
+                <Typography.Text strong>{SailorCertKeyMap.ossFiles}</Typography.Text>:
+                {item.ossFiles.map(item => {
+                  return (
+                    <Button type="link" href={item.ossKey} target="_blank">
+                      {item.name}
+                    </Button>
+                  );
+                })}
+                <br />
+              </Card>
+            </List.Item>
+          )}
+        />
       </Card>
     </PageHeaderWrapper>
   );
 };
 
-export default SailorDetails;
+export default SailorProfile;

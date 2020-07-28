@@ -3,7 +3,7 @@ import { parse, stringify } from 'qs';
 
 import { EffectsCommandMap } from 'dva';
 import { routerRedux } from 'dva/router';
-import { accountLogin, getCurrentUser } from '@/services/user';
+import { accountLogin, getCurrentUser } from '@/services/userService';
 import { LoginResult } from '@/interfaces/ILogin';
 import IAccount, { IAccountRole } from '@/interfaces/IAccount';
 import { setAuthority, updateToken } from '@/utils/authority';

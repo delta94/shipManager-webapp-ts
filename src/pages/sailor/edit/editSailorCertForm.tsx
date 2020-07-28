@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Select, DatePicker } from 'antd';
-import { IManagerCert, IManagerCertType } from '@/interfaces/IManager';
-import { ManagerCertKeyMap } from '@/services/managerCertService';
+import { ISailorCert, ISailorCertType } from '@/interfaces/ISailor';
+import { SailorCertKeyMap } from '@/services/sailorCertService';
 import { IssueDepartmentType } from '@/interfaces/IIssueDepartment';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { dateFormatter, dateFormatterToString } from '@/utils/parser';
 
-interface EditManagerCertFormProps {
-  certificate?: IManagerCert;
+interface EditSailorCertFormProps {
+  certificate?: ISailorCert;
   issueDepartmentType?: IssueDepartmentType[];
-  certificateType?: IManagerCertType[];
+  certificateType?: ISailorCertType[];
   onCancel: Function;
   onSubmit: Function;
 }
 
-const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
+const EditSailorCertForm: React.FC<EditSailorCertFormProps> = ({
   certificate,
   certificateType = [],
   issueDepartmentType = [],
@@ -29,7 +29,7 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
     if (!values.id) {
       values.id = `new_${Date.now()}`;
     }
-    values.managerCertTypeName = certificateType!.find(item => item.id == values.managerCertTypeId)?.name;
+    values.sailorCertTypeName = certificateType!.find(item => item.id == values.sailorCertTypeId)?.name;
     values.issueDepartmentTypeName = issueDepartmentType!.find(item => item.id == values.issueDepartmentTypeId)?.name;
     onSubmit(values);
   };
@@ -56,41 +56,41 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
 
       <Form.Item
         name="name"
-        label={ManagerCertKeyMap.name}
+        label={SailorCertKeyMap.name}
         rules={[
           {
             required: true,
-            message: `请输入${ManagerCertKeyMap.name}`,
+            message: `请输入${SailorCertKeyMap.name}`,
           },
         ]}
       >
-        <Input placeholder={`请输入${ManagerCertKeyMap.name}`} />
+        <Input placeholder={`请输入${SailorCertKeyMap.name}`} />
       </Form.Item>
 
       <Form.Item
         name="identityNumber"
-        label={ManagerCertKeyMap.identityNumber}
+        label={SailorCertKeyMap.identityNumber}
         rules={[
           {
             required: true,
-            message: `请输入${ManagerCertKeyMap.identityNumber}`,
+            message: `请输入${SailorCertKeyMap.identityNumber}`,
           },
         ]}
       >
-        <Input placeholder={`请输入${ManagerCertKeyMap.identityNumber}`} />
+        <Input placeholder={`请输入${SailorCertKeyMap.identityNumber}`} />
       </Form.Item>
 
       <Form.Item
-        name="managerCertTypeId"
-        label={ManagerCertKeyMap.managerCertTypeName}
+        name="sailorCertTypeId"
+        label={SailorCertKeyMap.sailorCertTypeName}
         rules={[
           {
             required: true,
-            message: `请选择${ManagerCertKeyMap.managerCertTypeName}`,
+            message: `请选择${SailorCertKeyMap.sailorCertTypeName}`,
           },
         ]}
       >
-        <Select placeholder={`请选择${ManagerCertKeyMap.managerCertTypeName}`}>
+        <Select placeholder={`请选择${SailorCertKeyMap.sailorCertTypeName}`}>
           {certificateType?.map(item => {
             return (
               <Select.Option value={item.id} key={item.id}>
@@ -103,15 +103,15 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
 
       <Form.Item
         name="issueDepartmentTypeId"
-        label={ManagerCertKeyMap.issueDepartmentTypeName}
+        label={SailorCertKeyMap.issueDepartmentTypeName}
         rules={[
           {
             required: true,
-            message: `请选择${ManagerCertKeyMap.issueDepartmentTypeName}`,
+            message: `请选择${SailorCertKeyMap.issueDepartmentTypeName}`,
           },
         ]}
       >
-        <Select placeholder={`请选择${ManagerCertKeyMap.issueDepartmentTypeName}`}>
+        <Select placeholder={`请选择${SailorCertKeyMap.issueDepartmentTypeName}`}>
           {issueDepartmentType?.map(item => {
             return (
               <Select.Option value={item.id} key={item.id}>
@@ -124,11 +124,11 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
 
       <Form.Item
         name="expiredAt"
-        label={ManagerCertKeyMap.expiredAt}
+        label={SailorCertKeyMap.expiredAt}
         rules={[
           {
             required: true,
-            message: `请输入${ManagerCertKeyMap.expiredAt}`,
+            message: `请输入${SailorCertKeyMap.expiredAt}`,
           },
         ]}
       >
@@ -142,11 +142,11 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
 
       <Form.Item
         name="issuedAt"
-        label={ManagerCertKeyMap.issuedAt}
+        label={SailorCertKeyMap.issuedAt}
         rules={[
           {
             required: true,
-            message: `请输入${ManagerCertKeyMap.issuedAt}`,
+            message: `请输入${SailorCertKeyMap.issuedAt}`,
           },
         ]}
       >
@@ -158,21 +158,21 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
         />
       </Form.Item>
 
-      <Form.Item name="ossFiles" label={ManagerCertKeyMap.ossFiles}>
+      <Form.Item name="ossFiles" label={SailorCertKeyMap.ossFiles}>
         <AliyunOSSUpload listType="picture" />
       </Form.Item>
 
       <Form.Item
         name="remark"
-        label={ManagerCertKeyMap.remark}
+        label={SailorCertKeyMap.remark}
         rules={[
           {
             required: false,
-            message: `请输入${ManagerCertKeyMap.remark}`,
+            message: `请输入${SailorCertKeyMap.remark}`,
           },
         ]}
       >
-        <Input placeholder={`请输入${ManagerCertKeyMap.remark}`} />
+        <Input placeholder={`请输入${SailorCertKeyMap.remark}`} />
       </Form.Item>
 
       <div style={{ height: 40 }} />
@@ -188,4 +188,4 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
   );
 };
 
-export default EditManagerCertForm;
+export default EditSailorCertForm;

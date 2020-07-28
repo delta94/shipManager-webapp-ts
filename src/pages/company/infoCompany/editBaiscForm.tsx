@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Select, Button, message } from 'antd';
-import { CompanyKeyMap as CompanyKeys, getCompanyType, updateCompanyInfo } from '@/services/companyService';
+import { CompanyKeyMap as CompanyKeys, listCompanyCategoryType, updateCompanyInfo } from '@/services/companyService';
 import { useRequest } from '@umijs/hooks';
 import styles from './style.less';
 import { ICompany } from '@/interfaces/ICompany';
@@ -14,9 +14,9 @@ interface EditBasicFormProps {
 const EditBasicForm: React.FC<EditBasicFormProps> = ({ company, onUpdate, onCancel }) => {
   const [form] = Form.useForm();
 
-  const { data: companyTypes } = useRequest(getCompanyType, {
-    cacheKey: 'company_type',
-    initialData: [],
+  const { data: companyCategoryType } = useRequest(listCompanyCategoryType, {
+    cacheKey: 'company_category_type',
+    manual: false,
   });
 
   const { loading, run: updateCompany } = useRequest(updateCompanyInfo, {
@@ -88,11 +88,12 @@ const EditBasicForm: React.FC<EditBasicFormProps> = ({ company, onUpdate, onCanc
         ]}
       >
         <Select placeholder={`请选择${CompanyKeys.companyTypeName}`}>
-          {companyTypes?.map((item, index) => (
-            <Select.Option value={item.id} key={index}>
-              {item.name}
-            </Select.Option>
-          ))}
+          {companyCategoryType &&
+            companyCategoryType.CompanyType.map((item, index) => (
+              <Select.Option value={item.id} key={index}>
+                {item.name}
+              </Select.Option>
+            ))}
         </Select>
       </Form.Item>
 

@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { IManagerCertType } from '@/interfaces/IManager';
 
 export async function getManagerCertType(): Promise<IManagerCertType[]> {
-  return request('/api/manager-cert-types', {
+  return request('/api/common-option-types/ManagerCertType', {
     method: 'GET',
   });
 }

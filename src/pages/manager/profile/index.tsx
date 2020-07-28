@@ -8,6 +8,7 @@ import { IManagerCert } from '@/interfaces/IManager';
 import { ManagerCertKeyMap } from '@/services/managerCertService';
 
 const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
+
   const { data, run: fetchManager, loading } = useRequest(infoManager, {
     manual: true,
   });

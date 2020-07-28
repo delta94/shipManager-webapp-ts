@@ -1,7 +1,8 @@
 import request from '@/utils/request';
-import { IManager, IManagerDutyType, IManagerPositionType } from '@/interfaces/IManager';
+import { IManager } from '@/interfaces/IManager';
 import { PageableData } from '@/interfaces/ITableList';
 import { parsePagination } from '@/utils/parser';
+import {ICategory, ICommonOptionType} from "@/interfaces/ICategory";
 
 export async function listManager(page: number = 1, size: number = 20, extra: any): Promise<PageableData<IManager>> {
   return await request('/api/managers', {
@@ -46,14 +47,8 @@ export async function infoManager(id: number): Promise<IManager> {
   });
 }
 
-export async function getManagerPositionType(): Promise<IManagerPositionType[]> {
-  return request('/api/manager-position-types', {
-    method: 'GET',
-  });
-}
-
-export async function getManagerDutyType(): Promise<IManagerDutyType[]> {
-  return request('/api/manager-duty-types', {
+export async function listManagerCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
+  return request(`/api/managers/category`, {
     method: 'GET',
   });
 }

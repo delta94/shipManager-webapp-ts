@@ -1,4 +1,4 @@
-import { ICompanyCert, ICompanyCertType } from '@/interfaces/ICompany';
+import { ICompanyCert } from '@/interfaces/ICompany';
 import request from '@/utils/request';
 
 export async function getCompanyCertInfo(): Promise<ICompanyCert[]> {
@@ -24,12 +24,6 @@ export async function updateCompanyCert(cert: ICompanyCert): Promise<ICompanyCer
 export async function deleteCompanyCert(id: number): Promise<ICompanyCert> {
   return await request(`/api/company-certs/${id}`, {
     method: 'DELETE',
-  });
-}
-
-export async function getCompanyCertType(): Promise<ICompanyCertType[]> {
-  return await request(`/api/company-cert-types`, {
-    method: 'GET',
   });
 }
 

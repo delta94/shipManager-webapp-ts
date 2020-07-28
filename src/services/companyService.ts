@@ -1,4 +1,5 @@
-import { ICompany, ICompanyType } from '@/interfaces/ICompany';
+import { ICompany } from '@/interfaces/ICompany';
+import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import request from '@/utils/request';
 
 export async function getCompanyInfo(id: number = 1): Promise<ICompany> {
@@ -14,8 +15,8 @@ export async function updateCompanyInfo(company: Partial<ICompany>): Promise<ICo
   });
 }
 
-export async function getCompanyType(): Promise<ICompanyType[]> {
-  return await request(`/api/company-types`, {
+export async function listCompanyCategoryType(): Promise<Record<ICategory, Array<ICommonOptionType>>> {
+  return request(`/api/companies/category`, {
     method: 'GET',
   });
 }

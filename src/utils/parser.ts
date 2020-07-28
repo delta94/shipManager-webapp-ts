@@ -14,6 +14,37 @@ export const dateFormatter = (values: any): any => {
       values.issuedAt = moment(values.issuedAt);
     }
   }
+
+  if (values.buildAt) {
+    if (typeof values.buildAt == 'string') {
+      values.buildAt = moment(values.buildAt);
+    }
+  }
+
+  if (values.assembleAt) {
+    if (typeof values.assembleAt == 'string') {
+      values.assembleAt = moment(values.assembleAt);
+    }
+  }
+
+  if (values.birthDate) {
+    if (typeof values.birthDate == 'string') {
+      values.birthDate = moment(values.birthDate);
+    }
+  }
+
+  if (values.contractWorkAt) {
+    if (typeof values.contractWorkAt == 'string') {
+      values.contractWorkAt = moment(values.contractWorkAt);
+    }
+  }
+
+  if (values.contractExpiryAt) {
+    if (typeof values.contractExpiryAt == 'string') {
+      values.contractExpiryAt = moment(values.contractExpiryAt);
+    }
+  }
+
   return values;
 };
 
@@ -25,6 +56,27 @@ export const dateFormatterToString = (values: any): any => {
   if (values.issuedAt && moment.isMoment(values.issuedAt)) {
     values.issuedAt = values.issuedAt.format('YYYY-MM-DD');
   }
+
+  if (values.birthDate && moment.isMoment(values.birthDate)) {
+    values.birthDate = values.birthDate.format('YYYY-MM-DD');
+  }
+
+  if (values.contractWorkAt && moment.isMoment(values.contractWorkAt)) {
+    values.contractWorkAt = values.contractWorkAt.format('YYYY-MM-DD');
+  }
+
+  if (values.contractExpiryAt && moment.isMoment(values.contractExpiryAt)) {
+    values.contractExpiryAt = values.contractExpiryAt.format('YYYY-MM-DD');
+  }
+
+  if (values.buildAt && moment.isMoment(values.buildAt)) {
+    values.buildAt = values.buildAt.format('YYYY-MM-DD');
+  }
+
+  if (values.assembleAt && moment.isMoment(values.assembleAt)) {
+    values.assembleAt = values.assembleAt.format('YYYY-MM-DD');
+  }
+
   return values;
 };
 

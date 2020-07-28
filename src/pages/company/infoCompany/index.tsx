@@ -30,8 +30,8 @@ const InfoCompany: React.FC = () => {
   const { loading: loadingCompanyCert, refresh: refreshCompanyCert } = useRequest(getCompanyCertInfo, {
     cacheKey: 'company_certs_info',
     onSuccess(result) {
-      updateExtraCerts(result.filter(item => item.companyCertTypeId > 3));
-      updatePermissionCerts(result.filter(item => item.companyCertTypeId <= 3));
+      updateExtraCerts(result.filter(item => item.companyCertTypeId > 1003003));
+      updatePermissionCerts(result.filter(item => item.companyCertTypeId <= 1003003));
     },
   });
 

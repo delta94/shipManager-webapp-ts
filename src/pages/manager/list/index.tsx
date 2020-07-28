@@ -3,14 +3,12 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message, Modal } from 'antd';
 import { useRequest, useToggle } from '@umijs/hooks';
-import { deleteManager, getManagerDutyType, getManagerPositionType } from '@/services/managerService';
+import { deleteManager, listManagerCategory } from '@/services/managerService';
 import { IManager } from '@/interfaces/IManager';
 import useManagerTable from './useManagerTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from '@/pages/manager/list/hooks';
 import EditManagerForm from '../edit/editManagerForm';
-import { getManagerCertType } from '@/services/managerCertService';
-import { getIssueDepartmentType } from '@/services/commonService';
 import { useDispatch, routerRedux } from 'dva';
 
 const ManagerList: React.FC = () => {
@@ -49,31 +47,15 @@ const ManagerList: React.FC = () => {
     };
   }, []);
 
-  const { data: dutyTypes } = useRequest(getManagerDutyType, {
+  const { data: managerCategoryType } = useRequest(listManagerCategory, {
     manual: false,
-    cacheKey: 'managerDutyType',
-    initialData: [],
+    cacheKey: 'manager_category_type',
   });
 
-  const { data: positionTypes } = useRequest(getManagerPositionType, {
-    manual: false,
-    cacheKey: 'managerPositionType',
-    initialData: [],
+  const { columns, request } = useManagerTable({
+    positionTypes: managerCategoryType?.ManagerPositionType ?? [],
+    dutyTypes: managerCategoryType?.ManagerDutyType ?? [],
   });
-
-  const { data: managerCertTypes } = useRequest(getManagerCertType, {
-    manual: false,
-    cacheKey: 'manager_cert_type',
-    initialData: [],
-  });
-
-  const { data: issueDepartmentTypes } = useRequest(getIssueDepartmentType, {
-    manual: false,
-    cacheKey: 'issue_department_type',
-    initialData: [],
-  });
-
-  const { columns, request } = useManagerTable({ positionTypes, dutyTypes });
 
   const onEditManagerUpdate = useCallback(() => {
     actionRef.current?.reload();
@@ -105,7 +87,7 @@ const ManagerList: React.FC = () => {
         />
       </Card>
       <Modal
-        onCancel={hideEdit}
+        onCancel={onEditManagerCancel}
         destroyOnClose
         width={720}
         footer={null}
@@ -113,10 +95,10 @@ const ManagerList: React.FC = () => {
         title={editManager ? '编辑管理人员' : '新建管理人员'}
       >
         <EditManagerForm
-          positionTypes={positionTypes}
-          dutyTypes={dutyTypes}
-          issueDepartmentTypes={issueDepartmentTypes}
-          managerCertTypes={managerCertTypes}
+          positionTypes={managerCategoryType?.ManagerPositionType ?? []}
+          dutyTypes={managerCategoryType?.ManagerDutyType ?? []}
+          issueDepartmentTypes={managerCategoryType?.IssueDepartmentType ?? []}
+          managerCertTypes={managerCategoryType?.ManagerCertType ?? []}
           onUpdate={onEditManagerUpdate}
           onCancel={onEditManagerCancel}
           manager={editManager}

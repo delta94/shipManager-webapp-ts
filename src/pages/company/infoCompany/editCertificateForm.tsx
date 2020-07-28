@@ -5,13 +5,12 @@ import styles from './style.less';
 import {
   CompanyCertKeyMap as CompanyCertKey,
   createCompanyCert,
-  getCompanyCertType,
   updateCompanyCert,
 } from '@/services/companyCertService';
-import { getIssueDepartmentType } from '@/services/commonService';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { dateFormatter, formatUploadFileToOSSFiles } from '@/utils/parser';
+import { listCompanyCategoryType } from '@/services/companyService';
 
 interface EditCertificateFormProps {
   certificate?: ICompanyCert;
@@ -44,14 +43,9 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
     },
   });
 
-  const { data: companyCertType } = useRequest(getCompanyCertType, {
+  const { data: companyCategoryType } = useRequest(listCompanyCategoryType, {
     manual: false,
-    cacheKey: 'company_cert_type'
-  });
-
-  const { data: issueDepartmentType } = useRequest(getIssueDepartmentType, {
-    manual: false,
-    cacheKey: 'issue_department_type'
+    cacheKey: 'company_category_type',
   });
 
   const onReset = () => {
@@ -128,11 +122,12 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
         ]}
       >
         <Select placeholder="请选择证书类型">
-          {companyCertType?.map((item, index) => (
-            <Select.Option value={item.id} key={index}>
-              {item.name}
-            </Select.Option>
-          ))}
+          {companyCategoryType &&
+            companyCategoryType.CompanyCertType.map((item, index) => (
+              <Select.Option value={item.id} key={index}>
+                {item.name}
+              </Select.Option>
+            ))}
         </Select>
       </Form.Item>
 
@@ -147,11 +142,12 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
         ]}
       >
         <Select placeholder="请选择颁发机构">
-          {issueDepartmentType?.map((item, index) => (
-            <Select.Option value={item.id} key={index}>
-              {item.name}
-            </Select.Option>
-          ))}
+          {companyCategoryType &&
+            companyCategoryType.IssueDepartmentType.map((item, index) => (
+              <Select.Option value={item.id} key={index}>
+                {item.name}
+              </Select.Option>
+            ))}
         </Select>
       </Form.Item>
 

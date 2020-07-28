@@ -1,22 +1,50 @@
-import { UploadFile } from "antd/lib/upload/interface";
+import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 
-export default interface ISailor {
+export interface ISailor {
   id: number;
   name: string;
+  shipId: string;
   identityNumber: string;
+  licenseNumber: string;
+  gender: number;
+  birthDate: string;
+  contractWorkAt: string;
+  contractExpiryAt: string;
   isAdvanced: boolean;
+  region: string;
   mobile: string;
   address: string;
-  certFile: string;
-  positionName: string;
-  positionId: number;
-  shipName: string;
-  shipId: number;
-  ex_certFile?: UploadFile[]
+  remark: string;
+  isActive: boolean;
+  sailorDutyTypeId: number;
+  sailorDutyTypeName: string;
+  sailorCerts: ISailorCert[];
 }
 
-export interface ISailorPosition {
+export interface ISailorDutyType {
   id: number;
   name: string;
   remark: string;
+}
+
+export interface ISailorCertType {
+  id: number;
+  name: string;
+  remark: string;
+}
+
+export interface ISailorCert {
+  id: string;
+  name: string;
+  identityNumber: string;
+  expiredAt: string;
+  issuedAt: string;
+  remark: string;
+  sailor: string;
+  sailorCertTypeId: number;
+  sailorCertTypeName: string;
+  issueDepartmentTypeId: number;
+  issueDepartmentTypeName: string;
+  ossFiles: IOSSMetaFile[];
+  isRemoved: boolean
 }

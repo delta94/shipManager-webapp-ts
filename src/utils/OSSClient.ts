@@ -1,6 +1,6 @@
 import OSS from 'ali-oss';
 import moment from 'moment';
-import { getStsToken } from '@/services/global';
+import { getStsToken } from '@/services/globalService';
 import env from '@/constants/env';
 import { UploadFile } from 'antd/lib/upload/interface';
 

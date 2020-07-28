@@ -1,6 +1,6 @@
 import { Effect } from 'dva';
 
-import { getCurrentUser, updateCurrentPassword, updateCurrentUser } from '@/services/user';
+import { getCurrentUser, updateCurrentPassword, updateCurrentUser } from '@/services/userService';
 import IAccount from '@/interfaces/IAccount';
 import { ImmerReducer } from '@/models/connect';
 
