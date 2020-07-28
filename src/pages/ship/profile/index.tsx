@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { RouteComponentProps } from 'dva/router';
 import { infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
 import { useRequest, useToggle } from '@umijs/hooks';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Descriptions, Button, Modal } from 'antd';
-import { IShip } from '@/interfaces/IShip';
+import ProList from '@ant-design/pro-list';
+import { Card, Descriptions, Button, Modal, Space } from 'antd';
+import { IShip, IShipPayload } from '@/interfaces/IShip';
 import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
 import EditPayloadForm from '@/pages/ship/edit/editPayloadForm';
@@ -25,6 +26,13 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
 
   const { setLeft: hidePayloadEdit, setRight: showPayloadEdit, state: editShipPayloadVisible } = useToggle(false);
 
+  const [editPayload, setPayload] = useState<IShipPayload>();
+
+  const onEditPayload = useCallback((payload: IShipPayload) => {
+    setPayload(payload);
+    showPayloadEdit();
+  }, []);
+
   useEffect(() => {
     if (params.id) {
       fetchShip(parseInt(params.id));
@@ -35,6 +43,8 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
     refreshShipInfo();
     hideBasicEdit();
     hideMetricEdit();
+    hidePayloadEdit();
+    setPayload(undefined);
   };
 
   return (
@@ -88,7 +98,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
       </Card>
 
       <Card
-        title="航区载量列表"
+        title="航区载量信息"
         style={{ marginBottom: 24 }}
         bordered={false}
         loading={loading}
@@ -98,14 +108,33 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
           </Button>
         }
       >
-        <Descriptions>
-          <Descriptions.Item label={ShipKeyMap.grossTone}>{ship.grossTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.netTone}>{ship.netTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.length}>{ship.length} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.width}>{ship.width} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.height}>{ship.height} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.depth}>{ship.depth} 米</Descriptions.Item>
-        </Descriptions>
+        <ProList<IShipPayload>
+          rowKey="id"
+          showActions="hover"
+          dataSource={ship.shipPayloads}
+          renderItem={item => ({
+            title: (
+              <>
+                {item.shipBusinessAreaName} | <Space size={3}>载货量: {item.tone} 吨</Space>
+              </>
+            ),
+            actions: [
+              <a
+                onClick={() => {
+                  onEditPayload(item);
+                }}
+              >
+                修改
+              </a>,
+            ],
+            description: item.shipBusinessAreaRemark,
+            avatar: {
+              size: 'large',
+              children: item.shipBusinessAreaName.slice(0, 1),
+              style: { color: '#40a9ff', backgroundColor: '#e6f7ff', verticalAlign: 'middle' },
+            },
+          })}
+        />
       </Card>
 
       <Modal
@@ -142,12 +171,17 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         maskClosable={false}
         width={720}
         visible={editShipPayloadVisible}
-        title="编辑航区参数信息"
+        title="编辑航区载量信息"
         destroyOnClose={true}
         footer={null}
         onCancel={hidePayloadEdit}
       >
-        <EditPayloadForm payload={ship.shipPayloads} onUpdate={onUpdateShip} onCancel={hidePayloadEdit} />
+        <EditPayloadForm
+          shipBusinessAreaType={shipCategoryType?.ShipBusinessAreaType ?? []}
+          payload={editPayload}
+          onUpdate={onUpdateShip}
+          onCancel={hidePayloadEdit}
+        />
       </Modal>
     </PageHeaderWrapper>
   );

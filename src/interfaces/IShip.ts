@@ -69,10 +69,11 @@ export interface IShipGenerator {
 
 export interface IShipPayload {
   id: number;
-  tone: string;
+  tone: number;
   remark: string;
   shipBusinessAreaId: number;
   shipBusinessAreaName: string;
+  shipBusinessAreaRemark: string;
   shipId: number;
 }
 

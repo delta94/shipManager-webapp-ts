@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { ShipKeyMap as ShipKey, updateShip } from '@/services/shipService';
-import { message, Form, InputNumber, Button } from 'antd';
-import { Input } from 'antd/es';
-import { IShipPayload } from '@/interfaces/IShip';
+import React, { useEffect, useState } from 'react';
+import { ShipPayloadKeyMap, upsertShipPayload } from '@/services/shipService';
+import { message, Form, InputNumber, Input, Button, Select } from 'antd';
+import { IShipBusinessAreaType, IShipPayload } from '@/interfaces/IShip';
 import { useRequest } from '@umijs/hooks';
 
 interface EditPayloadFormProps {
-  payload: IShipPayload;
+  payload?: IShipPayload;
   onUpdate: Function;
   onCancel: Function;
+  shipBusinessAreaType: IShipBusinessAreaType[];
 }
 
-const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, payload }) => {
+const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, payload, shipBusinessAreaType }) => {
   const [form] = Form.useForm();
+  const [areaTip, setAreaTip] = useState();
 
-  const { loading, run: updateShipInfo } = useRequest(updateShip, {
+  const { loading, run: updateShipPayloadInfo } = useRequest(upsertShipPayload, {
     manual: true,
     onSuccess() {
-      message.success('船体参数信息已更新');
+      message.success('载量信息已更新');
       onUpdate();
     },
     onError() {
-      message.error('船体参数信息更新失败');
+      message.error('载量信息更新失败');
     },
   });
 
@@ -31,7 +32,11 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, p
   };
 
   const onFinish = (values: any) => {
-    updateShipInfo(values);
+    updateShipPayloadInfo(values);
+  };
+
+  const onSelectArea = (value: any, item: any) => {
+    setAreaTip(item.title || '');
   };
 
   useEffect(() => {
@@ -41,23 +46,58 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, p
   }, [payload]);
 
   return (
-    <Form form={form} onFinish={onFinish} labelCol={{ span: 6, offset: 2 }} wrapperCol={{ span: 8 }}>
+    <Form form={form} onFinish={onFinish} labelCol={{ span: 6, offset: 1 }} wrapperCol={{ span: 10 }}>
       <Form.Item label="id" name="id" noStyle>
         <Input type="hidden" />
       </Form.Item>
 
       <Form.Item
-        name="height"
-        label={ShipKey.height}
+        style={{ marginBottom: 12 }}
+        name="shipBusinessAreaId"
+        label={ShipPayloadKeyMap.shipBusinessAreaName}
+        help={areaTip}
         rules={[
           {
-            required: false,
-            message: `请输入 ${ShipKey.height}`,
+            required: true,
+            message: `请输入 ${ShipPayloadKeyMap.shipBusinessAreaName}`,
           },
         ]}
       >
-        <InputNumber placeholder={`请输入 ${ShipKey.height}`} style={{ width: '90%' }} />
+        <Select placeholder={`请选择${ShipPayloadKeyMap.shipBusinessAreaName}`} onSelect={onSelectArea}>
+          {shipBusinessAreaType?.map((item, index) => (
+            <Select.Option value={item.id} key={index} title={item.remark}>
+              {item.name}
+            </Select.Option>
+          ))}
+        </Select>
       </Form.Item>
+
+      <Form.Item
+        name="tone"
+        label={ShipPayloadKeyMap.tone}
+        rules={[
+          {
+            required: true,
+            message: `请输入 ${ShipPayloadKeyMap.tone}`,
+          },
+        ]}
+      >
+        <InputNumber placeholder={`请输入 ${ShipPayloadKeyMap.tone}`} style={{ width: '100%' }} />
+      </Form.Item>
+
+      <Form.Item
+        name="remark"
+        label={ShipPayloadKeyMap.remark}
+        rules={[
+          {
+            required: false,
+            message: `请输入 ${ShipPayloadKeyMap.remark}`,
+          },
+        ]}
+      >
+        <Input.TextArea placeholder={`请输入 ${ShipPayloadKeyMap.remark}`} autoSize={{ minRows: 3, maxRows: 5 }} />
+      </Form.Item>
+
       <div style={{ height: 24 }} />
 
       <div className="g-ant-modal-footer">

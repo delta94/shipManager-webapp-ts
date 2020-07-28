@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { IShip } from '@/interfaces/IShip';
+import { IShip, IShipPayload } from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { parsePagination } from '@/utils/parser';
@@ -60,6 +60,20 @@ export async function listShipMeta(): Promise<IShip[]> {
   });
 }
 
+export async function upsertShipPayload(payload: Partial<IShipPayload>): Promise<void> {
+  if (payload.id) {
+    return request(`/api/ship-payloads/`, {
+      method: 'PUT',
+      data: payload,
+    });
+  } else {
+    return request(`/api/ship-payloads/`, {
+      method: 'POST',
+      data: payload,
+    });
+  }
+}
+
 export const ShipKeyMap = {
   name: '船舶名',
   carrierIdentifier: '船舶识别号',
@@ -84,3 +98,9 @@ export const ShipKeyMap = {
   shipTypeName: '船舶类型',
   shipMaterialTypeName: '船舶材质',
 };
+
+export const ShipPayloadKeyMap = {
+  shipBusinessAreaName: "航区类型",
+  tone: '载重量（吨）',
+  remark: '备注',
+}
