@@ -31,6 +31,7 @@ export interface IShip {
   shipPayloads: IShipPayload[];
   shipHosts: IShipHost[];
   shipGenerators: IShipGenerator[];
+  shipLicenses: IShipLicense[];
 }
 
 export interface IShipCert {
@@ -77,7 +78,25 @@ export interface IShipPayload {
   shipId: number;
 }
 
+export interface IShipLicense {
+  id: number;
+  name: string;
+  businessField: string;
+  identityNumber: string;
+  expiredAt: string;
+  issuedAt: string;
+  isRemoved: string;
+  remark: string;
+  shipId: number;
+  shipLicenseTypeId: number;
+  shipLicenseTypeName: string;
+  issueDepartmentTypeId: number;
+  issueDepartmentTypeName: string;
+  ossFiles: IOSSMetaFile[];
+}
+
 export interface IShipMaterialType extends ICommonOptionType {}
 export interface IShipType extends ICommonOptionType {}
 export interface IShipCertType extends ICommonOptionType {}
 export interface IShipBusinessAreaType extends ICommonOptionType {}
+export interface IShipLicenseType extends ICommonOptionType {}

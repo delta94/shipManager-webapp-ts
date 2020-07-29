@@ -133,6 +133,7 @@ const InfoCompany: React.FC = () => {
           <Descriptions.Item label={CompanyKeys.postcode}>{company?.postcode}</Descriptions.Item>
         </Descriptions>
       </Card>
+
       <Card
         bordered={false}
         tabList={tabList}

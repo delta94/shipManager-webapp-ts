@@ -106,7 +106,19 @@ export const ShipKeyMap = {
 };
 
 export const ShipPayloadKeyMap = {
-  shipBusinessAreaName: "航区类型",
+  shipBusinessAreaName: '航区类型',
   tone: '载重量（吨）',
   remark: '备注',
-}
+};
+
+export const ShipLicenseKeyMap = {
+  name: '名称',
+  businessField: '经营范围',
+  identityNumber: '营运证书编号',
+  expiredAt: '过期日期',
+  issuedAt: '颁发日期',
+  remark: '备注',
+  shipLicenseTypeName: '营运证书类型',
+  issueDepartmentTypeName: '颁发机构',
+  ossFiles: '营运证书电子件',
+};

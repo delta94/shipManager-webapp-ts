@@ -4,11 +4,12 @@ import { deleteShipPayload, infoShip, listShipCategory, ShipKeyMap } from '@/ser
 import { useRequest, useToggle } from '@umijs/hooks';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProList from '@ant-design/pro-list';
-import { Card, Descriptions, Button, Modal, Space, Popconfirm, message } from 'antd';
+import { Card, Descriptions, Button, Modal, Space, Popconfirm, message, Table } from 'antd';
 import { IShip, IShipPayload } from '@/interfaces/IShip';
 import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
 import EditPayloadForm from '@/pages/ship/edit/editPayloadForm';
+import useLicenseTable from '@/pages/ship/profile/useLicenseTable';
 
 const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const { data: ship = {} as IShip, run: fetchShip, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
@@ -38,6 +39,10 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
   const { setLeft: hidePayloadEdit, setRight: showPayloadEdit, state: editShipPayloadVisible } = useToggle(false);
 
   const [editPayload, setPayload] = useState<Partial<IShipPayload>>();
+
+  const { tabList, columns, updateTab, licenses } = useLicenseTable({
+    licenses: ship.shipLicenses ?? [],
+  });
 
   const onEditPayload = useCallback((payload: Partial<IShipPayload>) => {
     setPayload(payload);
@@ -157,6 +162,16 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
             },
           })}
         />
+      </Card>
+
+      <Card
+        bordered={false}
+        tabList={tabList}
+        style={{ marginTop: 24 }}
+        onTabChange={updateTab}
+        tabBarExtraContent={<Button type="link">新增</Button>}
+      >
+        <Table pagination={false} loading={loading} dataSource={licenses} columns={columns} />
       </Card>
 
       <Modal
