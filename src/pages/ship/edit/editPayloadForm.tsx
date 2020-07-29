@@ -5,7 +5,7 @@ import { IShipBusinessAreaType, IShipPayload } from '@/interfaces/IShip';
 import { useRequest } from '@umijs/hooks';
 
 interface EditPayloadFormProps {
-  payload?: IShipPayload;
+  payload?: Partial<IShipPayload>;
   onUpdate: Function;
   onCancel: Function;
   shipBusinessAreaType: IShipBusinessAreaType[];
@@ -40,7 +40,7 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, p
   };
 
   useEffect(() => {
-    if (payload?.id) {
+    if (payload?.id || payload?.shipId) {
       form.setFieldsValue(payload);
     }
   }, [payload]);
@@ -48,6 +48,10 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, p
   return (
     <Form form={form} onFinish={onFinish} labelCol={{ span: 6, offset: 1 }} wrapperCol={{ span: 10 }}>
       <Form.Item label="id" name="id" noStyle>
+        <Input type="hidden" />
+      </Form.Item>
+
+      <Form.Item label="shipId" name="shipId" noStyle>
         <Input type="hidden" />
       </Form.Item>
 

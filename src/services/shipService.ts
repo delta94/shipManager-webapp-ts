@@ -60,6 +60,12 @@ export async function listShipMeta(): Promise<IShip[]> {
   });
 }
 
+export async function deleteShipPayload(id: number): Promise<void> {
+  return request(`/api/ship-payloads/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function upsertShipPayload(payload: Partial<IShipPayload>): Promise<void> {
   if (payload.id) {
     return request(`/api/ship-payloads/`, {

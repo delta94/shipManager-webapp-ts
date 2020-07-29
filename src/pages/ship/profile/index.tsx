@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { RouteComponentProps } from 'dva/router';
-import { infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
+import { deleteShipPayload, infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
 import { useRequest, useToggle } from '@umijs/hooks';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProList from '@ant-design/pro-list';
-import { Card, Descriptions, Button, Modal, Space } from 'antd';
+import { Card, Descriptions, Button, Modal, Space, Popconfirm, message } from 'antd';
 import { IShip, IShipPayload } from '@/interfaces/IShip';
 import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
@@ -20,17 +20,32 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
     cacheKey: 'ship_category_type',
   });
 
+  const { run: deletePayload } = useRequest(deleteShipPayload, {
+    manual: true,
+    onSuccess() {
+      message.success('载量信息已删除');
+      refreshShipInfo();
+    },
+    onError() {
+      message.error('载量信息更新失败');
+    },
+  });
+
   const { setLeft: hideBasicEdit, setRight: showBasicEdit, state: editShipBasicVisible } = useToggle(false);
 
   const { setLeft: hideMetricEdit, setRight: showMetricEdit, state: editShipMetricVisible } = useToggle(false);
 
   const { setLeft: hidePayloadEdit, setRight: showPayloadEdit, state: editShipPayloadVisible } = useToggle(false);
 
-  const [editPayload, setPayload] = useState<IShipPayload>();
+  const [editPayload, setPayload] = useState<Partial<IShipPayload>>();
 
-  const onEditPayload = useCallback((payload: IShipPayload) => {
+  const onEditPayload = useCallback((payload: Partial<IShipPayload>) => {
     setPayload(payload);
     showPayloadEdit();
+  }, []);
+
+  const onRemovePayload = useCallback((payload: IShipPayload) => {
+    deletePayload(payload.id);
   }, []);
 
   useEffect(() => {
@@ -103,14 +118,18 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         bordered={false}
         loading={loading}
         extra={
-          <Button type="link" onClick={showPayloadEdit}>
-            编辑
+          <Button
+            type="link"
+            onClick={() => {
+              onEditPayload({ shipId: parseInt(params.id) ?? 0 });
+            }}
+          >
+            新增
           </Button>
         }
       >
         <ProList<IShipPayload>
           rowKey="id"
-          showActions="hover"
           dataSource={ship.shipPayloads}
           renderItem={item => ({
             title: (
@@ -126,6 +145,9 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
               >
                 修改
               </a>,
+              <Popconfirm title="是否要删除此记录？" onConfirm={() => onRemovePayload(item)}>
+                <a>删除</a>
+              </Popconfirm>,
             ],
             description: item.shipBusinessAreaRemark,
             avatar: {
@@ -174,7 +196,10 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         title="编辑航区载量信息"
         destroyOnClose={true}
         footer={null}
-        onCancel={hidePayloadEdit}
+        onCancel={() => {
+          setPayload(undefined);
+          hidePayloadEdit();
+        }}
       >
         <EditPayloadForm
           shipBusinessAreaType={shipCategoryType?.ShipBusinessAreaType ?? []}
