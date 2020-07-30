@@ -48,6 +48,12 @@ export async function infoSailor(id: number): Promise<ISailor> {
   });
 }
 
+export async function unlinkSailor(id: number) {
+  return request(`/api/sailors/unlink/${id}`, {
+    method: 'POST',
+  });
+}
+
 export async function listSailorCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
   return request(`/api/sailors/category`, {
     method: 'GET',

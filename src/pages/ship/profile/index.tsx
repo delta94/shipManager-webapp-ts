@@ -10,12 +10,15 @@ import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
 import EditPayloadForm from '@/pages/ship/edit/editPayloadForm';
 import useLicenseTable from '@/pages/ship/profile/useLicenseTable';
+import useSailorTable from '@/pages/ship/profile/useSailorTable';
 import useLicenseForm from '@/pages/ship/profile/useLicenseForm';
 import EditLicenseForm from '@/pages/ship/edit/editLicenseForm';
 import usePayloadForm from '@/pages/ship/profile/usePayloadForm';
 import useBasicForm from '@/pages/ship/profile/useBaiscForm';
 import useMetricForm from '@/pages/ship/profile/useMetricForm';
 import hooks from '@/pages/ship/profile/hooks';
+import ProTable from '@ant-design/pro-table';
+import { ISailor } from '@/interfaces/ISailor';
 
 const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const { data: ship = {} as IShip, run: fetchShip, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
@@ -34,6 +37,8 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
   });
 
   const { tabList, columns, updateTab, licenses } = useLicenseTable({ licenses: ship.shipLicenses ?? [] });
+
+  const sailorProps = useSailorTable({ shipId: params.id ? parseInt(params.id) : 0 });
 
   const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
 
@@ -164,6 +169,19 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         }
       >
         <Table pagination={false} loading={loading} dataSource={licenses} columns={columns} />
+      </Card>
+
+      <Card bordered={false} title="船员列表" style={{ marginTop: 24 }}>
+        <ProTable<ISailor>
+          rowKey="id"
+          search={false}
+          options={false}
+          actionRef={sailorProps.actionRef}
+          columns={sailorProps.columns}
+          //@ts-ignore
+          dateFormatter="string"
+          request={sailorProps.request}
+        />
       </Card>
 
       <Modal
