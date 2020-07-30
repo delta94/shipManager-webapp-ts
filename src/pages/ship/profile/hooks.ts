@@ -1,10 +1,12 @@
 import { SyncHook } from '@funnyecho/hamon';
-import { IShipLicense } from '@/interfaces/IShip';
+import {IShipLicense, IShipPayload} from '@/interfaces/IShip';
 
 const hooks = {
-  DeleteShipLicenseCert: new SyncHook<[IShipLicense]>(),
-  EditShipLicenseCert: new SyncHook<[IShipLicense]>(),
-  InfoShipLicenseCert: new SyncHook<[IShipLicense]>(),
+  DeleteShipLicense: new SyncHook<[IShipLicense]>(),
+  EditShipLicense: new SyncHook<[IShipLicense]>(),
+  InfoShipLicense: new SyncHook<[IShipLicense]>(),
+
+  DeleteShipPayload: new SyncHook<[IShipPayload]>(),
 };
 
 export default hooks;

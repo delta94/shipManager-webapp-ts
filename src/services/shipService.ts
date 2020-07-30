@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { IShip, IShipPayload } from '@/interfaces/IShip';
+import { IShip, IShipLicense, IShipPayload } from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { parsePagination } from '@/utils/parser';
@@ -66,6 +66,13 @@ export async function deleteShipPayload(id: number): Promise<void> {
   });
 }
 
+
+export async function deleteShipLicense(id: number): Promise<void> {
+  return request(`/api/ship-licenses/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function upsertShipPayload(payload: Partial<IShipPayload>): Promise<void> {
   if (payload.id) {
     return request(`/api/ship-payloads/`, {
@@ -76,6 +83,20 @@ export async function upsertShipPayload(payload: Partial<IShipPayload>): Promise
     return request(`/api/ship-payloads/`, {
       method: 'POST',
       data: payload,
+    });
+  }
+}
+
+export async function upsertShipLicense(license: Partial<IShipLicense>): Promise<void> {
+  if (license.id) {
+    return request(`/api/ship-licenses/`, {
+      method: 'PUT',
+      data: license,
+    });
+  } else {
+    return request(`/api/ship-licenses/`, {
+      method: 'POST',
+      data: license,
     });
   }
 }

@@ -5,7 +5,7 @@ import { ShipKeyMap as ShipKey, updateShip } from '@/services/shipService';
 import { useRequest } from '@umijs/hooks';
 
 interface EditMetricFormProps {
-  ship: IShip;
+  ship: Partial<IShip>;
   onUpdate: Function;
   onCancel: Function;
 }

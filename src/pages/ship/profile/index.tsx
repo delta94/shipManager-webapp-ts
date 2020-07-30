@@ -1,57 +1,26 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'dva/router';
-import { deleteShipPayload, infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
-import { useRequest, useToggle } from '@umijs/hooks';
+import { infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
+import { useRequest } from '@umijs/hooks';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProList from '@ant-design/pro-list';
-import { Card, Descriptions, Button, Modal, Space, Popconfirm, message, Table } from 'antd';
+import { Card, Descriptions, Button, Modal, Space, Popconfirm, Table } from 'antd';
 import { IShip, IShipPayload } from '@/interfaces/IShip';
 import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
 import EditPayloadForm from '@/pages/ship/edit/editPayloadForm';
 import useLicenseTable from '@/pages/ship/profile/useLicenseTable';
+import useLicenseForm from '@/pages/ship/profile/useLicenseForm';
+import EditLicenseForm from '@/pages/ship/edit/editLicenseForm';
+import usePayloadForm from '@/pages/ship/profile/usePayloadForm';
+import useBasicForm from '@/pages/ship/profile/useBaiscForm';
+import useMetricForm from '@/pages/ship/profile/useMetricForm';
+import hooks from '@/pages/ship/profile/hooks';
 
 const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const { data: ship = {} as IShip, run: fetchShip, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
     manual: true,
   });
-
-  const { data: shipCategoryType } = useRequest(listShipCategory, {
-    manual: false,
-    cacheKey: 'ship_category_type',
-  });
-
-  const { run: deletePayload } = useRequest(deleteShipPayload, {
-    manual: true,
-    onSuccess() {
-      message.success('载量信息已删除');
-      refreshShipInfo();
-    },
-    onError() {
-      message.error('载量信息更新失败');
-    },
-  });
-
-  const { setLeft: hideBasicEdit, setRight: showBasicEdit, state: editShipBasicVisible } = useToggle(false);
-
-  const { setLeft: hideMetricEdit, setRight: showMetricEdit, state: editShipMetricVisible } = useToggle(false);
-
-  const { setLeft: hidePayloadEdit, setRight: showPayloadEdit, state: editShipPayloadVisible } = useToggle(false);
-
-  const [editPayload, setPayload] = useState<Partial<IShipPayload>>();
-
-  const { tabList, columns, updateTab, licenses } = useLicenseTable({
-    licenses: ship.shipLicenses ?? [],
-  });
-
-  const onEditPayload = useCallback((payload: Partial<IShipPayload>) => {
-    setPayload(payload);
-    showPayloadEdit();
-  }, []);
-
-  const onRemovePayload = useCallback((payload: IShipPayload) => {
-    deletePayload(payload.id);
-  }, []);
 
   useEffect(() => {
     if (params.id) {
@@ -59,12 +28,31 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
     }
   }, [params.id]);
 
+  const { data: shipCategoryType } = useRequest(listShipCategory, {
+    manual: false,
+    cacheKey: 'ship_category_type',
+  });
+
+  const { tabList, columns, updateTab, licenses } = useLicenseTable({ licenses: ship.shipLicenses ?? [] });
+
+  const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
+
+  const { editShipMetric, editMetricVisible, onCloseEditMetric, onShowEditMetric } = useMetricForm({ ship });
+
+  const { editLicense, editLicenseVisible, onCloseEditLicense, onShowEditLicense } = useLicenseForm({
+    refreshShipInfo,
+  });
+
+  const { editPayload, editPayloadVisible, onCloseEditPayload, onShowEditPayload } = usePayloadForm({
+    refreshShipInfo,
+  });
+
   const onUpdateShip = () => {
     refreshShipInfo();
-    hideBasicEdit();
-    hideMetricEdit();
-    hidePayloadEdit();
-    setPayload(undefined);
+    onCloseEditBasic({});
+    onCloseEditMetric({});
+    onCloseEditPayload({});
+    onCloseEditLicense({});
   };
 
   return (
@@ -75,7 +63,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         style={{ margin: '24px 0' }}
         loading={loading}
         extra={
-          <Button type="link" onClick={showBasicEdit}>
+          <Button type="link" onClick={onShowEditBasic}>
             编辑
           </Button>
         }
@@ -102,7 +90,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         bordered={false}
         loading={loading}
         extra={
-          <Button type="link" onClick={showMetricEdit}>
+          <Button type="link" onClick={onShowEditMetric}>
             编辑
           </Button>
         }
@@ -126,7 +114,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
           <Button
             type="link"
             onClick={() => {
-              onEditPayload({ shipId: parseInt(params.id) ?? 0 });
+              onShowEditPayload({ shipId: parseInt(params.id) ?? 0 });
             }}
           >
             新增
@@ -145,12 +133,12 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
             actions: [
               <a
                 onClick={() => {
-                  onEditPayload(item);
+                  onShowEditPayload(item);
                 }}
               >
                 修改
               </a>,
-              <Popconfirm title="是否要删除此记录？" onConfirm={() => onRemovePayload(item)}>
+              <Popconfirm title="是否要删除此记录？" onConfirm={() => hooks.DeleteShipPayload.call(item)}>
                 <a>删除</a>
               </Popconfirm>,
             ],
@@ -169,7 +157,11 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         tabList={tabList}
         style={{ marginTop: 24 }}
         onTabChange={updateTab}
-        tabBarExtraContent={<Button type="link">新增</Button>}
+        tabBarExtraContent={
+          <Button type="link" onClick={() => onShowEditLicense({ shipId: parseInt(params.id) ?? 0 })}>
+            新增
+          </Button>
+        }
       >
         <Table pagination={false} loading={loading} dataSource={licenses} columns={columns} />
       </Card>
@@ -177,16 +169,16 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
       <Modal
         maskClosable={false}
         width={720}
-        visible={editShipBasicVisible}
+        visible={editBasicVisible}
         title="编辑基本信息"
         destroyOnClose={true}
         footer={null}
-        onCancel={hideBasicEdit}
+        onCancel={onCloseEditBasic}
       >
         <EditBasicForm
-          ship={ship}
+          ship={editShipBasic ?? {}}
           onUpdate={onUpdateShip}
-          onCancel={hideBasicEdit}
+          onCancel={onCloseEditBasic}
           shipTypes={shipCategoryType?.ShipType ?? []}
           shipMaterialTypes={shipCategoryType?.ShipMaterialType ?? []}
         />
@@ -195,32 +187,47 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
       <Modal
         maskClosable={false}
         width={720}
-        visible={editShipMetricVisible}
+        visible={editMetricVisible}
         title="编辑船体参数信息"
         destroyOnClose={true}
         footer={null}
-        onCancel={hideMetricEdit}
+        onCancel={onCloseEditMetric}
       >
-        <EditMetricForm ship={ship} onUpdate={onUpdateShip} onCancel={hideMetricEdit} />
+        <EditMetricForm ship={editShipMetric ?? {}} onUpdate={onUpdateShip} onCancel={onCloseEditMetric} />
       </Modal>
 
       <Modal
         maskClosable={false}
         width={720}
-        visible={editShipPayloadVisible}
+        visible={editPayloadVisible}
         title="编辑航区载量信息"
         destroyOnClose={true}
         footer={null}
-        onCancel={() => {
-          setPayload(undefined);
-          hidePayloadEdit();
-        }}
+        onCancel={onCloseEditPayload}
       >
         <EditPayloadForm
           shipBusinessAreaType={shipCategoryType?.ShipBusinessAreaType ?? []}
           payload={editPayload}
           onUpdate={onUpdateShip}
-          onCancel={hidePayloadEdit}
+          onCancel={onCloseEditPayload}
+        />
+      </Modal>
+
+      <Modal
+        maskClosable={false}
+        width={720}
+        visible={editLicenseVisible}
+        title="编辑营运证信息"
+        destroyOnClose={true}
+        footer={null}
+        onCancel={onCloseEditLicense}
+      >
+        <EditLicenseForm
+          shipLicenseType={shipCategoryType?.ShipLicenseType ?? []}
+          issueDepartmentType={shipCategoryType?.IssueDepartmentType ?? []}
+          license={editLicense}
+          onUpdate={onUpdateShip}
+          onCancel={onCloseEditLicense}
         />
       </Modal>
     </PageHeaderWrapper>

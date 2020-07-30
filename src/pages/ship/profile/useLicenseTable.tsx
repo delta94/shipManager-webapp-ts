@@ -80,12 +80,12 @@ export default function useLicenseTable(option: IUseLicenseTableDeps): IUseLicen
         key: 'action',
         render: (text: any, record: IShipLicense) => (
           <>
-            <a onClick={() => hooks.InfoShipLicenseCert.call(record)}>详情</a>
+            <a onClick={() => hooks.InfoShipLicense.call(record)}>详情</a>
             <Divider type="vertical" />
-            <a onClick={() => hooks.EditShipLicenseCert.call(record)}>修改</a>
+            <a onClick={() => hooks.EditShipLicense.call(record)}>修改</a>
             <Divider type="vertical" />
             <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => hooks.DeleteShipLicenseCert.call(record)}>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => hooks.DeleteShipLicense.call(record)}>
                 <a>删除</a>
               </Popconfirm>
             </span>

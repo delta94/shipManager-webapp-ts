@@ -6,7 +6,7 @@ import { useRequest } from '@umijs/hooks';
 import {dateFormatter, dateFormatterToString} from '@/utils/parser';
 
 interface EditBasicFormProps {
-  ship: IShip;
+  ship: Partial<IShip>;
   onUpdate: Function;
   onCancel: Function;
   shipTypes: IShipType[];
