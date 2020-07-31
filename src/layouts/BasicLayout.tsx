@@ -16,13 +16,7 @@ import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.png';
 import { setAuthority, updateToken } from '@/utils/authority';
-import {
-  HomeOutlined,
-  DashboardOutlined,
-  BookOutlined,
-  ProfileOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { HomeOutlined, DashboardOutlined, BookOutlined, ProfileOutlined, SettingOutlined } from '@ant-design/icons';
 
 const noMatch = (
   <Result
@@ -116,6 +110,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   return (
     <ProLayout
       logo={logo}
+      menu={{
+        defaultOpenAll: true,
+      }}
       formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
@@ -140,11 +137,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       ]}
       itemRender={(route, params, routes, paths) => {
         const first = routes.indexOf(route) === 0;
-        return first ? (
-          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-        ) : (
-          <span>{route.breadcrumbName}</span>
-        );
+        return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>;
       }}
       footerRender={footerRender}
       menuDataRender={menuDataRender}
