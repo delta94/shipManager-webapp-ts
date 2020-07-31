@@ -19,6 +19,9 @@ import useMetricForm from '@/pages/ship/profile/useMetricForm';
 import hooks from '@/pages/ship/profile/hooks';
 import ProTable from '@ant-design/pro-table';
 import { ISailor } from '@/interfaces/ISailor';
+import useMachineTable from '@/pages/ship/profile/useMachineTable';
+import useMachineForm from '@/pages/ship/profile/useMachineForm';
+import EditMachineForm from '@/pages/ship/edit/editMachineForm';
 
 const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const { data: ship = {} as IShip, run: fetchShip, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
@@ -36,15 +39,21 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
     cacheKey: 'ship_category_type',
   });
 
-  const { tabList, columns, updateTab, licenses } = useLicenseTable({ licenses: ship.shipLicenses ?? [] });
+  const licenseTableProps = useLicenseTable({ licenses: ship.shipLicenses ?? [] });
 
-  const sailorProps = useSailorTable({ shipId: params.id ? parseInt(params.id) : 0 });
+  const machineTableProps = useMachineTable({ machines: ship.shipMachines ?? [] });
+
+  const sailorTableProps = useSailorTable({ shipId: params.id ? parseInt(params.id) : 0 });
 
   const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
 
   const { editShipMetric, editMetricVisible, onCloseEditMetric, onShowEditMetric } = useMetricForm({ ship });
 
   const { editLicense, editLicenseVisible, onCloseEditLicense, onShowEditLicense } = useLicenseForm({
+    refreshShipInfo,
+  });
+
+  const { editMachine, onCloseEditMachine, onShowEditMachine, editMachineVisible } = useMachineForm({
     refreshShipInfo,
   });
 
@@ -58,6 +67,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
     onCloseEditMetric({});
     onCloseEditPayload({});
     onCloseEditLicense({});
+    onCloseEditMachine({});
   };
 
   return (
@@ -159,16 +169,49 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
 
       <Card
         bordered={false}
-        tabList={tabList}
+        tabList={licenseTableProps.tabList}
         style={{ marginTop: 24 }}
-        onTabChange={updateTab}
+        onTabChange={licenseTableProps.updateTab}
         tabBarExtraContent={
           <Button type="link" onClick={() => onShowEditLicense({ shipId: parseInt(params.id) ?? 0 })}>
             新增
           </Button>
         }
       >
-        <Table pagination={false} loading={loading} dataSource={licenses} columns={columns} />
+        <Table
+          pagination={false}
+          loading={loading}
+          dataSource={licenseTableProps.licenses}
+          columns={licenseTableProps.columns}
+        />
+      </Card>
+
+      <Card
+        bordered={false}
+        tabList={machineTableProps.tabList}
+        style={{ marginTop: 24 }}
+        onTabChange={machineTableProps.updateTab}
+        tabBarExtraContent={
+          <Button
+            type="link"
+            onClick={() =>
+              onShowEditMachine({
+                shipId: parseInt(params.id) ?? 0,
+                machineType: machineTableProps.tab == 'host' ? 0 : 1,
+              })
+            }
+          >
+            新增
+          </Button>
+        }
+      >
+        <Table
+          key="id"
+          pagination={false}
+          loading={loading}
+          dataSource={machineTableProps.machines}
+          columns={machineTableProps.columns}
+        />
       </Card>
 
       <Card bordered={false} title="船员列表" style={{ marginTop: 24 }}>
@@ -176,11 +219,11 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
           rowKey="id"
           search={false}
           options={false}
-          actionRef={sailorProps.actionRef}
-          columns={sailorProps.columns}
+          actionRef={sailorTableProps.actionRef}
+          columns={sailorTableProps.columns}
           //@ts-ignore
           dateFormatter="string"
-          request={sailorProps.request}
+          request={sailorTableProps.request}
         />
       </Card>
 
@@ -229,6 +272,18 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
           onUpdate={onUpdateShip}
           onCancel={onCloseEditPayload}
         />
+      </Modal>
+
+      <Modal
+        maskClosable={false}
+        width={720}
+        visible={editMachineVisible}
+        title={`编辑船舶${machineTableProps.tab == 'host' ? '主机' : '发电机'}信息`}
+        destroyOnClose={true}
+        footer={null}
+        onCancel={onCloseEditMachine}
+      >
+        <EditMachineForm machine={editMachine} onUpdate={onUpdateShip} onCancel={onCloseEditMachine} />
       </Modal>
 
       <Modal

@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { IShip, IShipLicense, IShipPayload } from '@/interfaces/IShip';
+import {IShip, IShipLicense, IShipMachine, IShipPayload} from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { parsePagination } from '@/utils/parser';
@@ -66,9 +66,14 @@ export async function deleteShipPayload(id: number): Promise<void> {
   });
 }
 
-
 export async function deleteShipLicense(id: number): Promise<void> {
   return request(`/api/ship-licenses/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function deleteShipMachine(id: number): Promise<void> {
+  return request(`/api/ship-machines/${id}`, {
     method: 'DELETE',
   });
 }
@@ -83,6 +88,20 @@ export async function upsertShipPayload(payload: Partial<IShipPayload>): Promise
     return request(`/api/ship-payloads/`, {
       method: 'POST',
       data: payload,
+    });
+  }
+}
+
+export async function upsertShipMachine(machine: Partial<IShipMachine>): Promise<void> {
+  if (machine.id) {
+    return request(`/api/ship-machines/`, {
+      method: 'PUT',
+      data: machine,
+    });
+  } else {
+    return request(`/api/ship-machines/`, {
+      method: 'POST',
+      data: machine,
     });
   }
 }
@@ -142,4 +161,11 @@ export const ShipLicenseKeyMap = {
   shipLicenseTypeName: '营运证书类型',
   issueDepartmentTypeName: '颁发机构',
   ossFiles: '营运证书电子件',
+};
+
+export const ShipMachineKeyMap = {
+  model: "型号",
+  power: "功率（千瓦）",
+  machineType: "船机种类",
+  remark: "备注",
 };

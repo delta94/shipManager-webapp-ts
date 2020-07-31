@@ -29,8 +29,7 @@ export interface IShip {
 
   shipCerts: IShipCert[];
   shipPayloads: IShipPayload[];
-  shipHosts: IShipHost[];
-  shipGenerators: IShipGenerator[];
+  shipMachines: IShipMachine[];
   shipLicenses: IShipLicense[];
 }
 
@@ -50,22 +49,14 @@ export interface IShipCert {
   ossFiles: IOSSMetaFile[];
 }
 
-export interface IShipHost {
-  id: string;
-  identityNumber: number;
-  modelType: string;
-  power: string;
-  remark: string;
-  shipId: number;
-}
-
-export interface IShipGenerator {
-  id: number;
-  identityNumber: number;
-  modelType: string;
-  power: string;
-  remark: string;
-  shipId: number;
+export interface IShipMachine {
+  id: number
+  model: string
+  power: number
+  machineType: number
+  isRemoved: boolean
+  remark: string
+  shipId: number
 }
 
 export interface IShipPayload {
