@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { IShip, IShipMachine } from '@/interfaces/IShip';
 import { NavigationProps } from '@/hooks/useStep';
-import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
-import { Card, Button, Table, Space, Divider, Popconfirm, Typography, Empty, Modal } from 'antd';
+import { Card, Button, Table, Space, Divider, Popconfirm, Typography, Modal } from 'antd';
 import { ShipMachineKeyMap } from '@/services/shipService';
 import hooks from '@/pages/ship/profile/hooks';
 import { PlusOutlined } from '@ant-design/icons';
@@ -12,13 +11,13 @@ import { useToggle } from '@umijs/hooks';
 interface ShipMachineFormProps {
   ship: Partial<IShip>;
   navigation: NavigationProps;
-  shipCategoryType?: Record<ICategory, ICommonOptionType[]>;
-  onUpdate(ship: Partial<IShip>): void;
+  onUpdate(ship: Partial<IShip>, save?: boolean): void;
 }
 
-const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, ship, onUpdate, navigation }) => {
-  const [generators, setGenerator] = useState<IShipMachine[]>();
-  const [host, setHost] = useState<IShipMachine[]>();
+const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navigation }) => {
+  const [generators, setGenerator] = useState<IShipMachine[]>([]);
+  const [host, setHost] = useState<IShipMachine[]>([]);
+
   const [editMachine, setEditMachine] = useState<Partial<IShipMachine>>();
   const { setLeft, setRight, state } = useToggle(false);
 
@@ -29,13 +28,69 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, shi
     });
 
     const unTapDeleteMachine = hooks.DeleteShipMachine.tap(machine => {
-      //todo
+      if (machine.machineType == 0) {
+        setHost(hosts => {
+          return hosts.filter(item => item.id != machine.id);
+        });
+      }
+      if (machine.machineType == 1) {
+        setGenerator(generators => {
+          return generators.filter(item => item.id != machine.id);
+        });
+      }
     });
+
+    if (ship.shipMachines && ship.shipMachines.length > 0) {
+      setHost(ship.shipMachines.filter(item => item.machineType == 0));
+      setGenerator(ship.shipMachines.filter(item => item.machineType == 1));
+    }
 
     return () => {
       unTapEditMachine();
       unTapDeleteMachine();
     };
+  }, []);
+
+  const onShowForm = useCallback((machine: Partial<IShipMachine>) => {
+    setEditMachine(machine);
+    setRight();
+  }, []);
+
+  const onMachineUpdate = useCallback((machine: IShipMachine) => {
+    if (machine.id) {
+      if (machine.machineType == 0) {
+        setHost(hosts => {
+          let idx = hosts.findIndex(item => item.id == machine.id);
+          if (idx > -1) {
+            hosts[idx] = machine;
+          }
+          return [...hosts];
+        });
+      }
+      if (machine.machineType == 1) {
+        setGenerator(generators => {
+          let idx = generators.findIndex(item => item.id == machine.id);
+          if (idx > -1) {
+            generators[idx] = machine;
+          }
+          return [...generators];
+        });
+      }
+    } else {
+      machine.id = Date.now();
+      if (machine.machineType == 0) {
+        setHost(hosts => {
+          return [...hosts, machine];
+        });
+      }
+      if (machine.machineType == 1) {
+        setGenerator(generators => {
+          return [...generators, machine];
+        });
+      }
+    }
+    setLeft();
+    setEditMachine({});
   }, []);
 
   const columns = useMemo(() => {
@@ -90,7 +145,15 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, shi
           }}
           title={() => <Typography.Title level={4}>船舶主机</Typography.Title>}
         />
-        <Button type={'dashed'} style={{ width: '100%', marginTop: 8 }} onClick={setRight}>
+        <Button
+          type={'dashed'}
+          style={{ width: '100%', marginTop: 8 }}
+          onClick={() => {
+            onShowForm({
+              machineType: 0,
+            });
+          }}
+        >
           <PlusOutlined />
           添加主机
         </Button>
@@ -107,16 +170,25 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, shi
           columns={columns}
           title={() => <Typography.Title level={4}>船舶发电机</Typography.Title>}
         />
-        <Button type={'dashed'} style={{ width: '100%', marginTop: 8 }} onClick={setRight}>
+        <Button
+          type={'dashed'}
+          style={{ width: '100%', marginTop: 8 }}
+          onClick={() =>
+            onShowForm({
+              machineType: 1,
+            })
+          }
+        >
           <PlusOutlined />
           添加发电机
         </Button>
       </Card>
 
       <Card bordered={false}>
-        <Space>
+        <Space style={{ float: 'right' }}>
           <Button
             onClick={() => {
+              onUpdate({ shipMachines: [...host, ...generators] });
               navigation.previous();
             }}
           >
@@ -125,6 +197,7 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, shi
           <Button
             type="primary"
             onClick={() => {
+              onUpdate({ shipMachines: [...host, ...generators] });
               navigation.next();
             }}
           >
@@ -137,12 +210,12 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ shipCategoryType, shi
         maskClosable={false}
         width={720}
         visible={state}
-        title={`编辑船舶${'d' == 'host' ? '主机' : '发电机'}信息`}
+        title="编辑船机信息"
         destroyOnClose={true}
         footer={null}
         onCancel={setLeft}
       >
-        <EditMachineForm machine={editMachine} onUpdate={setLeft} onCancel={setLeft} />
+        <EditMachineForm runSave={false} machine={editMachine} onUpdate={onMachineUpdate} onCancel={setLeft} />
       </Modal>
     </div>
   );

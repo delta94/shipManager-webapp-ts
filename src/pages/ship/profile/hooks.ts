@@ -8,6 +8,7 @@ const hooks = {
   InfoShipLicense: new SyncHook<[IShipLicense]>(),
 
   DeleteShipPayload: new SyncHook<[IShipPayload]>(),
+  EditShipPayload: new SyncHook<[IShipPayload]>(),
 
   InfoSailor: new SyncHook<[ISailor]>(),
   DeleteSailor: new SyncHook<[ISailor]>(),

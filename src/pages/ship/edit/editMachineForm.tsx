@@ -8,9 +8,10 @@ interface EditMachineFormProps {
   machine?: Partial<IShipMachine>;
   onUpdate: Function;
   onCancel: Function;
+  runSave?: boolean;
 }
 
-const EditMachineForm: React.FC<EditMachineFormProps> = ({ machine, onUpdate, onCancel }) => {
+const EditMachineForm: React.FC<EditMachineFormProps> = ({ machine, onUpdate, onCancel, runSave = true }) => {
   const [form] = Form.useForm();
 
   const { loading, run: updateShipInfo } = useRequest(upsertShipMachine, {
@@ -30,7 +31,11 @@ const EditMachineForm: React.FC<EditMachineFormProps> = ({ machine, onUpdate, on
   };
 
   const onFinish = (values: any) => {
-    updateShipInfo(values);
+    if (runSave) {
+      updateShipInfo(values);
+    } else {
+      onUpdate(values);
+    }
   };
 
   useEffect(() => {

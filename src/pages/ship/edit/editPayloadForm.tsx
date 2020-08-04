@@ -9,9 +9,16 @@ interface EditPayloadFormProps {
   onUpdate: Function;
   onCancel: Function;
   shipBusinessAreaType: IShipBusinessAreaType[];
+  runSave?: boolean;
 }
 
-const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, payload, shipBusinessAreaType }) => {
+const EditPayloadForm: React.FC<EditPayloadFormProps> = ({
+  onCancel,
+  onUpdate,
+  payload,
+  shipBusinessAreaType,
+  runSave = true,
+}) => {
   const [form] = Form.useForm();
   const [areaTip, setAreaTip] = useState();
 
@@ -32,7 +39,11 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({ onCancel, onUpdate, p
   };
 
   const onFinish = (values: any) => {
-    updateShipPayloadInfo(values);
+    if (runSave) {
+      updateShipPayloadInfo(values);
+    } else {
+      onUpdate(values);
+    }
   };
 
   const onSelectArea = (value: any, item: any) => {

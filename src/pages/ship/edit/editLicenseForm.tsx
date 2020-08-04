@@ -13,6 +13,7 @@ interface EditPayloadFormProps {
   onCancel: Function;
   shipLicenseType: IShipLicenseType[];
   issueDepartmentType: IssueDepartmentType[];
+  runSave?: boolean;
 }
 
 const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
@@ -21,6 +22,7 @@ const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
   license,
   shipLicenseType,
   issueDepartmentType,
+  runSave = true,
 }) => {
   const [form] = Form.useForm();
 
@@ -43,7 +45,11 @@ const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
   const onFinish = (values: any) => {
     let license = formatUploadFileToOSSFiles(values) as IShipLicense;
     license = dateFormatterToString(license);
-    updateShipLicenseInfo(license);
+    if (runSave) {
+      updateShipLicenseInfo(license);
+    } else {
+      onUpdate(license);
+    }
   };
 
   useEffect(() => {
