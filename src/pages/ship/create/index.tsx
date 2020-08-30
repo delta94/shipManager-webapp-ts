@@ -39,31 +39,47 @@ const CreateShip: React.FC<CreateShipProps> = props => {
   });
 
   const [shipForm, setShipForm] = useState<Partial<IShip>>({
-    name: 'nameX',
-    carrierIdentifier: '12122',
-    shipTypeId: 1009002,
-    shipMaterialTypeId: 1010001,
-    shipMachines: [
-      {
-        id: 112211221121,
-        power: 2323,
-        model: 'YU3-33',
-        isRemoved: false,
-        machineType: 0,
-        remark: '无',
-      },
-      {
-        id: 112211221122,
-        power: 2323,
-        model: 'KU3-22',
-        isRemoved: false,
-        machineType: 1,
-        remark: '无',
-      },
-    ],
+    // name: 'nameX',
+    // carrierIdentifier: '12122',
+    // shipTypeId: 1009002,
+    // shipMaterialTypeId: 1010001,
+    // shipMachines: [
+    //   {
+    //     id: 112211221121,
+    //     power: 2323,
+    //     model: 'YU3-33',
+    //     isRemoved: false,
+    //     machineType: 0,
+    //     remark: '无',
+    //   },
+    //   {
+    //     id: 112211221122,
+    //     power: 2323,
+    //     model: 'KU3-22',
+    //     isRemoved: false,
+    //     machineType: 1,
+    //     remark: '无',
+    //   },
+    // ],
+    // shipLicenses: [
+    //   {
+    //     id: 11221,
+    //     businessField: 'hk',
+    //     expiredAt: '2020-08-06',
+    //     identityNumber: 'HHeh',
+    //     issueDepartmentTypeId: 1002007,
+    //     issueDepartmentTypeName: '广州海事局',
+    //     issuedAt: '2020-07-29',
+    //     name: 'cha',
+    //     ossFiles: [],
+    //     remark: 'YU',
+    //     shipLicenseTypeId: 1012002,
+    //     shipLicenseTypeName: '港澳营运证',
+    //   },
+    // ],
   });
 
-  const { step, navigation } = useStep({ steps, initialStep: 3 });
+  const { step, navigation } = useStep({ steps, initialStep: 0 });
 
   const [stepComponent, updateStepComponent] = useState<React.ReactNode>(null);
 

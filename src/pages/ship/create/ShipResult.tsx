@@ -33,7 +33,7 @@ const ShipResult: React.FC<ShipResultProps> = props => {
           }}
         >
           继续录入
-        </Button>,
+        </Button>
       ]}
     />
   );

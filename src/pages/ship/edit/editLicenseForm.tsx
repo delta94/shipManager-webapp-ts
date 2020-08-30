@@ -96,19 +96,6 @@ const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
       </Form.Item>
 
       <Form.Item
-        name="businessField"
-        label={ShipLicenseKeyMap.businessField}
-        rules={[
-          {
-            required: true,
-            message: `请输入${ShipLicenseKeyMap.businessField}`,
-          },
-        ]}
-      >
-        <Input.TextArea rows={2} placeholder={`请输入${ShipLicenseKeyMap.businessField}`} />
-      </Form.Item>
-
-      <Form.Item
         name="shipLicenseTypeId"
         label={ShipLicenseKeyMap.shipLicenseTypeName}
         rules={[
@@ -127,6 +114,19 @@ const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
             );
           })}
         </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="businessField"
+        label={ShipLicenseKeyMap.businessField}
+        rules={[
+          {
+            required: true,
+            message: `请输入${ShipLicenseKeyMap.businessField}`,
+          },
+        ]}
+      >
+        <Input.TextArea rows={2} placeholder={`请输入${ShipLicenseKeyMap.businessField}`} />
       </Form.Item>
 
       <Form.Item

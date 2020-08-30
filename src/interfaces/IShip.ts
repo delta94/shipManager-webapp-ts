@@ -56,7 +56,7 @@ export interface IShipMachine {
   machineType: number
   isRemoved: boolean
   remark: string
-  shipId: number
+  shipId?: number
 }
 
 export interface IShipPayload {
@@ -66,7 +66,7 @@ export interface IShipPayload {
   shipBusinessAreaId: number;
   shipBusinessAreaName: string;
   shipBusinessAreaRemark: string;
-  shipId: number;
+  shipId?: number;
 }
 
 export interface IShipLicense {
@@ -76,9 +76,9 @@ export interface IShipLicense {
   identityNumber: string;
   expiredAt: string;
   issuedAt: string;
-  isRemoved: string;
+  isRemoved?: boolean;
   remark: string;
-  shipId: number;
+  shipId?: number;
   shipLicenseTypeId: number;
   shipLicenseTypeName: string;
   issueDepartmentTypeId: number;

@@ -10,33 +10,6 @@ import styles from './style.less';
 import { ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
 
-const links = [
-  {
-    title: '操作一',
-    href: '',
-  },
-  {
-    title: '操作二',
-    href: '',
-  },
-  {
-    title: '操作三',
-    href: '',
-  },
-  {
-    title: '操作四',
-    href: '',
-  },
-  {
-    title: '操作五',
-    href: '',
-  },
-  {
-    title: '操作六',
-    href: '',
-  },
-];
-
 interface DashBoardProps {
   currentUser?: IAccount;
 }
@@ -66,10 +39,10 @@ const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser })
 const ExtraContent: React.FC<{}> = () => (
   <div className={styles.extraContent}>
     <div className={styles.statItem}>
-      <Statistic title="待普通处理任务" value={56} />
+      <Statistic title="待普通处理任务" value={0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="待紧急处理任务" value={8} />
+      <Statistic title="待紧急处理任务" value={0} />
     </div>
   </div>
 );
