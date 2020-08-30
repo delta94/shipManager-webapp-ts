@@ -146,41 +146,29 @@ export default [
           }
         ],
       },
-      // {
-      //   path: '/setting',
-      //   name: '设置',
-      //   icon: 'setting',
-      //   routes: [
-      //     {
-      //       path: '/',
-      //       redirect: '/setting/personal',
-      //     }, // sailor
-      //     {
-      //       path: '/setting/personal',
-      //       name: '用户管理',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './setting/personal',
-      //     },
-      //     {
-      //       path: '/setting/outline',
-      //       name: '大纲管理',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './setting/outline',
-      //     },
-      //     {
-      //       path: '/setting/system',
-      //       name: '系统管理',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './setting/system',
-      //     },
-      //   ],
-      // },
-      // {
-      //   name: '403',
-      //   path: '/exception/403',
-      //   component: './exception/403',
-      //   hideInMenu: true,
-      // },
+      {
+        path: '/setting',
+        name: '设置',
+        icon: 'setting',
+        routes: [
+          {
+            path: '/',
+            redirect: '/setting/personal',
+          },
+          {
+            path: '/setting/personal',
+            name: '用户管理',
+            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            component: './setting/personal',
+          },
+        ],
+      },
+      {
+        name: '403',
+        path: '/exception/403',
+        component: './exception/403',
+        hideInMenu: true,
+      },
     ],
   },
   {

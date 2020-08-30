@@ -1,127 +1,175 @@
-import { Button, Form, Input, message } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
-import React, { Component } from 'react';
-
-import { FormComponentProps } from 'antd/es/form';
-import { connect } from 'dva';
-import { Dispatch } from 'redux';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import styles from './BaseView.less';
-import IAccount from '@/interfaces/IAccount';
-import { UserModelState } from '@/models/user';
-import AvatarView from '@/components/AvatarView';
+import { Form, Input, Typography, Avatar, Button, message } from 'antd';
+import { useDispatch, useSelector } from 'dva';
+import { UserKeyMap } from '@/services/userService';
+import { ConnectState } from '@/models/connect';
+import AliyunOSSUpload from '@/components/AliyunOSSUpload';
+import { OSSResourceType } from '@/utils/OSSClient';
+import defaultAvatar from '@/assets/icons/avatar.png';
+import { UploadFile } from 'antd/lib/upload/interface';
+import { MessageType } from 'antd/lib/message';
 
-const FormItem = Form.Item;
+const BaseView: React.FC = () => {
+  const dispatch = useDispatch();
 
-interface BaseViewProps extends FormComponentProps {
-  currentUser?: IAccount;
-  dispatch: Dispatch<any>;
-}
+  const currentUser = useSelector((s: ConnectState) => s.user.currentUser!);
 
-@connect(({ user }: { user: UserModelState }) => ({
-  currentUser: user.currentUser,
-}))
-class BaseView extends Component<BaseViewProps> {
-  componentDidMount() {
-    this.setBaseInfo();
-  }
+  const [image, setImage] = useState<string>(defaultAvatar);
 
-  setBaseInfo = () => {
-    const { currentUser, form } = this.props;
-    if (currentUser) {
-      Object.keys(form.getFieldsValue()).forEach(key => {
-        const obj = {};
-        obj[key] = currentUser[key] || null;
-        form.setFieldsValue(obj);
-      });
+  const [loading, setLoading] = useState(false);
+
+  const [form] = Form.useForm();
+
+  const uploading = useRef<MessageType>();
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      form.setFieldsValue(currentUser);
     }
-  };
+    if (currentUser?.imageUrl) {
+      setImage(currentUser.imageUrl);
+    }
+  }, [currentUser]);
 
-  handlerSubmit = (event: React.MouseEvent) => {
-    event.preventDefault();
-    const { form, dispatch } = this.props;
-    form.validateFields((err: any, values: IAccount) => {
-      if (!err) {
-        dispatch({
-          type: 'user/updateCurrent',
-          payload: values,
-          callback: () => message.success('个人信息更新成功'),
-        });
+  const handleFinish = useCallback(
+    values => {
+      let image_url = image?.startsWith('http') ? image : currentUser.imageUrl;
+      setLoading(true);
+
+      dispatch({
+        type: 'user/updateCurrent',
+        payload: {
+          ...values,
+          imageUrl: image_url,
+        },
+        callback() {
+          setLoading(false);
+          message.success('用户信息更新成功');
+        },
+      });
+    },
+    [image],
+  );
+
+  const onReset = useCallback(() => {
+    if (currentUser?.id) {
+      form.setFieldsValue(currentUser);
+    }
+    if (currentUser?.imageUrl) {
+      setImage(currentUser.imageUrl);
+    }
+  }, [form, currentUser]);
+
+  const onAvatarChange = useCallback((files: UploadFile[]) => {
+    if (files && files.length > 0) {
+      //@ts-ignore
+      if (files[0]?.originFileObj?.url) {
+        //@ts-ignore
+        setImage(files[0]?.originFileObj?.url);
+        uploading.current?.();
+        //@ts-ignore
+        uploading.current = null;
+        message.success('头像上传成功');
+      } else if (files[0].thumbUrl) {
+        setImage(files?.[0].thumbUrl);
+        if (!uploading.current) {
+          uploading.current = message.loading('头像正上传');
+        }
       }
-    });
-  };
+    }
+  }, []);
 
-  render() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <div className={styles.baseView}>
-        <div className={styles.left}>
-          <Form layout="vertical" hideRequiredMark>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.email' })}>
-              {getFieldDecorator('email', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.email-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
-              {getFieldDecorator('login', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.nickname-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
-              {getFieldDecorator('profile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.profile-message' }, {}),
-                  },
-                ],
-              })(
-                <Input.TextArea
-                  placeholder={formatMessage({ id: 'app.settings.basic.profile-placeholder' })}
-                  rows={4}
-                />,
-              )}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.address' })}>
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.address-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.phone' })}>
-              {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.phone-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <Button type="primary" onClick={this.handlerSubmit}>
-              <FormattedMessage id="app.settings.basic.update" defaultMessage="Update Information" />
-            </Button>
-          </Form>
-        </div>
-        <div className={styles.right}>{getFieldDecorator('imageUrl')(<AvatarView />)}</div>
+  return (
+    <div className={styles.baseView}>
+      <div className={styles.left}>
+        <Form layout="vertical" form={form} onFinish={handleFinish} onReset={onReset}>
+          <Form.Item label="id" name="id" noStyle>
+            <Input type="hidden" />
+          </Form.Item>
+
+          <Form.Item label="login" name="login" noStyle>
+            <Input type="hidden" />
+          </Form.Item>
+
+          <Form.Item>
+            <Typography.Text>登录名：{currentUser?.login}</Typography.Text>
+          </Form.Item>
+
+          <Form.Item
+            name="firstName"
+            label={UserKeyMap.firstName}
+            rules={[
+              {
+                required: true,
+                message: `请输入 ${UserKeyMap.firstName}`,
+              },
+            ]}
+          >
+            <Input placeholder={`请输入 ${UserKeyMap.firstName}`} />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label={UserKeyMap.email}
+            rules={[
+              {
+                required: true,
+                message: `请输入 ${UserKeyMap.email}`,
+              },
+            ]}
+          >
+            <Input placeholder={`请输入 ${UserKeyMap.email}`} />
+          </Form.Item>
+
+          <Form.Item
+            name="mobile"
+            label={UserKeyMap.mobile}
+            rules={[
+              {
+                required: false,
+                message: `请输入 ${UserKeyMap.mobile}`,
+              },
+            ]}
+          >
+            <Input placeholder={`请输入 ${UserKeyMap.mobile}`} />
+          </Form.Item>
+
+          <Form.Item
+            name="address"
+            label={UserKeyMap.address}
+            rules={[
+              {
+                required: false,
+                message: `请输入 ${UserKeyMap.address}`,
+              },
+            ]}
+          >
+            <Input.TextArea placeholder={`请输入 ${UserKeyMap.address}`} />
+          </Form.Item>
+
+          <Button style={{ marginRight: 12 }} htmlType="reset">
+            取消
+          </Button>
+          <Button type="primary" htmlType="submit" loading={loading}>
+            保存
+          </Button>
+        </Form>
       </div>
-    );
-  }
-}
 
-export default Form.create<BaseViewProps>()(BaseView);
+      <div className={styles.right}>
+        <Avatar size={120} src={image} />
+        <br />
+        <br />
+        <AliyunOSSUpload
+          accept={'image/*'}
+          listType="picture"
+          ossResourceType={OSSResourceType.Account}
+          onChange={onAvatarChange}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default BaseView;

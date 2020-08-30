@@ -25,14 +25,14 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
       <Tooltip title="使用文档">
         <a
           target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
+          href="#"
           rel="noopener noreferrer"
           className={styles.action}
         >
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
-      <Avatar />
+      <Avatar menu/>
     </div>
   );
 };

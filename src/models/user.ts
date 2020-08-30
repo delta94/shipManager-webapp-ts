@@ -42,12 +42,15 @@ const UserModel: UserModelType = {
       }
     },
     *updateCurrent({ payload, callback }, { call, put }) {
-      yield call(updateCurrentUser, payload);
-      const response: IAccount = yield call(getCurrentUser);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      let account: Account = yield call(updateCurrentUser, payload);
+
+      if (account) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: account,
+        });
+      }
+
       if (callback) {
         callback();
       }

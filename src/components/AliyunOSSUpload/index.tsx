@@ -5,10 +5,11 @@ import { UploadFile, UploadChangeParam } from 'antd/lib/upload/interface';
 import OssClient, { generateOSSFullPath, generateOSSKey, OSSResourceType } from '@/utils/OSSClient';
 import { usePrevious } from '@umijs/hooks';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
-import {formatOSSFilesToUploadFile} from "@/utils/parser";
+import { formatOSSFilesToUploadFile } from '@/utils/parser';
 
 interface AliyunOSSUploadProps {
   value?: IOSSMetaFile[];
+  accept?: string;
   listType: 'text' | 'picture' | 'picture-card';
   onChange?(value: UploadFile[]): void;
   ossResourceType?: OSSResourceType;
@@ -24,7 +25,7 @@ const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
         let resourceType = props.ossResourceType ? props.ossResourceType : OSSResourceType.CompanyCert;
         let key = generateOSSKey(file, resourceType);
         return ossClient.multipartUpload(key, file, {
-          parallel: 4,
+          parallel: 1,
           partSize: 1024 * 1024,
           progress(p, cpt, res) {
             onProgress({ percent: Math.round(p * 100).toFixed(2), file });
@@ -69,13 +70,17 @@ const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
   }, [previousValue, props.value]);
 
   return (
-    <div>
-      <Upload fileList={fileList} listType={props.listType} onChange={onUploaderChange} customRequest={customRequest}>
-        <Button>
-          <UploadOutlined /> 上传文件
-        </Button>
-      </Upload>
-    </div>
+    <Upload
+      fileList={fileList}
+      listType={props.listType}
+      onChange={onUploaderChange}
+      accept={props.accept}
+      customRequest={customRequest}
+    >
+      <Button>
+        <UploadOutlined /> 上传文件
+      </Button>
+    </Upload>
   );
 };
 

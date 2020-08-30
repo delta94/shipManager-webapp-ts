@@ -4,11 +4,22 @@
   display: flex;
   padding-top: 12px;
 
+  :global {
+    .ant-legacy-form-item .ant-legacy-form-item-control-wrapper {
+      width: 100%;
+    }
+  }
+
   .left {
-    min-width: 224px;
+    min-width: 320px;
     max-width: 448px;
   }
   .right {
+    :global {
+      .ant-upload-list {
+        display: none;
+      }
+    }
     flex: 1;
     padding-left: 104px;
     .avatar_title {

@@ -32,3 +32,13 @@ export async function updateCurrentPassword(params: any): Promise<void> {
     data: params,
   });
 }
+
+export const UserKeyMap = {
+  login: '登录名',
+  firstName: '姓名',
+  email: '邮箱地址',
+  address: '地址',
+  profile: '个人介绍',
+  mobile: '手机'
+};
+

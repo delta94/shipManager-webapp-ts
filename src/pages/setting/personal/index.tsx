@@ -1,24 +1,12 @@
 import React, { Component } from 'react';
-
-import { Dispatch } from 'redux';
-import { FormattedMessage } from 'umi-plugin-react/locale';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
-import { connect } from 'dva';
 import BaseView from './components/base';
 import SecurityView from './components/security';
 import styles from './style.less';
-import IAccount from '@/interfaces/IAccount';
-import { UserModelState } from '@/models/user';
+import Notification from '@/pages/setting/personal/components/notification';
 
-const { Item } = Menu;
-
-interface SettingsProps {
-  dispatch: Dispatch<any>;
-  currentUser: IAccount;
-}
-
-type SettingsStateKeys = 'base' | 'security';
+type SettingsStateKeys = 'base' | 'security' | 'notification';
 
 interface SettingsState {
   mode: 'inline' | 'horizontal';
@@ -28,33 +16,21 @@ interface SettingsState {
   selectKey: SettingsStateKeys;
 }
 
-@connect(({ user }: { user: UserModelState }) => ({
-  currentUser: user.currentUser,
-}))
-class Settings extends Component<SettingsProps, SettingsState> {
-  constructor(props: SettingsProps) {
-    super(props);
-    const menuMap = {
-      base: <FormattedMessage id="app.settings.menuMap.basic" defaultMessage="Basic Settings" />,
-      security: <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />,
-    };
-    this.state = {
-      mode: 'inline',
-      menuMap,
-      selectKey: 'base',
-    };
-  }
+class Settings extends Component<{}, SettingsState> {
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'user/fetchCurrent',
-    });
-  }
+  state: SettingsState = {
+    mode: 'inline',
+    menuMap: {
+      base: '账号信息',
+      security: '账号安全',
+      notification: '新消息通知',
+    },
+    selectKey: 'base',
+  };
 
   getMenu = () => {
     const { menuMap } = this.state;
-    return Object.keys(menuMap).map(item => <Item key={item}>{menuMap[item]}</Item>);
+    return Object.keys(menuMap).map(item => <Menu.Item key={item}>{menuMap[item]}</Menu.Item>);
   };
 
   getRightTitle = () => {
@@ -72,11 +48,11 @@ class Settings extends Component<SettingsProps, SettingsState> {
     const { selectKey } = this.state;
     switch (selectKey) {
       case 'base':
-        // @ts-ignore
         return <BaseView />;
       case 'security':
-        // @ts-ignore
         return <SecurityView />;
+      case 'notification':
+        return <Notification />;
       default:
         break;
     }
@@ -84,12 +60,6 @@ class Settings extends Component<SettingsProps, SettingsState> {
   };
 
   render() {
-    const { currentUser } = this.props;
-
-    if (!(currentUser && currentUser.id)) {
-      return '';
-    }
-
     const { mode, selectKey } = this.state;
     return (
       <GridContent>
