@@ -74,7 +74,7 @@ const BaseView: React.FC = () => {
       } else if (files[0].thumbUrl) {
         setImage(files?.[0].thumbUrl);
         if (!uploading.current) {
-          uploading.current = message.loading('头像正上传');
+          uploading.current = message.loading('头像正在上传');
         }
       }
     }
@@ -158,6 +158,7 @@ const BaseView: React.FC = () => {
       </div>
 
       <div className={styles.right}>
+        <p>个人头像</p>
         <Avatar size={120} src={image} />
         <br />
         <br />

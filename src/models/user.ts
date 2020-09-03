@@ -56,9 +56,15 @@ const UserModel: UserModelType = {
       }
     },
     *updateCurrentPassword({ payload, callback }, { call }) {
-      yield call(updateCurrentPassword, payload);
-      if (callback) {
-        callback();
+      try {
+        yield call(updateCurrentPassword, payload);
+        if (callback) {
+          callback();
+        }
+      } catch (error) {
+        if (callback) {
+          callback(error);
+        }
       }
     },
   },
