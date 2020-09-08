@@ -32,7 +32,7 @@ const checkPermissions = <T, K>(
   // 数组处理
   if (Array.isArray(authority)) {
     if (Array.isArray(currentAuthority)) {
-      if (currentAuthority.some(item => authority.includes(item))) {
+      if (currentAuthority.some((item) => authority.includes(item))) {
         return target;
       }
     } else if (authority.includes(currentAuthority)) {
@@ -43,7 +43,7 @@ const checkPermissions = <T, K>(
   // string 处理
   if (typeof authority === 'string') {
     if (Array.isArray(currentAuthority)) {
-      if (currentAuthority.some(item => authority === item)) {
+      if (currentAuthority.some((item) => authority === item)) {
         return target;
       }
     } else if (authority === currentAuthority) {
@@ -57,19 +57,15 @@ const checkPermissions = <T, K>(
   }
   // Function 处理
   if (typeof authority === 'function') {
-    try {
-      const bool = authority(currentAuthority);
-      // 函数执行后返回值是 Promise
-      if (bool instanceof Promise) {
-        return <PromiseRender<T, K> ok={target} error={Exception} promise={bool} />;
-      }
-      if (bool) {
-        return target;
-      }
-      return Exception;
-    } catch (error) {
-      throw error;
+    const bool = authority(currentAuthority);
+    // 函数执行后返回值是 Promise
+    if (bool instanceof Promise) {
+      return <PromiseRender<T, K> ok={target} error={Exception} promise={bool} />;
     }
+    if (bool) {
+      return target;
+    }
+    return Exception;
   }
   throw new Error('unsupported parameters');
 };

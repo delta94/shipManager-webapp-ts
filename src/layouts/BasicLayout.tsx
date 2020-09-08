@@ -4,19 +4,14 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import { formatMessage } from 'umi-plugin-react/locale';
 import React, { useEffect } from 'react';
-import { Link } from 'umi';
-import { Dispatch } from 'redux';
-import { connect, routerRedux } from 'dva';
+import { Link, connect, Dispatch, history } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.png';
-import { setAuthority, updateToken } from '@/utils/authority';
-import { HomeOutlined, DashboardOutlined, BookOutlined, ProfileOutlined, SettingOutlined } from '@ant-design/icons';
+import logo from '../assets/logo.svg';
 
 const noMatch = (
   <Result
@@ -42,30 +37,29 @@ export interface BasicLayoutProps extends ProLayoutProps {
   dispatch: Dispatch;
 }
 
-const IconMap = {
-  home: <HomeOutlined />,
-  dashboard: <DashboardOutlined />,
-  book: <BookOutlined />,
-  profile: <ProfileOutlined />,
-  setting: <SettingOutlined />,
+export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
+  breadcrumbNameMap: {
+    [path: string]: MenuDataItem;
+  };
 };
 
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
-  return menuList.map(({ icon, children, authority, ...item }) => {
+const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
+  menuList.map((item) => {
     const localItem = {
       ...item,
-      icon: icon && IconMap[icon as string],
-      children: children ? menuDataRender(children) : [],
+      children: item.children ? menuDataRender(item.children) : undefined,
     };
-    return Authorized.check(authority, localItem, null) as MenuDataItem;
+    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
-};
 
-const footerRender: BasicLayoutProps['footerRender'] = () => {
-  return <DefaultFooter copyright="2020 船务管理系统" links={false} />;
-};
+const defaultFooterDom = (
+  <DefaultFooter
+    copyright={`${new Date().getFullYear()} 船务管理系统`}
+    links={false}
+  />
+);
 
-const BasicLayout: React.FC<BasicLayoutProps> = props => {
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const {
     dispatch,
     children,
@@ -74,26 +68,20 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       pathname: '/',
     },
   } = props;
-
-  const handleAfterFetchAccount = (data: any) => {
-    if (data instanceof Error) {
-      dispatch(routerRedux.push('/user/login'));
-      updateToken('');
-      setAuthority([]);
-    }
-  };
+  /**
+   * constructor
+   */
 
   useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
-        callback: handleAfterFetchAccount,
-      });
-      dispatch({
-        type: 'settings/getSetting',
       });
     }
   }, []);
+  /**
+   * init variables
+   */
 
   const handleMenuCollapse = (payload: boolean): void => {
     if (dispatch) {
@@ -102,44 +90,39 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         payload,
       });
     }
-  };
+  }; // get children authority
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+
   return (
     <ProLayout
       logo={logo}
-      menu={{
-        defaultOpenAll: true,
-      }}
-      formatMessage={formatMessage}
-      menuHeaderRender={(logoDom, titleDom) => (
-        <Link to="/">
-          {logoDom}
-          {titleDom}
-        </Link>
-      )}
       onCollapse={handleMenuCollapse}
+      onMenuHeaderClick={() => history.push('/')}
       menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
+        if (menuItemProps.isUrl || !menuItemProps.path) {
           return defaultDom;
         }
-
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: '首页',
+          breadcrumbName: '主页'
         },
         ...routers,
       ]}
       itemRender={(route, params, routes, paths) => {
         const first = routes.indexOf(route) === 0;
-        return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>;
+        return first ? (
+          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        ) : (
+          <span>{route.breadcrumbName}</span>
+        );
       }}
-      footerRender={footerRender}
+      footerRender={() => defaultFooterDom}
       menuDataRender={menuDataRender}
       rightContentRender={() => <RightContent />}
       {...props}

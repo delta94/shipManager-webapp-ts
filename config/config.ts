@@ -7,13 +7,15 @@ import environment from './env.config';
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
-  hash: true,
-  antd: {},
-  locale: {
-    default: 'zh-CN',
-    antd: true,
-    baseNavigator: true,
+  hash: false,
+  history: {
+    type: "browser",
   },
+  antd: {},
+  dva: {
+    hmr: true,
+  },
+  locale: false,
   dynamicImport: {
     loading: '@/components/PageLoading/index',
   },

@@ -1,6 +1,6 @@
 import { Settings as ProSettings } from '@ant-design/pro-layout';
 
-type DefaultSettings = ProSettings & {
+export type DefaultSettings = ProSettings & {
   pwa: boolean;
 };
 
