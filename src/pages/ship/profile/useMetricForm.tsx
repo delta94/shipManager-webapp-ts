@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { IShip } from '@/interfaces/IShip';
-import { useToggle } from '@umijs/hooks';
+import useToggle from '@/hooks/useToggle';
 
 interface IUseMetricFormDeps {
   ship?: IShip;
@@ -15,7 +15,7 @@ interface IUseMetricFormExport {
 
 export default function useMetricForm(option: IUseMetricFormDeps): IUseMetricFormExport {
   const [editShipMetric, setEditShipMetric] = useState<Partial<IShip>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   useEffect(() => {
     if (option.ship) {

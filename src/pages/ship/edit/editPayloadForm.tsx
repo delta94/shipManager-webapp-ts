@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ShipPayloadKeyMap, upsertShipPayload } from '@/services/shipService';
 import { message, Form, InputNumber, Input, Button, Select } from 'antd';
 import { IShipBusinessAreaType, IShipPayload } from '@/interfaces/IShip';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 
 interface EditPayloadFormProps {
   payload?: Partial<IShipPayload>;

@@ -5,13 +5,13 @@ import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
 
 interface IUseLicenseTableDeps {
-  licenses: IShipLicense[];
+  licenses: IShipLicense[] | undefined;
 }
 
 interface IUseLicenseTableExport {
   tabList: any[];
   columns: any[];
-  licenses?: IShipLicense[];
+  licenses: IShipLicense[] | undefined;
   tab: string;
   updateTab: (key: string) => void;
 }
@@ -21,14 +21,15 @@ export default function useLicenseTable(option: IUseLicenseTableDeps): IUseLicen
   const [licenses, updateLicenses] = useState<IShipLicense[]>();
 
   useEffect(() => {
+    if (!Array.isArray(option.licenses)) return;
     if (tab == 'inner') {
-      let result = option.licenses.filter(item => item.shipLicenseTypeId == 1012001);
+      let result = option.licenses.filter((item) => item.shipLicenseTypeId == 1012001);
       updateLicenses(result);
     } else {
-      let result = option.licenses.filter(item => item.shipLicenseTypeId != 1012001);
+      let result = option.licenses.filter((item) => item.shipLicenseTypeId != 1012001);
       updateLicenses(result);
     }
-  }, [option.licenses, tab]);
+  }, [tab, option.licenses]);
 
   const tabList = useMemo(() => {
     return [

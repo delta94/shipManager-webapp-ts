@@ -5,13 +5,13 @@ import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
 
 interface IUseMachineTableDeps {
-  machines: IShipMachine[];
+  machines: IShipMachine[] | undefined;
 }
 
 interface IUseMachineTableExport {
   tabList: any[];
   columns: any[];
-  machines?: IShipMachine[];
+  machines?: IShipMachine[] | undefined;
   tab: string;
   updateTab: (key: string) => void;
 }
@@ -21,14 +21,15 @@ export default function useMachineTable(option: IUseMachineTableDeps): IUseMachi
   const [machines, updateMachines] = useState<IShipMachine[]>();
 
   useEffect(() => {
+    if (!Array.isArray(option.machines)) return;
     if (tab == 'host') {
-      let result = option.machines.filter(item => item.machineType == 0);
+      let result = option.machines.filter((item) => item.machineType == 0);
       updateMachines(result);
     } else {
-      let result = option.machines.filter(item => item.machineType == 1);
+      let result = option.machines.filter((item) => item.machineType == 1);
       updateMachines(result);
     }
-  }, [option.machines, tab]);
+  }, [tab, option.machines]);
 
   const tabList = useMemo(() => {
     return [
@@ -54,13 +55,13 @@ export default function useMachineTable(option: IUseMachineTableDeps): IUseMachi
         title: ShipMachineKeyMap.power,
         dataIndex: 'power',
         key: 'power',
-        render: (val: number) => `${val} KW`
+        render: (val: number) => `${val} KW`,
       },
       {
         title: ShipMachineKeyMap.remark,
         dataIndex: 'remark',
         key: 'remark',
-        render: (val: string) => val ?? "无"
+        render: (val: string) => val ?? '无',
       },
       {
         title: '操作',

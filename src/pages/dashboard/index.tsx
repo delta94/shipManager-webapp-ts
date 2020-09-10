@@ -1,17 +1,21 @@
 import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
 import React, { Component } from 'react';
-
-import { Link } from 'umi';
-import { connect } from 'dva';
+import { Link, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import defaultAvatar from '@/assets/icons/avatar.png';
 import styles from './style.less';
 import { ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
+import useCreation from '@/hooks/useCreation';
 
 interface DashBoardProps {
   currentUser?: IAccount;
+  activities: any[];
+  projectNotice: any[];
+  radarData: any[];
+  projectLoading: boolean;
+  activitiesLoading: boolean;
 }
 
 const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser }) => {
@@ -19,17 +23,34 @@ const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser })
   if (!loading) {
     return <Skeleton avatar paragraph={{ rows: 1 }} active />;
   }
+  const helloText = useCreation(() => {
+    let timeNow = new Date();
+    let hours = timeNow.getHours();
+    let text = '';
+    if (hours >= 0 && hours <= 10) {
+      text = '早上好';
+    } else if (hours > 10 && hours <= 14) {
+      text = '中午好';
+    } else if (hours > 14 && hours <= 18) {
+      text = '下午好';
+    } else if (hours > 18 && hours <= 24) {
+      text = '晚上好';
+    }
+    return `${text} ${currentUser.login} ，祝你开心每一天！`;
+  }, [currentUser]);
   return (
     <div className={styles.pageHeaderContent}>
       <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar} />
+        <Avatar
+          size={72}
+          src={currentUser.imageUrl}
+          alt="avatar"
+          style={{ backgroundColor: '#f56a00' }}
+          icon={<UserOutlined />}
+        />
       </div>
       <div className={styles.content}>
-        <div className={styles.contentTitle}>
-          早安，
-          {currentUser.login}
-          ，祝你开心每一天！
-        </div>
+        <div className={styles.contentTitle}>{helloText}</div>
         <div>船务系统管理人员</div>
       </div>
     </div>
@@ -48,8 +69,8 @@ const ExtraContent: React.FC<{}> = () => (
 );
 
 class DashBoard extends Component<DashBoardProps> {
-  renderActivities = item => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map(key => {
+  renderActivities = (item) => {
+    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
       if (item[key]) {
         return (
           <a href={item[key].link} key={item[key].name}>
@@ -81,14 +102,7 @@ class DashBoard extends Component<DashBoardProps> {
   };
 
   render() {
-    const {
-      currentUser,
-      activities = [],
-      projectNotice = [],
-      radarData = [],
-      projectLoading = false,
-      activitiesLoading = false,
-    } = this.props;
+    const { currentUser, projectNotice = [], projectLoading = false, activitiesLoading = false } = this.props;
 
     if (!currentUser || !currentUser.id) {
       return null;
@@ -105,7 +119,7 @@ class DashBoard extends Component<DashBoardProps> {
               loading={projectLoading}
               bodyStyle={{ padding: 0 }}
             >
-              {projectNotice.map(item => (
+              {projectNotice.map((item) => (
                 <Card.Grid className={styles.projectGrid} key={item.id}>
                   <Card bodyStyle={{ padding: 0 }} bordered={false}>
                     <Card.Meta
@@ -138,7 +152,7 @@ class DashBoard extends Component<DashBoardProps> {
             >
               <List
                 loading={activitiesLoading}
-                renderItem={item => this.renderActivities(item)}
+                renderItem={(item) => this.renderActivities(item)}
                 dataSource={[]}
                 className={styles.activitiesList}
                 size="large"
@@ -157,7 +171,7 @@ class DashBoard extends Component<DashBoardProps> {
             >
               <div className={styles.members}>
                 <Row gutter={48}>
-                  {projectNotice.map(item => (
+                  {projectNotice.map((item) => (
                     <Col span={12} key={`members-item-${item.id}`}>
                       <Link to={item.href}>
                         <Avatar src={item.logo} size="small" />

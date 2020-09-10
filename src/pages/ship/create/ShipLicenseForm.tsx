@@ -3,7 +3,7 @@ import { IShip, IShipLicense } from '@/interfaces/IShip';
 import { NavigationProps } from '@/hooks/useStep';
 import { Modal, Table, Card, Typography, Button, Divider, Popconfirm, Space } from 'antd';
 import EditLicenseForm from '@/pages/ship/edit/editLicenseForm';
-import { useToggle } from '@umijs/hooks';
+import useToggle from '@/hooks/useToggle';
 import hooks from '@/pages/ship/profile/hooks';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { PlusOutlined } from '@ant-design/icons';

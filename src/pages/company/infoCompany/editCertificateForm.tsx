@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, DatePicker, Form, Input, message, Select } from 'antd';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import styles from './style.less';
 import {
   CompanyCertKeyMap as CompanyCertKey,

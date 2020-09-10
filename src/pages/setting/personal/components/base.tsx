@@ -6,16 +6,16 @@ import { UserKeyMap } from '@/services/userService';
 import { ConnectState } from '@/models/connect';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { OSSResourceType } from '@/utils/OSSClient';
-import defaultAvatar from '@/assets/icons/avatar.png';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { MessageType } from 'antd/lib/message';
+import { UserOutlined } from '@ant-design/icons';
 
 const BaseView: React.FC = () => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((s: ConnectState) => s.user.currentUser!);
 
-  const [image, setImage] = useState<string>(defaultAvatar);
+  const [image, setImage] = useState<string>('');
 
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +33,7 @@ const BaseView: React.FC = () => {
   }, [currentUser]);
 
   const handleFinish = useCallback(
-    values => {
+    (values) => {
       let image_url = image?.startsWith('http') ? image : currentUser.imageUrl;
       setLoading(true);
 
@@ -159,7 +159,7 @@ const BaseView: React.FC = () => {
 
       <div className={styles.right}>
         <p>个人头像</p>
-        <Avatar size={120} src={image} />
+        <Avatar size={120} src={image} alt="avatar" style={{ backgroundColor: '#f56a00' }} icon={<UserOutlined />} />
         <br />
         <br />
         <AliyunOSSUpload

@@ -2,20 +2,19 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message, Modal } from 'antd';
-import { useRequest, useToggle } from '@umijs/hooks';
+import { useRequest, history } from 'umi';
 import { deleteManager, listManagerCategory } from '@/services/managerService';
 import { IManager } from '@/interfaces/IManager';
 import useManagerTable from './useManagerTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from '@/pages/manager/list/hooks';
 import EditManagerForm from '../edit/editManagerForm';
-import { useDispatch, routerRedux } from 'dva';
+import useToggle from '@/hooks/useToggle';
 
 const ManagerList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const { setLeft: hideEdit, setRight: showEdit, state: editManagerVisible } = useToggle();
+  const [editManagerVisible, { setLeft: hideEdit, setRight: showEdit }] = useToggle();
   const [editManager, updateEditManager] = useState<IManager>();
-  const dispatch = useDispatch();
 
   const { run: deleteManagerRecord } = useRequest(deleteManager, {
     manual: true,
@@ -23,20 +22,20 @@ const ManagerList: React.FC = () => {
       actionRef.current?.reload();
       message.success('已成功删除管理人员');
     },
-    onError: err => {
+    onError: (err) => {
       message.error('删除管理人员时出错');
       console.error(err);
     },
   });
 
   useEffect(() => {
-    const unTapDeleteManager = hooks.DeleteManager.tap(manager => {
+    const unTapDeleteManager = hooks.DeleteManager.tap((manager) => {
       deleteManagerRecord(manager.id);
     });
-    const unTapInfoManager = hooks.InfoManager.tap(manager => {
-      dispatch(routerRedux.push(`/person/manager/profile/${manager.id}`));
+    const unTapInfoManager = hooks.InfoManager.tap((manager) => {
+      history.push(`/person/manager/profile/${manager.id}`);
     });
-    const unTapEditManager = hooks.EditManager.tap(manager => {
+    const unTapEditManager = hooks.EditManager.tap((manager) => {
       updateEditManager(manager);
       showEdit();
     });

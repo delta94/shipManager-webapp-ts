@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { IShipLicense } from '@/interfaces/IShip';
-import { useToggle, useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
+import useToggle from '@/hooks/useToggle';
 import hooks from '@/pages/ship/profile/hooks';
 import { deleteShipLicense } from '@/services/shipService';
 import { message } from 'antd';
@@ -18,7 +19,7 @@ interface IUseLicenseFormExport {
 
 export default function useLicenseForm(option: IUseLicenseFormDeps): IUseLicenseFormExport {
   const [editLicense, setEditLicense] = useState<Partial<IShipLicense>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   const { run } = useRequest(deleteShipLicense, {
     manual: true,
@@ -32,12 +33,12 @@ export default function useLicenseForm(option: IUseLicenseFormDeps): IUseLicense
   });
 
   useEffect(() => {
-    const unTapEditLicense = hooks.EditShipLicense.tap(license => {
+    const unTapEditLicense = hooks.EditShipLicense.tap((license) => {
       setEditLicense(license);
       setRight();
     });
 
-    const unTapDeleteLicense = hooks.DeleteShipLicense.tap(license => {
+    const unTapDeleteLicense = hooks.DeleteShipLicense.tap((license) => {
       run(license.id);
     });
 

@@ -2,20 +2,19 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message, Modal } from 'antd';
-import { useRequest, useToggle } from '@umijs/hooks';
+import { useRequest, history } from 'umi';
 import { deleteSailor, listSailorCategory } from '@/services/sailorService';
 import { ISailor } from '@/interfaces/ISailor';
 import useSailorTable from './useSailorTable';
 import { PlusOutlined } from '@ant-design/icons';
 import EditSailorForm from '../edit/editSailorForm';
-import { useDispatch, routerRedux } from 'dva';
 import hooks from './hooks';
+import useToggle from '@/hooks/useToggle';
 
 const SailorList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const { setLeft: hideEdit, setRight: showEdit, state: editSailorVisible } = useToggle();
+  const [editSailorVisible, { setLeft: hideEdit, setRight: showEdit }] = useToggle();
   const [editSailor, updateEditSailor] = useState<ISailor>();
-  const dispatch = useDispatch();
 
   const { run: deleteSailorRecord } = useRequest(deleteSailor, {
     manual: true,
@@ -23,20 +22,20 @@ const SailorList: React.FC = () => {
       actionRef.current?.reload();
       message.success('已成功删除管理人员');
     },
-    onError: err => {
+    onError: (err) => {
       message.error('删除管理人员时出错');
       console.error(err);
     },
   });
 
   useEffect(() => {
-    const unTapDeleteSailor = hooks.DeleteSailor.tap(sailor => {
+    const unTapDeleteSailor = hooks.DeleteSailor.tap((sailor) => {
       deleteSailorRecord(sailor.id);
     });
-    const unTapInfoSailor = hooks.InfoSailor.tap(sailor => {
-      dispatch(routerRedux.push(`/person/sailor/profile/${sailor.id}`));
+    const unTapInfoSailor = hooks.InfoSailor.tap((sailor) => {
+      history.push(`/person/sailor/profile/${sailor.id}`);
     });
-    const unTapEditSailor = hooks.EditSailor.tap(sailor => {
+    const unTapEditSailor = hooks.EditSailor.tap((sailor) => {
       updateEditSailor(sailor);
       showEdit();
     });

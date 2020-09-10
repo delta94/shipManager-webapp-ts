@@ -29,8 +29,8 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
     if (!values.id) {
       values.id = `new_${Date.now()}`;
     }
-    values.managerCertTypeName = certificateType!.find(item => item.id == values.managerCertTypeId)?.name;
-    values.issueDepartmentTypeName = issueDepartmentType!.find(item => item.id == values.issueDepartmentTypeId)?.name;
+    values.managerCertTypeName = certificateType!.find((item) => item.id == values.managerCertTypeId)?.name;
+    values.issueDepartmentTypeName = issueDepartmentType!.find((item) => item.id == values.issueDepartmentTypeId)?.name;
     onSubmit(values);
   };
 
@@ -91,7 +91,7 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
         ]}
       >
         <Select placeholder={`请选择${ManagerCertKeyMap.managerCertTypeName}`}>
-          {certificateType?.map(item => {
+          {certificateType?.map((item) => {
             return (
               <Select.Option value={item.id} key={item.id}>
                 {item.name}
@@ -112,7 +112,7 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({
         ]}
       >
         <Select placeholder={`请选择${ManagerCertKeyMap.issueDepartmentTypeName}`}>
-          {issueDepartmentType?.map(item => {
+          {issueDepartmentType?.map((item) => {
             return (
               <Select.Option value={item.id} key={item.id}>
                 {item.name}

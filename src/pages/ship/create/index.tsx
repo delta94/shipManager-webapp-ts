@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Steps, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { addShip, listShipCategory } from '@/services/shipService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import useStep from '@/hooks/useStep';
 import ShipBasicForm from '@/pages/ship/create/ShipBasicForm';
 import { IShip } from '@/interfaces/IShip';

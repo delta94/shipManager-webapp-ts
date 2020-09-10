@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { Descriptions, Card, List, Typography, Button } from 'antd';
 import { infoManager, ManagerKeyMap } from '@/services/managerService';
 import { IManagerCert } from '@/interfaces/IManager';
 import { ManagerCertKeyMap } from '@/services/managerCertService';
 
 const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
-
   const { data, run: fetchManager, loading } = useRequest(infoManager, {
     manual: true,
   });
@@ -56,7 +55,7 @@ const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: 
                 <Typography.Text strong>{ManagerCertKeyMap.remark}</Typography.Text>: {item.remark || '无'}
                 <br />
                 <Typography.Text strong>{ManagerCertKeyMap.ossFiles}</Typography.Text>:
-                {item.ossFiles.map(item => {
+                {item.ossFiles.map((item) => {
                   return (
                     <Button type="link" href={item.ossKey} target="_blank">
                       {item.name}

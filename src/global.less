@@ -46,6 +46,13 @@ ol {
   }
 }
 
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
+  }
+}
+
 .ant-pro-table-search {
   margin-bottom: 0 !important;
   padding: 0 !important;

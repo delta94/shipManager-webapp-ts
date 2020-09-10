@@ -1,22 +1,24 @@
-import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { ClickParam } from 'antd/es/menu';
 import React from 'react';
-import { connect } from 'dva';
-import { router } from 'umi';
-import { ConnectProps, ConnectState } from '@/models/connect';
-import IAccount from '@/interfaces/IAccount';
+import { history, ConnectProps, connect } from 'umi';
+import { ConnectState } from '@/models/connect';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import defaultAvatar from '@/assets/icons/avatar.png';
+import IAccount from '@/interfaces/IAccount';
 
-export interface GlobalHeaderRightProps extends ConnectProps {
+export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   currentUser?: IAccount;
   menu?: boolean;
 }
 
 class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
-  onMenuClick = (event: ClickParam) => {
+  onMenuClick = (event: {
+    key: React.Key;
+    keyPath: React.Key[];
+    item: React.ReactInstance;
+    domEvent: React.MouseEvent<HTMLElement>;
+  }) => {
     const { key } = event;
 
     if (key === 'logout') {
@@ -31,20 +33,17 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       return;
     }
 
-    router.push(`/setting/${key}`);
+    history.push(`/setting/${key}`);
   };
 
-  render() {
+  render(): React.ReactNode {
     const {
       currentUser = {
-        imageUrl: defaultAvatar,
+        imageUrl: '',
         login: '',
       },
       menu,
     } = this.props;
-
-    const imageUrl = currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar;
-
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         {menu && (
@@ -64,18 +63,27 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     return currentUser && currentUser.login ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={imageUrl} alt="avatar" />
-          <span className={styles.name}>{currentUser.login}</span>
+          <Avatar
+            size="small"
+            className={styles.avatar}
+            style={{ backgroundColor: '#f56a00' }}
+            icon={<UserOutlined />}
+            src={currentUser.imageUrl}
+            alt="avatar"
+          />
+          <span className={`${styles.name} anticon`}>{currentUser.login}</span>
         </span>
       </HeaderDropdown>
     ) : (
-      <Spin
-        size="small"
-        style={{
-          marginLeft: 8,
-          marginRight: 8,
-        }}
-      />
+      <span className={`${styles.action} ${styles.account}`}>
+        <Spin
+          size="small"
+          style={{
+            marginLeft: 8,
+            marginRight: 8,
+          }}
+        />
+      </span>
     );
   }
 }

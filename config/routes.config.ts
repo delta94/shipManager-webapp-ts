@@ -1,177 +1,137 @@
-import { IRoute } from 'umi-types';
-
 export default [
   {
     path: '/user',
-    component: '../layouts/UserLayout',
     routes: [
       {
         path: '/user',
-        redirect: '/user/login',
-      },
-      {
-        name: '用户登录',
-        path: '/user/login',
-        component: './user/login',
+        component: '../layouts/UserLayout',
+        routes: [
+          {
+            name: 'login',
+            path: '/user/login',
+            component: './user/login',
+          },
+        ],
       },
     ],
   },
+
   {
     path: '/',
-    component: '../layouts/BasicLayout',
-    Routes: ['src/pages/Authorized'],
+    component: '../layouts/SecurityLayout',
     routes: [
       {
         path: '/',
-        redirect: '/dashboard',
-      },
-      {
-        path: '/dashboard',
-        name: '工作台',
-        icon: 'dashboard',
+        component: '../layouts/BasicLayout',
         authority: ['ROLE_USER', 'ROLE_ADMIN'],
-        component: './dashboard',
-      },
-      {
-        path: '/ship',
-        name: '船舶管理',
-        icon: 'book',
-        routes: [
-          {
-            name: '船舶列表',
-            path: '/ship/list',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './ship/list',
-          },
-          {
-            name: '船舶详情',
-            path: '/ship/profile/:id',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './ship/profile',
-            hideInMenu: true,
-          },
-          {
-            name: '新建船舶',
-            path: '/ship/create',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './ship/create',
-          },
-        ],
-      },
-      // {
-      //   path: '/document',
-      //   name: '表单管理',
-      //   icon: 'profile',
-      //   routes: [
-      //     {
-      //       path: '/',
-      //       redirect: '/document/common/list',
-      //     },
-      //     {
-      //       path: '/document/common/list',
-      //       name: '固定表单',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './document/listCommon',
-      //     },
-      //     {
-      //       path: '/document/template/list',
-      //       name: '自定义表单',
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './document/listTemplate',
-      //     },
-      //     {
-      //       path: '/document/profile/:id',
-      //       name: '表单详情',
-      //       hideInMenu: true,
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './document/profile',
-      //     },
-      //     {
-      //       path: '/document/create/:type',
-      //       name: '表单详情',
-      //       hideInMenu: true,
-      //       authority: ['ROLE_USER', 'ROLE_ADMIN'],
-      //       component: './document/create',
-      //     },
-      //   ],
-      // },
-      {
-        path: '/person',
-        name: '人员管理',
-        icon: 'profile',
         routes: [
           {
             path: '/',
-            redirect: '/person/manager/list',
+            redirect: '/dashboard',
+          },
+          {
+            path: '/dashboard',
+            name: '工作台',
+            icon: 'dashboard',
+            component: './dashboard',
+          },
+          {
+            path: '/ship',
+            name: '船舶管理',
+            icon: 'book',
+            routes: [
+              {
+                name: '船舶列表',
+                path: '/ship/list',
+                component: './ship/list',
+              },
+              {
+                name: '船舶详情',
+                path: '/ship/profile/:id',
+                component: './ship/profile',
+                hideInMenu: true,
+              },
+              {
+                name: '新建船舶',
+                path: '/ship/create',
+                component: './ship/create',
+              },
+            ],
           },
 
           {
-            path: '/person/manager/list',
-            name: '管理人员',
-            component: './manager/list',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
+            path: '/person',
+            name: '人员管理',
+            icon: 'profile',
+            routes: [
+              {
+                path: '/',
+                redirect: '/person/manager/list',
+              },
+              {
+                path: '/person/manager/list',
+                name: '管理人员',
+                component: './manager/list',
+              },
+              {
+                path: '/person/manager/profile/:id',
+                name: '管理人员详情',
+                hideInMenu: true,
+                component: './manager/profile',
+              },
+              {
+                path: '/person/sailor/list',
+                name: '船员管理',
+                component: './sailor/list',
+              },
+              {
+                path: '/person/sailor/profile/:id',
+                name: '船员详情',
+                component: './sailor/profile',
+                hideInMenu: true,
+              },
+            ],
           },
+
           {
-            path: '/person/manager/profile/:id',
-            name: '管理人员详情',
-            hideInMenu: true,
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './manager/profile',
+            path: '/company',
+            name: '公司信息管理',
+            icon: 'home',
+            routes: [
+              {
+                name: '基础信息',
+                path: '/company/infoCompany',
+                component: './company/infoCompany',
+              },
+            ],
           },
+
           {
-            path: '/person/sailor/list',
-            name: '船员管理',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './sailor/list',
+            path: '/setting',
+            name: '设置',
+            icon: 'setting',
+            routes: [
+              {
+                path: '/',
+                redirect: '/setting/personal',
+              },
+              {
+                path: '/setting/personal',
+                name: '用户管理',
+                component: './setting/personal',
+              },
+            ],
           },
+
           {
-            path: '/person/sailor/profile/:id',
-            name: '船员详情',
-            component: './sailor/profile',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            hideInMenu: true,
+            component: './404',
           },
         ],
-      },
-      {
-        path: '/company',
-        name: '公司信息管理',
-        icon: 'home',
-        routes: [
-          {
-            name: '基础信息',
-            path: '/company/infoCompany',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './company/infoCompany',
-          }
-        ],
-      },
-      {
-        path: '/setting',
-        name: '设置',
-        icon: 'setting',
-        routes: [
-          {
-            path: '/',
-            redirect: '/setting/personal',
-          },
-          {
-            path: '/setting/personal',
-            name: '用户管理',
-            authority: ['ROLE_USER', 'ROLE_ADMIN'],
-            component: './setting/personal',
-          },
-        ],
-      },
-      {
-        name: '403',
-        path: '/exception/403',
-        component: './exception/403',
-        hideInMenu: true,
       },
     ],
   },
+
   {
     component: './404',
   },
-] as IRoute[];
+];

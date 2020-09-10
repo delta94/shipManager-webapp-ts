@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { IShip } from '@/interfaces/IShip';
-import { useToggle } from '@umijs/hooks';
+import useToggle from '@/hooks/useToggle';
 
 interface IUseBasicFormDeps {
   ship?: IShip;
@@ -15,7 +15,7 @@ interface IUseBasicFormExport {
 
 export default function useBasicForm(option: IUseBasicFormDeps): IUseBasicFormExport {
   const [editShipBasic, setEditShipBasic] = useState<Partial<IShip>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   useEffect(() => {
     if (option.ship) {

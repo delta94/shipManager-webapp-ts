@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { CompanyKeyMap as CompanyKeys, updateCompanyInfo } from '@/services/companyService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import styles from './style.less';
 import { ICompany } from '@/interfaces/ICompany';
 

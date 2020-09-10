@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { Descriptions, Card, List, Typography, Button } from 'antd';
 import { infoSailor, SailorKeyMap } from '@/services/sailorService';
 import { ISailorCert } from '@/interfaces/ISailor';
@@ -49,6 +49,7 @@ const SailorProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: {
       <Card style={{ marginTop: 24 }} loading={loading}>
         <Descriptions title="证书信息" />
         <List
+          rowKey="id"
           grid={{ gutter: 12, column: 3 }}
           dataSource={data?.sailorCerts}
           renderItem={(item: ISailorCert) => (
@@ -69,7 +70,7 @@ const SailorProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: {
                 <Typography.Text strong>{SailorCertKeyMap.remark}</Typography.Text>: {item.remark || '无'}
                 <br />
                 <Typography.Text strong>{SailorCertKeyMap.ossFiles}</Typography.Text>:
-                {item.ossFiles.map(item => {
+                {item.ossFiles.map((item) => {
                   return (
                     <Button type="link" href={item.ossKey} target="_blank">
                       {item.name}

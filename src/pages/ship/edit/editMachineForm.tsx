@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { InputNumber, Input, Form, message, Button } from 'antd';
 import { IShipMachine } from '@/interfaces/IShip';
 import { ShipMachineKeyMap, upsertShipMachine } from '@/services/shipService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 
 interface EditMachineFormProps {
   machine?: Partial<IShipMachine>;

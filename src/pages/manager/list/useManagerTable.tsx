@@ -101,7 +101,11 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
             <a onClick={() => hooks.EditManager.call(record)}>更改</a>
             <Divider type="vertical" />
             <span>
-              <Popconfirm title="是否要删除此行？" placement={"left"} onConfirm={() => hooks.DeleteManager.call(record)}>
+              <Popconfirm
+                title="是否要删除此行？"
+                placement={'left'}
+                onConfirm={() => hooks.DeleteManager.call(record)}
+              >
                 <a>删除</a>
               </Popconfirm>
             </span>

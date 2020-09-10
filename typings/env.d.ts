@@ -1,4 +1,4 @@
-type EnvironmentType = 'dev' | 'preview' | 'prod';
+type EnvironmentType = 'dev' | 'prod';
 
 interface EnvironmentConfig {
   OSS_BUCKET_NAME: string;

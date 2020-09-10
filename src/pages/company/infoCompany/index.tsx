@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { useRequest, useToggle } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { Descriptions, Card, Table, Button, Modal, message } from 'antd';
 import { getCompanyInfo, CompanyKeyMap as CompanyKeys } from '@/services/companyService';
 import { getCompanyCertInfo, deleteCompanyCert } from '@/services/companyCertService';
@@ -10,6 +10,7 @@ import EditBasicForm from './editBaiscForm';
 import EditContactForm from '@/pages/company/infoCompany/editContactForm';
 import EditCertificateForm from '@/pages/company/infoCompany/editCertificateForm';
 import hooks from '@/pages/company/infoCompany/hooks';
+import useToggle from '@/hooks/useToggle';
 
 const InfoCompany: React.FC = () => {
   const [permissionCerts, updatePermissionCerts] = useState<ICompanyCert[]>([]);
@@ -17,11 +18,11 @@ const InfoCompany: React.FC = () => {
   const [tab, updateTab] = useState<string>('permission'); // 'permission' | 'extra'
   const [editCertificate, updateEditCertificate] = useState<ICompanyCert>();
 
-  const { setLeft: hideEditBasic, setRight: showEditBasic, state: editBasicVisible } = useToggle(false);
+  const [editBasicVisible, { setLeft: hideEditBasic, setRight: showEditBasic }] = useToggle(false);
 
-  const { setLeft: hideEditContact, setRight: showEditContact, state: editContactVisible } = useToggle(false);
+  const [editContactVisible, { setLeft: hideEditContact, setRight: showEditContact }] = useToggle(false);
 
-  const { setLeft: hideEditCerts, setRight: showEditCerts, state: editCertsVisible } = useToggle(false);
+  const [editCertsVisible, { setLeft: hideEditCerts, setRight: showEditCerts }] = useToggle(false);
 
   const { data: company, loading: loadingCompany, refresh: refreshCompanyInfo } = useRequest(getCompanyInfo, {
     cacheKey: 'company_base_info',
@@ -30,8 +31,8 @@ const InfoCompany: React.FC = () => {
   const { loading: loadingCompanyCert, refresh: refreshCompanyCert } = useRequest(getCompanyCertInfo, {
     cacheKey: 'company_certs_info',
     onSuccess(result) {
-      updateExtraCerts(result.filter(item => item.companyCertTypeId > 1003003));
-      updatePermissionCerts(result.filter(item => item.companyCertTypeId <= 1003003));
+      updateExtraCerts(result.filter((item) => item.companyCertTypeId > 1003003));
+      updatePermissionCerts(result.filter((item) => item.companyCertTypeId <= 1003003));
     },
   });
 
@@ -44,14 +45,14 @@ const InfoCompany: React.FC = () => {
   });
 
   useEffect(() => {
-    const unTapDeleteCompanyCert = hooks.DeleteCompanyCert.tap(value => {
+    const unTapDeleteCompanyCert = hooks.DeleteCompanyCert.tap((value) => {
       deleteCertificate(value.id);
     });
-    const unTapEditCompanyCert = hooks.EditCompanyCert.tap(value => {
+    const unTapEditCompanyCert = hooks.EditCompanyCert.tap((value) => {
       updateEditCertificate({ ...value });
       showEditCerts();
     });
-    const unTapInfoCompanyCert = hooks.InfoCompanyCert.tap(value => {
+    const unTapInfoCompanyCert = hooks.InfoCompanyCert.tap((value) => {
       console.log(value);
     });
 
@@ -81,9 +82,9 @@ const InfoCompany: React.FC = () => {
 
   const contentList = {
     permission: (
-      <Table pagination={false} loading={loadingCompanyCert} dataSource={permissionCerts} columns={columns} />
+      <Table pagination={false} key="id" loading={loadingCompanyCert} dataSource={permissionCerts} columns={columns} />
     ),
-    extra: <Table pagination={false} loading={loadingCompanyCert} dataSource={extraCerts} columns={columns} />,
+    extra: <Table pagination={false} key="id" loading={loadingCompanyCert} dataSource={extraCerts} columns={columns} />,
   };
 
   return (

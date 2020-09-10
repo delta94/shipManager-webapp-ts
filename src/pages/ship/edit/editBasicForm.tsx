@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Input, Form, message, Button, Select, Row, Col, DatePicker } from 'antd';
 import { IShip, IShipMaterialType, IShipType } from '@/interfaces/IShip';
 import { ShipKeyMap as ShipKey, updateShip } from '@/services/shipService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import {dateFormatter, dateFormatterToString} from '@/utils/parser';
 
 interface EditBasicFormProps {

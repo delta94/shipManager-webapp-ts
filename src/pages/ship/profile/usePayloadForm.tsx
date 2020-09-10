@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { IShipPayload } from '@/interfaces/IShip';
-import { useToggle, useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
+import useToggle from '@/hooks/useToggle';
 import { deleteShipPayload } from '@/services/shipService';
 import { message } from 'antd';
 import hooks from '@/pages/ship/profile/hooks';
@@ -17,8 +18,7 @@ interface IUsePayloadFormExport {
 
 export default function usePayloadForm(option: IUsePayloadFormDeps): IUsePayloadFormExport {
   const [editPayload, setEditPayload] = useState<Partial<IShipPayload>>();
-  const { setLeft, setRight, state } = useToggle<boolean>(false);
-
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   const { run } = useRequest(deleteShipPayload, {
     manual: true,
@@ -32,7 +32,7 @@ export default function usePayloadForm(option: IUsePayloadFormDeps): IUsePayload
   });
 
   useEffect(() => {
-    const unTapDeletePayload = hooks.DeleteShipPayload.tap(payload => {
+    const unTapDeletePayload = hooks.DeleteShipPayload.tap((payload) => {
       run(payload.id);
     });
     return () => {

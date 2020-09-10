@@ -2,18 +2,16 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { deleteShip, listShipCategory } from '@/services/shipService';
 import { IShip } from '@/interfaces/IShip';
 import useShipTable from './useShipTable';
 import { PlusOutlined } from '@ant-design/icons';
-// import EditShipForm from '../edit/editShipForm';
-import { useDispatch, routerRedux } from 'dva';
+import { history } from 'umi';
 import hooks from './hooks';
 
 const ShipList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const dispatch = useDispatch();
 
   const { run: deleteShipRecord } = useRequest(deleteShip, {
     manual: true,
@@ -21,19 +19,19 @@ const ShipList: React.FC = () => {
       actionRef.current?.reload();
       message.success('已成功删除船舶');
     },
-    onError: err => {
+    onError: (err) => {
       message.error('删除船舶时出错');
       console.error(err);
     },
   });
 
   useEffect(() => {
-    const unTapDeleteShip = hooks.DeleteShip.tap(ship => {
+    const unTapDeleteShip = hooks.DeleteShip.tap((ship) => {
       deleteShipRecord(ship.id);
     });
 
-    const unTapInfoShip = hooks.InfoShip.tap(ship => {
-      dispatch(routerRedux.push(`/ship/profile/${ship.id}`));
+    const unTapInfoShip = hooks.InfoShip.tap((ship) => {
+      history.push(`/ship/profile/${ship.id}`);
     });
 
     return () => {
@@ -54,7 +52,7 @@ const ShipList: React.FC = () => {
   });
 
   const onCreateShip = useCallback(() => {
-    dispatch(routerRedux.push(`/ship/create`));
+    history.push('/ship/create');
   }, []);
 
   return (
@@ -71,7 +69,7 @@ const ShipList: React.FC = () => {
             <Button type="primary" onClick={onCreateShip}>
               <PlusOutlined />
               新建
-            </Button>
+            </Button>,
           ]}
         />
       </Card>

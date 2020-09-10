@@ -1,53 +1,31 @@
-import { ConnectProps, ConnectState } from '@/models/connect';
-import { MenuDataItem, getMenuData, getPageTitle, DefaultFooter } from '@ant-design/pro-layout';
-
-import { Helmet } from 'react-helmet';
-import { Link } from 'umi';
+import { ConnectState } from '@/models/connect';
+import { MenuDataItem, DefaultFooter } from '@ant-design/pro-layout';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { connect, ConnectProps } from 'umi';
 import React from 'react';
-import { connect } from 'dva';
 import logo from '../assets/logo.png';
 import styles from './UserLayout.less';
 
-export interface UserLayoutProps extends ConnectProps {
+export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
   };
 }
 
-const UserLayout: React.FC<UserLayoutProps> = props => {
-  const {
-    route = {
-      routes: [],
-    },
-  } = props;
-  const { routes = [] } = route;
-  const {
-    children,
-    location = {
-      pathname: '',
-    },
-  } = props;
-  const { breadcrumb } = getMenuData(routes);
-  const title = getPageTitle({
-    pathname: location.pathname,
-    breadcrumb,
-    ...props,
-  });
+const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={title} />
+        <title>船务管理系统</title>
+        <meta name="description" content="船务管理系统" />
       </Helmet>
 
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
-              <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>船务管理系统</span>
-              </Link>
+              <img alt="logo" className={styles.logo} src={logo} />
+              <span className={styles.title}>船务管理系统</span>
             </div>
             <div className={styles.desc} />
           </div>
@@ -55,7 +33,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
         </div>
         <DefaultFooter copyright="2020 船务管理系统" links={false} />
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 

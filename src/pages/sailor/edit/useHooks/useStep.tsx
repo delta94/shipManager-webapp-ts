@@ -5,7 +5,7 @@ import Step3 from '../editSailorStep3';
 import { ISailor, ISailorCertType, ISailorDutyType } from '@/interfaces/ISailor';
 import { IssueDepartmentType } from '@/interfaces/IIssueDepartment';
 import { formatUploadFileToOSSFiles } from '@/utils/parser';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { infoSailor } from '@/services/sailorService';
 import {listShipMeta} from "@/services/shipService";
 

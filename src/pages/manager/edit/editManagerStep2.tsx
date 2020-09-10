@@ -45,7 +45,7 @@ const EditManagerStep2: React.FC<EditManagerStep2Props> = ({
 
   const onSubmit = (certificate: IManagerCert) => {
     updateManagerCerts((data: IManagerCert[]) => {
-      let index = data.findIndex(item => item.id == certificate.id);
+      let index = data.findIndex((item) => item.id == certificate.id);
       let newData = [...data];
       if (index > -1) {
         newData[index] = certificate;
@@ -69,13 +69,13 @@ const EditManagerStep2: React.FC<EditManagerStep2Props> = ({
   };
 
   const onDelete = (certificate: IManagerCert) => {
-    updateManagerCerts(certificates => {
-      let index = certificates.findIndex(item => item.id == certificate.id);
+    updateManagerCerts((certificates) => {
+      let index = certificates.findIndex((item) => item.id == certificate.id);
       let newData = [...certificates];
       if (index > -1 && !certificate.id.toString().startsWith('new_')) {
         newData[index].isRemoved = true;
       } else {
-        newData = newData.filter(item => item.id != certificate.id);
+        newData = newData.filter((item) => item.id != certificate.id);
       }
       return newData;
     });
@@ -85,7 +85,7 @@ const EditManagerStep2: React.FC<EditManagerStep2Props> = ({
     <div>
       <div className={styles.wrapper}>
         <Row gutter={8}>
-          {managerCerts?.map(item => {
+          {managerCerts?.map((item) => {
             if (item.isRemoved) return null;
             return (
               <Col span={8} key={item.id}>

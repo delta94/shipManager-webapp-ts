@@ -4,7 +4,7 @@ import { IManager, IManagerCertType, IManagerDutyType, IManagerPositionType } fr
 import { IssueDepartmentType } from '@/interfaces/IIssueDepartment';
 import styles from './styles/step.less';
 import useStep from './useHooks/useStep';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { createManager, updateManager } from '@/services/managerService';
 
 interface EditManagerFormProps {
@@ -21,7 +21,7 @@ const upsertManager = (manager: IManager): Promise<IManager> => {
   return manager.id ? updateManager(manager) : createManager(manager);
 };
 
-const EditManagerForm: React.FC<EditManagerFormProps> = props => {
+const EditManagerForm: React.FC<EditManagerFormProps> = (props) => {
   const { run: performUpdateManager, loading } = useRequest(upsertManager, {
     manual: true,
     onSuccess() {

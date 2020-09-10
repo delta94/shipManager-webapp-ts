@@ -4,7 +4,7 @@ import { ISailor, ISailorCertType, ISailorDutyType } from '@/interfaces/ISailor'
 import { IssueDepartmentType } from '@/interfaces/IIssueDepartment';
 import styles from './styles/step.less';
 import useStep from './useHooks/useStep';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { createSailor, updateSailor } from '@/services/sailorService';
 
 interface EditSailorFormProps {

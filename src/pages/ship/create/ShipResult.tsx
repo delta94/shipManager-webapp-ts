@@ -1,8 +1,8 @@
 import React from 'react';
 import { IShip } from '@/interfaces/IShip';
+import { history } from 'umi';
 import { NavigationProps } from '@/hooks/useStep';
 import { Result, Button } from 'antd';
-import { useDispatch, routerRedux } from 'dva';
 
 interface ShipResultProps {
   ship: Partial<IShip>;
@@ -10,11 +10,9 @@ interface ShipResultProps {
   navigation: NavigationProps;
 }
 
-const ShipResult: React.FC<ShipResultProps> = props => {
-  const dispatch = useDispatch();
-
+const ShipResult: React.FC<ShipResultProps> = (props) => {
   const backToList = () => {
-    dispatch(routerRedux.push(`/ship/list`));
+    history.push('/ship/list');
   };
 
   return (
@@ -33,7 +31,7 @@ const ShipResult: React.FC<ShipResultProps> = props => {
           }}
         >
           继续录入
-        </Button>
+        </Button>,
       ]}
     />
   );

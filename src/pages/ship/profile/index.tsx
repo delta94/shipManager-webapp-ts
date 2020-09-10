@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'dva/router';
+import React from 'react';
 import { infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest, IRouteComponentProps } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProList from '@ant-design/pro-list';
 import { Card, Descriptions, Button, Modal, Space, Popconfirm, Table } from 'antd';
-import { IShip, IShipPayload } from '@/interfaces/IShip';
+import { IShipPayload } from '@/interfaces/IShip';
 import EditBasicForm from '../edit/editBasicForm';
 import EditMetricForm from '../edit/editMetricForm';
 import EditPayloadForm from '@/pages/ship/edit/editPayloadForm';
@@ -23,27 +22,24 @@ import useMachineTable from '@/pages/ship/profile/useMachineTable';
 import useMachineForm from '@/pages/ship/profile/useMachineForm';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
 
-const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
-  const { data: ship = {} as IShip, run: fetchShip, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
-    manual: true,
+const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) => {
+  const shipId = parseInt(match.params.id) || 0;
+
+  const { data: ship, refresh: refreshShipInfo, loading } = useRequest(infoShip, {
+    cacheKey: `ship_${shipId}`,
+    refreshDeps: [shipId],
+    defaultParams: [shipId],
   });
 
-  useEffect(() => {
-    if (params.id) {
-      fetchShip(parseInt(params.id));
-    }
-  }, [params.id]);
-
   const { data: shipCategoryType } = useRequest(listShipCategory, {
-    manual: false,
     cacheKey: 'ship_category_type',
   });
 
-  const licenseTableProps = useLicenseTable({ licenses: ship.shipLicenses ?? [] });
+  const licenseTableProps = useLicenseTable({ licenses: ship?.shipLicenses });
 
-  const machineTableProps = useMachineTable({ machines: ship.shipMachines ?? [] });
+  const machineTableProps = useMachineTable({ machines: ship?.shipMachines });
 
-  const sailorTableProps = useSailorTable({ shipId: params.id ? parseInt(params.id) : 0 });
+  const sailorTableProps = useSailorTable({ shipId: shipId });
 
   const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
 
@@ -84,18 +80,18 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         }
       >
         <Descriptions>
-          <Descriptions.Item label={ShipKeyMap.name}>{ship.name}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.carrierIdentifier}>{ship.carrierIdentifier}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.owner}>{ship.owner}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.shipTypeName}>{ship.shipTypeName}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.shareInfo}>{ship.shareInfo}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.registerIdentifier}>{ship.registerIdentifier}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.examineIdentifier}>{ship.examineIdentifier}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.shipMaterialTypeName}>{ship.shipMaterialTypeName}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.harbor}>{ship.harbor}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.formerName}>{ship.formerName}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.buildAt}>{ship.buildAt}</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.assembleAt}>{ship.assembleAt}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.name}>{ship?.name}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.carrierIdentifier}>{ship?.carrierIdentifier}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.owner}>{ship?.owner}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.shipTypeName}>{ship?.shipTypeName}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.shareInfo}>{ship?.shareInfo}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.registerIdentifier}>{ship?.registerIdentifier}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.examineIdentifier}>{ship?.examineIdentifier}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.shipMaterialTypeName}>{ship?.shipMaterialTypeName}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.harbor}>{ship?.harbor}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.formerName}>{ship?.formerName}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.buildAt}>{ship?.buildAt}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.assembleAt}>{ship?.assembleAt}</Descriptions.Item>
         </Descriptions>
       </Card>
 
@@ -111,12 +107,12 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         }
       >
         <Descriptions>
-          <Descriptions.Item label={ShipKeyMap.grossTone}>{ship.grossTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.netTone}>{ship.netTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.length}>{ship.length} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.width}>{ship.width} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.height}>{ship.height} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.depth}>{ship.depth} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.grossTone}>{ship?.grossTone} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.netTone}>{ship?.netTone} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.length}>{ship?.length} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.width}>{ship?.width} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.height}>{ship?.height} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.depth}>{ship?.depth} 米</Descriptions.Item>
         </Descriptions>
       </Card>
 
@@ -129,7 +125,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
           <Button
             type="link"
             onClick={() => {
-              onShowEditPayload({ shipId: parseInt(params.id) ?? 0 });
+              onShowEditPayload({});
             }}
           >
             新增
@@ -138,8 +134,8 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
       >
         <ProList<IShipPayload>
           rowKey="id"
-          dataSource={ship.shipPayloads}
-          renderItem={item => ({
+          dataSource={ship?.shipPayloads}
+          renderItem={(item) => ({
             title: (
               <>
                 {item.shipBusinessAreaName} | <Space size={3}>载货量: {item.tone} 吨</Space>
@@ -173,12 +169,13 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
         style={{ marginTop: 24 }}
         onTabChange={licenseTableProps.updateTab}
         tabBarExtraContent={
-          <Button type="link" onClick={() => onShowEditLicense({ shipId: parseInt(params.id) ?? 0 })}>
+          <Button type="link" onClick={() => onShowEditLicense({ shipId })}>
             新增
           </Button>
         }
       >
         <Table
+          key="id"
           pagination={false}
           loading={loading}
           dataSource={licenseTableProps.licenses}
@@ -196,7 +193,7 @@ const ShipProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { p
             type="link"
             onClick={() =>
               onShowEditMachine({
-                shipId: parseInt(params.id) ?? 0,
+                shipId: shipId,
                 machineType: machineTableProps.tab == 'host' ? 0 : 1,
               })
             }

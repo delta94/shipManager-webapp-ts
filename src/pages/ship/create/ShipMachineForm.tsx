@@ -6,7 +6,7 @@ import { ShipMachineKeyMap } from '@/services/shipService';
 import hooks from '@/pages/ship/profile/hooks';
 import { PlusOutlined } from '@ant-design/icons';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
-import { useToggle } from '@umijs/hooks';
+import useToggle from '@/hooks/useToggle';
 
 interface ShipMachineFormProps {
   ship: Partial<IShip>;

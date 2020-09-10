@@ -5,8 +5,7 @@ import { Badge, Divider, Popconfirm, message } from 'antd';
 import { ISailor } from '@/interfaces/ISailor';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import { ActionType } from '@ant-design/pro-table';
-import { useRequest } from '@umijs/hooks';
-import { routerRedux, useDispatch } from 'dva';
+import { useRequest, history } from 'umi';
 
 interface IUseSailorTableDeps {
   shipId: number;
@@ -20,7 +19,6 @@ interface IUseSailorTableExport {
 
 export default function useSailorTable(option: IUseSailorTableDeps): IUseSailorTableExport {
   const actionRef = useRef<ActionType>();
-  const dispatch = useDispatch();
 
   const { run } = useRequest(unlinkSailor, {
     manual: true,
@@ -34,11 +32,11 @@ export default function useSailorTable(option: IUseSailorTableDeps): IUseSailorT
   });
 
   useEffect(() => {
-    const unTapDeleteSailor = hooks.DeleteSailor.tap(sailor => {
+    const unTapDeleteSailor = hooks.DeleteSailor.tap((sailor) => {
       run(sailor.id);
     });
-    const unTapInfoSailor = hooks.InfoSailor.tap(sailor => {
-      dispatch(routerRedux.push(`/person/sailor/profile/${sailor.id}`));
+    const unTapInfoSailor = hooks.InfoSailor.tap((sailor) => {
+      history.push(`/person/sailor/profile/${sailor.id}`);
     });
     return () => {
       unTapDeleteSailor();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Result, Descriptions } from 'antd';
 import { IManager } from '@/interfaces/IManager';
-import {ManagerKeyMap} from "@/services/managerService";
+import { ManagerKeyMap } from '@/services/managerService';
 
 interface EditManagerStep3Props {
   manager?: IManager;

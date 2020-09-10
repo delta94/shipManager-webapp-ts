@@ -1,34 +1,21 @@
-import { AnyAction, Reducer } from 'redux';
-import { parse, stringify } from 'qs';
-
-import { EffectsCommandMap } from 'dva';
-import { routerRedux } from 'dva/router';
+import { stringify } from 'querystring';
+import { history, Reducer, Effect } from 'umi';
 import { accountLogin, getCurrentUser } from '@/services/userService';
 import { LoginResult } from '@/interfaces/ILogin';
 import IAccount, { IAccountRole } from '@/interfaces/IAccount';
 import { setAuthority, updateToken } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
+import {getPageQuery} from "@/utils/utils";
 
-export function getPageQuery(): {
-  [key: string]: string;
-} {
-  return parse(window.location.href.split('?')[1]);
-}
-
-export interface StateType {
+export interface LoginStateType {
   status?: 'ok' | 'error';
   type?: string;
   currentAuthority?: IAccountRole[];
 }
 
-export type Effect = (
-  action: AnyAction,
-  effects: EffectsCommandMap & { select: <T>(func: (state: StateType) => T) => T },
-) => void;
-
-export interface ModelType {
+export interface LoginModelType {
   namespace: string;
-  state: StateType;
+  state: LoginStateType;
   effects: {
     logout: Effect;
     login: Effect;
@@ -38,7 +25,7 @@ export interface ModelType {
   };
 }
 
-const Model: ModelType = {
+const LoginModel: LoginModelType = {
   namespace: 'login',
 
   state: {
@@ -46,23 +33,7 @@ const Model: ModelType = {
   },
 
   effects: {
-    *logout(_, { put }) {
-      const { redirect } = getPageQuery();
-      // redirect
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        yield put(
-          routerRedux.replace({
-            pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
-          }),
-        );
 
-        reloadAuthorized();
-        updateToken('');
-      }
-    },
     *login({ payload }, { call, put }) {
       const resp1: LoginResult = yield call(accountLogin, payload);
 
@@ -91,6 +62,7 @@ const Model: ModelType = {
       const params = getPageQuery();
 
       let { redirect } = params as { redirect: string };
+
       if (redirect) {
         const redirectUrlParams = new URL(redirect);
         if (redirectUrlParams.origin === urlParams.origin) {
@@ -99,11 +71,26 @@ const Model: ModelType = {
             redirect = redirect.substr(redirect.indexOf('#') + 1);
           }
         } else {
-          window.location.href = redirect;
+          window.location.href = '/';
           return;
         }
       }
-      yield put(routerRedux.replace(redirect || '/'));
+      history.replace(redirect || '/');
+    },
+
+    *logout() {
+      const { redirect } = getPageQuery();
+      // Note: There may be security issues, please note
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        history.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
+        reloadAuthorized();
+        updateToken('');
+      }
     },
   },
 
@@ -118,4 +105,4 @@ const Model: ModelType = {
   },
 };
 
-export default Model;
+export default LoginModel;

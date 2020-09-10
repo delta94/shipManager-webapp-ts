@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { InputNumber, Input, Form, message, Button } from 'antd';
 import { IShip } from '@/interfaces/IShip';
 import { ShipKeyMap as ShipKey, updateShip } from '@/services/shipService';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 
 interface EditMetricFormProps {
   ship: Partial<IShip>;

@@ -37,7 +37,7 @@ export default function useStep(option: IUseStepDep): IUseStepExport {
       // last step
       if (currentStep == 1) {
         if (manager.managerCerts) {
-          manager.managerCerts = manager.managerCerts.map(item => {
+          manager.managerCerts = manager.managerCerts.map((item) => {
             formatUploadFileToOSSFiles(item);
             if (item.id && item.id.toString().startsWith('new_')) {
               delete item.id;
@@ -45,7 +45,7 @@ export default function useStep(option: IUseStepDep): IUseStepExport {
             return item;
           });
         }
-        option.onSave(manager).then(_ => {
+        option.onSave(manager).then((_) => {
           setCurrentStep(currentStep + 1);
           updateManagerForm(manager);
         });
@@ -58,7 +58,7 @@ export default function useStep(option: IUseStepDep): IUseStepExport {
   );
 
   const onPrevStep = useCallback(
-    manager => {
+    (manager) => {
       setCurrentStep(currentStep - 1);
       updateManagerForm(manager);
     },

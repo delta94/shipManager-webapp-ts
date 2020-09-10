@@ -20,9 +20,9 @@ const EditManagerStep1: React.FC<EditManagerStep1Props> = ({ manager, dutyTypes,
   }, [manager]);
 
   const onFinish = useCallback(
-    values => {
-      values.managerDutyName = dutyTypes!.find(item => item.id == values.managerDutyId)?.name;
-      values.managerPositionName = positionTypes!.find(item => item.id == values.managerPositionId)?.name;
+    (values) => {
+      values.managerDutyName = dutyTypes!.find((item) => item.id == values.managerDutyId)?.name;
+      values.managerPositionName = positionTypes!.find((item) => item.id == values.managerPositionId)?.name;
       onNext({
         ...manager,
         ...values,

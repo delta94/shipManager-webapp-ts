@@ -3,7 +3,7 @@ import { ShipLicenseKeyMap, upsertShipLicense } from '@/services/shipService';
 import { message, Form, DatePicker, Input, Button, Select } from 'antd';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { IShipLicense, IShipLicenseType } from '@/interfaces/IShip';
-import { useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
 import { IssueDepartmentType } from '@/interfaces/IIssueDepartment';
 import { dateFormatter, dateFormatterToString, formatUploadFileToOSSFiles } from '@/utils/parser';
 

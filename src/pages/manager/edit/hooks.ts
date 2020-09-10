@@ -1,5 +1,5 @@
 import { SyncHook } from '@funnyecho/hamon';
-import {IManagerCert} from "@/interfaces/IManager";
+import { IManagerCert } from '@/interfaces/IManager';
 
 const hooks = {
   DeleteManagerCert: new SyncHook<[IManagerCert]>(),

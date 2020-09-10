@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { List, Modal, message } from 'antd';
+import { useDispatch } from 'umi';
 import EditPasswordForm from './EditPasswordForm';
-import { useDispatch } from 'dva';
-
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const SecurityView: React.FC = () => {
@@ -43,7 +42,7 @@ const SecurityView: React.FC = () => {
       <List<Unpacked<typeof data>>
         itemLayout="horizontal"
         dataSource={data}
-        renderItem={item => (
+        renderItem={(item) => (
           <List.Item actions={item.actions}>
             <List.Item.Meta title={item.title} description={item.description} />
           </List.Item>

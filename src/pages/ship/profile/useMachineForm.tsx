@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { IShipMachine } from '@/interfaces/IShip';
-import { useToggle, useRequest } from '@umijs/hooks';
+import { useRequest } from 'umi';
+import useToggle from '@/hooks/useToggle';
 import hooks from '@/pages/ship/profile/hooks';
 import { deleteShipMachine } from '@/services/shipService';
 import { message } from 'antd';
@@ -18,7 +19,7 @@ interface IUseMachineFormExport {
 
 export default function useMachineForm(option: IUseMachineFormDeps): IUseMachineFormExport {
   const [editMachine, setEditMachine] = useState<Partial<IShipMachine>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   const { run } = useRequest(deleteShipMachine, {
     manual: true,
@@ -32,12 +33,12 @@ export default function useMachineForm(option: IUseMachineFormDeps): IUseMachine
   });
 
   useEffect(() => {
-    const unTapEditMachine = hooks.EditShipMachine.tap(machine => {
+    const unTapEditMachine = hooks.EditShipMachine.tap((machine) => {
       setEditMachine(machine);
       setRight();
     });
 
-    const unTapDeleteMachine = hooks.DeleteShipMachine.tap(machine => {
+    const unTapDeleteMachine = hooks.DeleteShipMachine.tap((machine) => {
       run(machine.id);
     });
 
