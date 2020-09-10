@@ -60,6 +60,40 @@ export default [
           },
 
           {
+            path: '/person',
+            name: '人员管理',
+            icon: 'profile',
+            routes: [
+              {
+                path: '/',
+                redirect: '/person/manager/list',
+              },
+              {
+                path: '/person/manager/list',
+                name: '管理人员',
+                component: './manager/list',
+              },
+              {
+                path: '/person/manager/profile/:id',
+                name: '管理人员详情',
+                hideInMenu: true,
+                component: './manager/profile',
+              },
+              {
+                path: '/person/sailor/list',
+                name: '船员管理',
+                component: './sailor/list',
+              },
+              {
+                path: '/person/sailor/profile/:id',
+                name: '船员详情',
+                component: './sailor/profile',
+                hideInMenu: true,
+              },
+            ],
+          },
+
+          {
             path: '/company',
             name: '公司信息管理',
             icon: 'home',
@@ -68,7 +102,7 @@ export default [
                 name: '基础信息',
                 path: '/company/infoCompany',
                 component: './company/infoCompany',
-              }
+              },
             ],
           },
 
