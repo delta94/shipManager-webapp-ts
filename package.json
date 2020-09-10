@@ -1,16 +1,13 @@
 {
   "name": "ship-manager-webapp-ts",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "web application for ship manager platform",
   "scripts": {
     "format-imports": "import-sort --write '**/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier -c --write \"**/*\"",
     "start": "umi dev",
-    "build": "cross-env umi build",
-    "upload-oss": "ts-node scripts/uploadToOSS.ts",
-    "upload-server": "ts-node  scripts/uploadToServer.ts",
-    "upload-dev-server": "ts-node  scripts/uploadToDevServer.ts"
+    "build": "cross-env REACT_APP_ENV=prod umi build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",

@@ -1,5 +1,7 @@
 type EnvironmentType = 'dev' | 'prod';
 
+declare const REACT_APP_ENV: EnvironmentType | boolean;
+
 interface EnvironmentConfig {
   OSS_BUCKET_NAME: string;
   OSS_REGION: string;
