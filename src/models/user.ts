@@ -34,9 +34,9 @@ const UserModel: UserModelType = {
           type: 'saveCurrentUser',
           payload: response,
         });
-        callback(response);
+        callback?.(response);
       } catch (e) {
-        callback(e);
+        callback?.(e);
       }
     },
     *updateCurrent({ payload, callback }, { call, put }) {

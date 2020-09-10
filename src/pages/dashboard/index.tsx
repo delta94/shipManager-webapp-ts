@@ -2,8 +2,8 @@ import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
 import React, { Component } from 'react';
 import { Link, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import defaultAvatar from '@/assets/icons/avatar.png';
 import styles from './style.less';
 import { ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
@@ -41,7 +41,13 @@ const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser })
   return (
     <div className={styles.pageHeaderContent}>
       <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.imageUrl ? currentUser.imageUrl : defaultAvatar} />
+        <Avatar
+          size={72}
+          src={currentUser.imageUrl}
+          alt="avatar"
+          style={{ backgroundColor: '#f56a00' }}
+          icon={<UserOutlined />}
+        />
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>{helloText}</div>
@@ -63,8 +69,8 @@ const ExtraContent: React.FC<{}> = () => (
 );
 
 class DashBoard extends Component<DashBoardProps> {
-  renderActivities = item => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map(key => {
+  renderActivities = (item) => {
+    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
       if (item[key]) {
         return (
           <a href={item[key].link} key={item[key].name}>
@@ -113,7 +119,7 @@ class DashBoard extends Component<DashBoardProps> {
               loading={projectLoading}
               bodyStyle={{ padding: 0 }}
             >
-              {projectNotice.map(item => (
+              {projectNotice.map((item) => (
                 <Card.Grid className={styles.projectGrid} key={item.id}>
                   <Card bodyStyle={{ padding: 0 }} bordered={false}>
                     <Card.Meta
@@ -146,7 +152,7 @@ class DashBoard extends Component<DashBoardProps> {
             >
               <List
                 loading={activitiesLoading}
-                renderItem={item => this.renderActivities(item)}
+                renderItem={(item) => this.renderActivities(item)}
                 dataSource={[]}
                 className={styles.activitiesList}
                 size="large"
@@ -165,7 +171,7 @@ class DashBoard extends Component<DashBoardProps> {
             >
               <div className={styles.members}>
                 <Row gutter={48}>
-                  {projectNotice.map(item => (
+                  {projectNotice.map((item) => (
                     <Col span={12} key={`members-item-${item.id}`}>
                       <Link to={item.href}>
                         <Avatar src={item.logo} size="small" />
