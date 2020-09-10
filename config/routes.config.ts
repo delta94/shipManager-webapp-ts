@@ -58,6 +58,37 @@ export default [
               },
             ],
           },
+
+          {
+            path: '/company',
+            name: '公司信息管理',
+            icon: 'home',
+            routes: [
+              {
+                name: '基础信息',
+                path: '/company/infoCompany',
+                component: './company/infoCompany',
+              }
+            ],
+          },
+
+          {
+            path: '/setting',
+            name: '设置',
+            icon: 'setting',
+            routes: [
+              {
+                path: '/',
+                redirect: '/setting/personal',
+              },
+              {
+                path: '/setting/personal',
+                name: '用户管理',
+                component: './setting/personal',
+              },
+            ],
+          },
+
           {
             component: './404',
           },
