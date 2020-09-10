@@ -36,6 +36,29 @@ export default [
             component: './dashboard',
           },
           {
+            path: '/ship',
+            name: '船舶管理',
+            icon: 'book',
+            routes: [
+              {
+                name: '船舶列表',
+                path: '/ship/list',
+                component: './ship/list',
+              },
+              {
+                name: '船舶详情',
+                path: '/ship/profile/:id',
+                component: './ship/profile',
+                hideInMenu: true,
+              },
+              {
+                name: '新建船舶',
+                path: '/ship/create',
+                component: './ship/create',
+              },
+            ],
+          },
+          {
             component: './404',
           },
         ],

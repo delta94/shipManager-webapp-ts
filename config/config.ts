@@ -9,11 +9,14 @@ const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: false,
   history: {
-    type: "browser",
+    type: 'browser',
   },
   antd: {},
   dva: {
     hmr: true,
+  },
+  request: {
+    dataField: '',
   },
   locale: false,
   dynamicImport: {

@@ -3,7 +3,7 @@ import { Upload, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile, UploadChangeParam } from 'antd/lib/upload/interface';
 import OssClient, { generateOSSFullPath, generateOSSKey, OSSResourceType } from '@/utils/OSSClient';
-import { usePrevious } from '@umijs/hooks';
+import usePrevious from '@/hooks/usePrevious';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { formatOSSFilesToUploadFile } from '@/utils/parser';
 
@@ -15,13 +15,13 @@ interface AliyunOSSUploadProps {
   ossResourceType?: OSSResourceType;
 }
 
-const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
+const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = (props) => {
   const [fileList, setFileList] = useState<UploadFile[]>();
   const previousValue = usePrevious(props.value);
 
   const customRequest = useCallback(({ file, headers, onError, onProgress, onSuccess }) => {
     OssClient.getInstance()
-      .then(ossClient => {
+      .then((ossClient) => {
         let resourceType = props.ossResourceType ? props.ossResourceType : OSSResourceType.CompanyCert;
         let key = generateOSSKey(file, resourceType);
         return ossClient.multipartUpload(key, file, {
@@ -34,14 +34,14 @@ const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = props => {
           headers,
         });
       })
-      .then(result => {
+      .then((result) => {
         if (result.name) {
           file.url = generateOSSFullPath(result.name);
           onSuccess(result, file);
         }
         console.log(result);
       })
-      .catch(error => {
+      .catch((error) => {
         onError(error);
       });
 
