@@ -9,10 +9,16 @@ interface EnvironmentConfig {
   OSS_ASSET_URL: string;
 }
 
+interface WebConfig {
+  PUBLIC_PATH: string;
+}
+
 interface ProxyConfig {
   '/api/': object;
 }
 
 type EnvironmentConfigMap = Record<EnvironmentType, EnvironmentConfig>;
+
+type WebConfigMap = Record<EnvironmentType, WebConfig>;
 
 type ProxyConfigMap = Record<EnvironmentType, ProxyConfig>;

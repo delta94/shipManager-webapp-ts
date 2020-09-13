@@ -3,11 +3,12 @@ import { defineConfig } from 'umi';
 import routes from './routes.config';
 import proxy from './proxy.config';
 import environment from './env.config';
+import webConfig from './web.config';
 
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
-  hash: false,
+  hash: true,
   history: {
     type: 'browser',
   },
@@ -35,4 +36,5 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  publicPath: webConfig[REACT_APP_ENV || 'dev'].PUBLIC_PATH,
 });
