@@ -6,8 +6,10 @@
   "scripts": {
     "format-imports": "import-sort --write '**/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier -c --write \"**/*\"",
-    "start": "umi dev",
-    "build": "cross-env REACT_APP_ENV=prod umi build"
+    "start": "cross-env UMI_ENV=dev umi dev",
+    "build": "cross-env UMI_ENV=prod umi build",
+    "build-lx": "cross-env UMI_ENV=langxian umi build",
+    "build-kh": "cross-env UMI_ENV=kaihang umi build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",

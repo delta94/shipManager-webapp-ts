@@ -37,8 +37,10 @@ screenshot
 .firebase
 .eslintcache
 
-# secret
-
-secret.config.ts
-
 build
+
+config/config.kaihang.ts
+config/config.langxian.ts
+config/config.prod.ts
+
+

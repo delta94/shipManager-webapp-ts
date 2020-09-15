@@ -18,7 +18,3 @@ interface ProxyConfig {
 }
 
 type EnvironmentConfigMap = Record<EnvironmentType, EnvironmentConfig>;
-
-type WebConfigMap = Record<EnvironmentType, WebConfig>;
-
-type ProxyConfigMap = Record<EnvironmentType, ProxyConfig>;
