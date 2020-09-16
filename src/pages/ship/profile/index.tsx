@@ -21,6 +21,7 @@ import { ISailor } from '@/interfaces/ISailor';
 import useMachineTable from '@/pages/ship/profile/useMachineTable';
 import useMachineForm from '@/pages/ship/profile/useMachineForm';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
+import { parseCM2M, parseKG2T } from '@/utils/parser';
 
 const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) => {
   const shipId = parseInt(match.params.id) || 0;
@@ -86,9 +87,13 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           <Descriptions.Item label={ShipKeyMap.shipTypeName}>{ship?.shipTypeName}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.shareInfo}>{ship?.shareInfo}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.registerIdentifier}>{ship?.registerIdentifier}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.firstRegisterIdentifier}>
+            {ship?.firstRegisterIdentifier}
+          </Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.examineIdentifier}>{ship?.examineIdentifier}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.shipMaterialTypeName}>{ship?.shipMaterialTypeName}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.harbor}>{ship?.harbor}</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.buildIn}>{ship?.buildIn}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.formerName}>{ship?.formerName}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.buildAt}>{ship?.buildAt}</Descriptions.Item>
           <Descriptions.Item label={ShipKeyMap.assembleAt}>{ship?.assembleAt}</Descriptions.Item>
@@ -107,12 +112,12 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
         }
       >
         <Descriptions>
-          <Descriptions.Item label={ShipKeyMap.grossTone}>{ship?.grossTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.netTone}>{ship?.netTone} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.length}>{ship?.length} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.width}>{ship?.width} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.height}>{ship?.height} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.depth}>{ship?.depth} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.grossTone}>{parseKG2T(ship?.grossTone)} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.netTone}>{parseKG2T(ship?.netTone)} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.length}>{parseCM2M(ship?.length)} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.width}>{parseCM2M(ship?.width)} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.height}>{parseCM2M(ship?.height)} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.depth}>{parseCM2M(ship?.depth)} 米</Descriptions.Item>
         </Descriptions>
       </Card>
 

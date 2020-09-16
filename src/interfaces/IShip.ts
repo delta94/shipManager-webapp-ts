@@ -7,18 +7,22 @@ export interface IShip {
   carrierIdentifier: string;
   examineIdentifier: string;
   registerIdentifier: string;
+  firstRegisterIdentifier: string;
   formerName: string;
+
+  buildIn: string;
   owner: string;
   shareInfo: string;
   harbor: string;
   buildAt: string;
   assembleAt: string;
-  length: string;
-  width: string;
-  height: string;
-  depth: string;
-  grossTone: string;
-  netTone: string;
+  
+  length: number;
+  width: number;
+  height: number;
+  depth: number;
+  grossTone: number;
+  netTone: number;
   remark: string;
 
   shipTypeId: number;
@@ -50,13 +54,13 @@ export interface IShipCert {
 }
 
 export interface IShipMachine {
-  id: number
-  model: string
-  power: number
-  machineType: number
-  isRemoved: boolean
-  remark: string
-  shipId?: number
+  id: number;
+  model: string;
+  power: number;
+  machineType: number;
+  isRemoved: boolean;
+  remark: string;
+  shipId?: number;
 }
 
 export interface IShipPayload {

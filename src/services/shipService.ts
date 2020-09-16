@@ -124,8 +124,11 @@ export const ShipKeyMap = {
   name: '船舶名',
   carrierIdentifier: '船舶识别号',
   examineIdentifier: '船检登记号',
-  registerIdentifier: '初次登记号',
+  firstRegisterIdentifier: '船舶初次登记号',
+  registerIdentifier: '船舶登记号',
   formerName: '曾用名',
+
+  buildIn: '船舶建造厂',
 
   owner: '船舶所有人',
   shareInfo: '船舶共有情况',

@@ -142,6 +142,21 @@ const EditBasicForm: React.FC<EditBasicFormProps> = ({ ship, onUpdate, onCancel,
 
         <Col span={8}>
           <Form.Item
+            name="firstRegisterIdentifier"
+            label={ShipKey.firstRegisterIdentifier}
+            rules={[
+              {
+                required: false,
+                message: `请输入 ${ShipKey.firstRegisterIdentifier}`,
+              },
+            ]}
+          >
+            <Input placeholder={`请输入 ${ShipKey.firstRegisterIdentifier}`} />
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item
             name="formerName"
             label={ShipKey.formerName}
             rules={[
@@ -182,6 +197,21 @@ const EditBasicForm: React.FC<EditBasicFormProps> = ({ ship, onUpdate, onCancel,
             ]}
           >
             <Input placeholder={`请输入 ${ShipKey.shareInfo}`} />
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item
+            name="buildIn"
+            label={ShipKey.buildIn}
+            rules={[
+              {
+                required: false,
+                message: `请输入 ${ShipKey.buildIn}`,
+              },
+            ]}
+          >
+            <Input placeholder={`请输入 ${ShipKey.buildIn}`} />
           </Form.Item>
         </Col>
 

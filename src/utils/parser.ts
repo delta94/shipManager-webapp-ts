@@ -139,3 +139,25 @@ export const parsePagination = (headers: Headers): Pagination => {
     pageSize: parseInt(headers.get('X-Page-Size') || '0'),
   };
 };
+
+export const parseCM2M = (value: number | undefined): number => {
+  if (value == undefined || value == 0) return 0;
+  return value / 100;
+};
+
+export const parseKG2T = (value: number | undefined): number => {
+  if (value == undefined || value == 0) return 0;
+  return value / 1000;
+};
+
+export const parseM2CM = (value: number | undefined): number => {
+  if (value == undefined || value == 0) return 0;
+  return value * 100;
+};
+
+export const parseT2KG = (value: number | undefined): number => {
+  if (value == undefined || value == 0) return 0;
+  return value * 1000;
+};
+
+

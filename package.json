@@ -1,6 +1,7 @@
 {
   "name": "ship-manager-webapp-ts",
   "version": "1.0.0",
+  "license": "MIT",
   "private": false,
   "description": "web application for ship manager platform",
   "scripts": {
