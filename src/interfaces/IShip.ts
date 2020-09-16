@@ -16,13 +16,15 @@ export interface IShip {
   harbor: string;
   buildAt: string;
   assembleAt: string;
-  
+
   length: number;
   width: number;
   height: number;
   depth: number;
+
   grossTone: number;
   netTone: number;
+
   remark: string;
 
   shipTypeId: number;

@@ -143,7 +143,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           renderItem={(item) => ({
             title: (
               <>
-                {item.shipBusinessAreaName} | <Space size={3}>载货量: {item.tone} 吨</Space>
+                {item.shipBusinessAreaName} | <Space size={3}>载货量: {parseKG2T(item.tone)} 吨</Space>
               </>
             ),
             actions: [

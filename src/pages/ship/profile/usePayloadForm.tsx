@@ -5,6 +5,7 @@ import useToggle from '@/hooks/useToggle';
 import { deleteShipPayload } from '@/services/shipService';
 import { message } from 'antd';
 import hooks from '@/pages/ship/profile/hooks';
+import { parseKG2T } from '@/utils/parser';
 
 interface IUsePayloadFormDeps {
   refreshShipInfo: Function;
@@ -45,8 +46,13 @@ export default function usePayloadForm(option: IUsePayloadFormDeps): IUsePayload
     setLeft();
   }, []);
 
-  const onShow = useCallback((license: Partial<IShipPayload>) => {
-    setEditPayload(license);
+  const onShow = useCallback((payload: Partial<IShipPayload>) => {
+    setEditPayload({
+      ...payload,
+      ...{
+        tone: parseKG2T(payload?.tone),
+      },
+    });
     setRight();
   }, []);
 

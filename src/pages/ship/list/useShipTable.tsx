@@ -5,6 +5,7 @@ import hooks from './hooks';
 import { ShipKeyMap, listShip } from '@/services/shipService';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import { IShip, IShipBusinessAreaType, IShipMaterialType, IShipType } from '@/interfaces/IShip';
+import { parseKG2T } from '@/utils/parser';
 
 interface IUseShipTableDeps {
   shipType: IShipType[];
@@ -65,7 +66,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
         title: ShipKeyMap.grossTone,
         dataIndex: 'grossTone',
         hideInSearch: true,
-        render: val => `${val} 吨`,
+        render: (val: number) => `${parseKG2T(val)} 吨`,
       },
       {
         title: '操作',

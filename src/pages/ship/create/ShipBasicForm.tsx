@@ -86,8 +86,14 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, shipCategoryType, n
             </Col>
 
             <Col lg={6} md={12} sm={24}>
-              <Form.Item label={ShipKeyMap.registerIdentifier} name="registerIdentifier">
+              <Form.Item label={ShipKeyMap.firstRegisterIdentifier} name="firstRegisterIdentifier">
                 <Input placeholder="请输入船舶初次登记号" />
+              </Form.Item>
+            </Col>
+
+            <Col lg={6} md={12} sm={24}>
+              <Form.Item label={ShipKeyMap.registerIdentifier} name="registerIdentifier">
+                <Input placeholder="请输入船舶登记号" />
               </Form.Item>
             </Col>
 
@@ -119,6 +125,12 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, shipCategoryType, n
             <Col lg={6} md={12} sm={24}>
               <Form.Item label={ShipKeyMap.harbor} name="harbor">
                 <Input placeholder="请输入船籍港" />
+              </Form.Item>
+            </Col>
+
+            <Col lg={6} md={12} sm={24}>
+              <Form.Item label={ShipKeyMap.buildIn} name="buildIn">
+                <Input placeholder="请输入船舶建造厂" />
               </Form.Item>
             </Col>
 
@@ -168,13 +180,13 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, shipCategoryType, n
               </Form.Item>
             </Col>
             <Col lg={6} md={12} sm={24}>
-              <Form.Item label={ShipKeyMap.depth} name="depth">
-                <InputNumber placeholder="请输入船舶型深" style={{ width: '100%' }} />
+              <Form.Item label={ShipKeyMap.height} name="height">
+                <InputNumber placeholder="请输入船舶船高" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col lg={6} md={12} sm={24}>
-              <Form.Item label={ShipKeyMap.height} name="height">
-                <InputNumber placeholder="请输入船舶船高" style={{ width: '100%' }} />
+              <Form.Item label={ShipKeyMap.depth} name="depth">
+                <InputNumber placeholder="请输入船舶型深" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
           </Row>
@@ -193,7 +205,7 @@ const ShipBasicForm: React.FC<ShipBasicFormProps> = ({ ship, shipCategoryType, n
         <div className={styles.desc}>
           <h3>说明</h3>
           <h4>船舶基本信息</h4>
-          <p>如果需要，这里可以放一些关于录入船舶的常见问题说明</p>
+          <p>部分信息可以放到之后作为补充录入</p>
         </div>
       </Card>
     </>

@@ -5,11 +5,12 @@ import { addShip, listShipCategory } from '@/services/shipService';
 import { useRequest } from 'umi';
 import useStep from '@/hooks/useStep';
 import ShipBasicForm from '@/pages/ship/create/ShipBasicForm';
-import { IShip } from '@/interfaces/IShip';
+import { IShip, IShipPayload } from '@/interfaces/IShip';
 import ShipMachineForm from '@/pages/ship/create/ShipMachineForm';
 import ShipPayloadForm from '@/pages/ship/create/ShipPayloadForm';
 import ShipLicenseForm from '@/pages/ship/create/ShipLicenseForm';
 import ShipResult from '@/pages/ship/create/ShipResult';
+import { parseM2CM, parseT2KG } from '@/utils/parser';
 
 interface CreateShipProps {}
 
@@ -22,7 +23,7 @@ const steps = [
   { id: 'result', index: 5 },
 ];
 
-const CreateShip: React.FC<CreateShipProps> = props => {
+const CreateShip: React.FC<CreateShipProps> = (props) => {
   const { data: shipCategoryType } = useRequest(listShipCategory, {
     manual: false,
     cacheKey: 'ship_category_type',
@@ -38,46 +39,7 @@ const CreateShip: React.FC<CreateShipProps> = props => {
     },
   });
 
-  const [shipForm, setShipForm] = useState<Partial<IShip>>({
-    // name: 'nameX',
-    // carrierIdentifier: '12122',
-    // shipTypeId: 1009002,
-    // shipMaterialTypeId: 1010001,
-    // shipMachines: [
-    //   {
-    //     id: 112211221121,
-    //     power: 2323,
-    //     model: 'YU3-33',
-    //     isRemoved: false,
-    //     machineType: 0,
-    //     remark: '无',
-    //   },
-    //   {
-    //     id: 112211221122,
-    //     power: 2323,
-    //     model: 'KU3-22',
-    //     isRemoved: false,
-    //     machineType: 1,
-    //     remark: '无',
-    //   },
-    // ],
-    // shipLicenses: [
-    //   {
-    //     id: 11221,
-    //     businessField: 'hk',
-    //     expiredAt: '2020-08-06',
-    //     identityNumber: 'HHeh',
-    //     issueDepartmentTypeId: 1002007,
-    //     issueDepartmentTypeName: '广州海事局',
-    //     issuedAt: '2020-07-29',
-    //     name: 'cha',
-    //     ossFiles: [],
-    //     remark: 'YU',
-    //     shipLicenseTypeId: 1012002,
-    //     shipLicenseTypeName: '港澳营运证',
-    //   },
-    // ],
-  });
+  const [shipForm, setShipForm] = useState<Partial<IShip>>({});
 
   const { step, navigation } = useStep({ steps, initialStep: 0 });
 
@@ -94,8 +56,10 @@ const CreateShip: React.FC<CreateShipProps> = props => {
         });
       }
       if (newShip.shipPayloads && newShip.shipPayloads.length > 0) {
-        newShip.shipPayloads.forEach((item: any) => {
+        newShip.shipPayloads.forEach((item: IShipPayload) => {
+          // @ts-ignore
           item.id = undefined;
+          item.tone = parseT2KG(item.tone);
         });
       }
       if (newShip.shipMachines && newShip.shipMachines.length > 0) {
@@ -103,6 +67,14 @@ const CreateShip: React.FC<CreateShipProps> = props => {
           item.id = undefined;
         });
       }
+
+      newShip.grossTone = parseT2KG(newShip.grossTone);
+      newShip.netTone = parseT2KG(newShip.netTone);
+
+      newShip.length = parseM2CM(newShip.width);
+      newShip.width = parseM2CM(newShip.width);
+      newShip.height = parseM2CM(newShip.height);
+      newShip.depth = parseM2CM(newShip.depth);
 
       createShip(newShip).then(() => {
         hideLoading();
