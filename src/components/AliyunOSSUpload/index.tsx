@@ -24,10 +24,11 @@ const AliyunOSSUpload: React.FC<AliyunOSSUploadProps> = (props) => {
       .then((ossClient) => {
         let resourceType = props.ossResourceType ? props.ossResourceType : OSSResourceType.CompanyCert;
         let key = generateOSSKey(file, resourceType);
+        // @ts-ignore
         return ossClient.multipartUpload(key, file, {
           parallel: 1,
           partSize: 1024 * 1024,
-          progress(p, cpt, res) {
+          progress(p: number, cpt: any, res: any) {
             onProgress({ percent: Math.round(p * 100).toFixed(2), file });
             console.debug('multipartUpload progress: ', p, cpt, res);
           },
