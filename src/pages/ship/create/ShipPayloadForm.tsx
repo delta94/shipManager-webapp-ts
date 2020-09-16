@@ -20,15 +20,15 @@ const ShipPayloadForm: React.FC<ShipPayloadFormProps> = ({ ship, shipCategoryTyp
   const [payloads, setPayloads] = useState<IShipPayload[]>([]);
 
   const [editPayload, setEditPayload] = useState<Partial<IShipPayload>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   useEffect(() => {
-    const unTapDeletePayload = hooks.DeleteShipPayload.tap(payload => {
-      setPayloads(payloads => {
-        return payloads.filter(item => item.id != payload.id);
+    const unTapDeletePayload = hooks.DeleteShipPayload.tap((payload) => {
+      setPayloads((payloads) => {
+        return payloads.filter((item) => item.id != payload.id);
       });
     });
-    const unTapEditShipPayload = hooks.EditShipPayload.tap(payload => {
+    const unTapEditShipPayload = hooks.EditShipPayload.tap((payload) => {
       setEditPayload(payload);
       setRight();
     });
@@ -49,11 +49,11 @@ const ShipPayloadForm: React.FC<ShipPayloadFormProps> = ({ ship, shipCategoryTyp
         // @ts-ignore
         payload.shipBusinessAreaName =
           // @ts-ignore
-          shipCategoryType?.ShipBusinessAreaType?.find(item => item.id == payload.shipBusinessAreaId).name ?? '';
+          shipCategoryType?.ShipBusinessAreaType?.find((item) => item.id == payload.shipBusinessAreaId).name ?? '';
       }
       if (payload.id) {
-        setPayloads(payloads => {
-          let idx = payloads.findIndex(item => item.id == payload.id);
+        setPayloads((payloads) => {
+          let idx = payloads.findIndex((item) => item.id == payload.id);
           if (idx > -1) {
             payloads[idx] = payload;
           }
@@ -61,7 +61,7 @@ const ShipPayloadForm: React.FC<ShipPayloadFormProps> = ({ ship, shipCategoryTyp
         });
       } else {
         payload.id = Date.now();
-        setPayloads(payloads => {
+        setPayloads((payloads) => {
           return [...payloads, payload];
         });
       }
