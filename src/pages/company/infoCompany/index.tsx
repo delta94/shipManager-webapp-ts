@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { useRequest } from 'umi';
+import { useRequest, IRouteComponentProps } from 'umi';
 import { Descriptions, Card, Table, Button, Modal, message } from 'antd';
 import { getCompanyInfo, CompanyKeyMap as CompanyKeys } from '@/services/companyService';
 import { getCompanyCertInfo, deleteCompanyCert } from '@/services/companyCertService';
@@ -12,7 +12,7 @@ import EditCertificateForm from '@/pages/company/infoCompany/editCertificateForm
 import hooks from '@/pages/company/infoCompany/hooks';
 import useToggle from '@/hooks/useToggle';
 
-const InfoCompany: React.FC = () => {
+const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
   const [permissionCerts, updatePermissionCerts] = useState<ICompanyCert[]>([]);
   const [extraCerts, updateExtraCerts] = useState<ICompanyCert[]>([]);
   const [tab, updateTab] = useState<string>('permission'); // 'permission' | 'extra'
@@ -53,7 +53,7 @@ const InfoCompany: React.FC = () => {
       showEditCerts();
     });
     const unTapInfoCompanyCert = hooks.InfoCompanyCert.tap((value) => {
-      console.log(value);
+      history.push(`/company/certificate/${value.id}`);
     });
 
     return () => {

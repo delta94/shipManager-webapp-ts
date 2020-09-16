@@ -100,8 +100,14 @@ export default [
             routes: [
               {
                 name: '基础信息',
-                path: '/company/infoCompany',
+                path: '/company/info',
                 component: './company/infoCompany',
+              },
+              {
+                name: '证书信息',
+                path: '/company/certificate/:id',
+                component: './company/infoCertificate',
+                hideInMenu: true,
               },
             ],
           },

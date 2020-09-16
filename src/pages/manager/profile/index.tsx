@@ -35,6 +35,7 @@ const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: 
       <Card style={{ marginTop: 24 }} loading={loading}>
         <Descriptions title="证书信息" />
         <List
+          rowKey="id"
           grid={{ gutter: 12, column: 3 }}
           dataSource={data?.managerCerts}
           renderItem={(item: IManagerCert) => (

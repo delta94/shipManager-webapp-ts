@@ -7,6 +7,12 @@ export async function getCompanyCertInfo(): Promise<ICompanyCert[]> {
   });
 }
 
+export async function infoCompanyCertInfo(id: number): Promise<ICompanyCert> {
+  return await request(`/api/company-certs/${id}`, {
+    method: 'GET',
+  });
+}
+
 export async function createCompanyCert(cert: ICompanyCert): Promise<ICompanyCert> {
   return await request(`/api/company-certs/`, {
     method: 'POST',
