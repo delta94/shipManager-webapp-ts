@@ -3,22 +3,32 @@ import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 export interface ISailor {
   id: number;
   name: string;
+
   shipId: string;
+  shipName: string;
+
   identityNumber: string;
   licenseNumber: string;
   gender: number;
   birthDate: string;
+
   contractWorkAt: string;
   contractExpiryAt: string;
+
   isAdvanced: boolean;
   region: string;
   mobile: string;
   address: string;
   remark: string;
   isActive: boolean;
+
   sailorDutyTypeId: number;
   sailorDutyTypeName: string;
-  sailorCerts: ISailorCert[];
+
+  emergencyContactName: string;
+  emergencyContactMobile: string;
+
+  sailorCerts: ISailorCert[] ;
 }
 
 export interface ISailorDutyType {
@@ -40,11 +50,12 @@ export interface ISailorCert {
   expiredAt: string;
   issuedAt: string;
   remark: string;
-  sailor: string;
+  sailorId: number;
+
   sailorCertTypeId: number;
   sailorCertTypeName: string;
   issueDepartmentTypeId: number;
   issueDepartmentTypeName: string;
   ossFiles: IOSSMetaFile[];
-  isRemoved: boolean
+  isRemoved: boolean;
 }

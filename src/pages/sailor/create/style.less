@@ -1,0 +1,101 @@
+@import '~antd/es/style/themes/default.less';
+
+.card {
+  margin-bottom: 12px;
+
+  :global {
+    .ant-legacy-form-item .ant-legacy-form-item-control-wrapper {
+      width: 100%;
+    }
+    .ant-picker {
+      width: 100%;
+    }
+
+    .ant-avatar {
+      color: transparent;
+      background-color: transparent;
+      vertical-align: middle;
+    }
+  }
+}
+
+.errorIcon {
+  margin-right: 24px;
+  color: @error-color;
+  cursor: pointer;
+
+  span.anticon {
+    margin-right: 4px;
+  }
+}
+
+.errorIconCnt {
+  padding: 0 6px;
+}
+
+.errorPopover {
+  :global {
+    .ant-popover-inner-content {
+      min-width: 256px;
+      max-height: 290px;
+      padding: 0;
+      overflow: auto;
+    }
+  }
+}
+
+.errorListItem {
+  padding: 8px 16px;
+  list-style: none;
+  border-bottom: 1px solid @border-color-split;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    background: @item-active-bg;
+  }
+  &:last-child {
+    border: 0;
+  }
+  .errorIcon {
+    float: left;
+    margin-top: 4px;
+    margin-right: 12px;
+    padding-bottom: 22px;
+    color: @error-color;
+  }
+  .errorField {
+    margin-top: 2px;
+    color: @text-color-secondary;
+    font-size: 12px;
+  }
+}
+
+.editable {
+  td {
+    padding-top: 13px !important;
+    padding-bottom: 12.5px !important;
+  }
+}
+
+.listContent {
+  display: flex;
+  flex: none;
+  flex-direction: row;
+
+  .listContentItem {
+    display: inline-block;
+    width: 140px;
+    margin-left: 12px;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+    vertical-align: middle;
+    > span {
+      line-height: 20px;
+    }
+    > p {
+      margin-top: 4px;
+      margin-bottom: 0;
+      line-height: 22px;
+    }
+  }
+}

@@ -34,7 +34,7 @@ export default function useSailorTable(options: IUseSailorTableDeps): IUseSailor
         dataIndex: 'sailorDutyTypeId',
         renderFormItem: (item, props) => {
           return (
-            <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select placeholder="请选择类型" onSelect={props.onSelect}>
               <Select.Option key={99} value={-1}>
                 不限类型
               </Select.Option>
@@ -66,7 +66,7 @@ export default function useSailorTable(options: IUseSailorTableDeps): IUseSailor
       {
         title: SailorKeyMap.isAdvanced,
         dataIndex: 'isAdvanced',
-        render: val => {
+        render: (val) => {
           return (
             <>
               <Badge status={val ? 'success' : 'default'} />
@@ -76,7 +76,7 @@ export default function useSailorTable(options: IUseSailorTableDeps): IUseSailor
         },
         renderFormItem: (item, props) => {
           return (
-            <Select placeholder="请选择" onChange={props.onChange}>
+            <Select placeholder="请选择" onSelect={props.onSelect}>
               <Select.Option value={-1} key={99}>
                 不限
               </Select.Option>

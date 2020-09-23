@@ -35,7 +35,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         dataIndex: 'managerPositionId',
         renderFormItem: (item, props) => {
           return (
-            <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select placeholder="请选择类型" onSelect={props.onSelect}>
               <Select.Option key={99} value={-1}>
                 不限类型
               </Select.Option>
@@ -58,7 +58,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         dataIndex: 'managerDutyId',
         renderFormItem: (item, props) => {
           return (
-            <Select placeholder="请选择类型" onChange={props.onChange}>
+            <Select placeholder="请选择类型" onSelect={props.onSelect}>
               <Select.Option key={99} value={-1}>
                 不限类型
               </Select.Option>

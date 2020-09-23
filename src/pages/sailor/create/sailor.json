@@ -1,0 +1,35 @@
+{
+  "id": "4324",
+  "name": "张三",
+  "identityNumber": "440181154848451548",
+  "licenseNumber": "X4532323115",
+  "gender": 0,
+
+
+  "isAdvanced": 1,
+  "region": "广东省",
+  "mobile": "189288521564",
+  "address": "",
+  "remark": "",
+
+  "sailorDutyTypeId": 1004005,
+  "sailorDutyTypeName": "轮机长",
+
+  "emergencyContactName": "李四",
+  "emergencyContactMobile": "1855548544821",
+
+  "sailorCerts": [
+    {
+      "id": "212121",
+      "name": "适任证书",
+      "identityNumber": "154542545121",
+      "expiredAt": "2018-12-12",
+      "issuedAt": "2015-12-12",
+      "sailorCertTypeId": "1005002",
+      "sailorCertTypeName": "适认证",
+      "issueDepartmentTypeId": "1002007",
+      "issueDepartmentTypeName": "广州海事局",
+      "ossFiles": ""
+    }
+  ]
+}

@@ -1,84 +1,106 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router';
+import React, { useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { useRequest } from 'umi';
-import { Descriptions, Card, List, Typography, Button } from 'antd';
+import { Card, List, Button, Avatar } from 'antd';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import { IRouteComponentProps, useRequest } from 'umi';
 import { infoSailor, SailorKeyMap } from '@/services/sailorService';
-import { ISailorCert } from '@/interfaces/ISailor';
-import { SailorCertKeyMap } from '@/services/sailorCertService';
+import { ISailor, ISailorCert } from '@/interfaces/ISailor';
+import { ReactComponent as CertificateIcon } from '@/assets/svg/certificate.svg';
+import styles from './style.less';
 
-const SailorProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
-  const { data, run: fetchSailor, loading } = useRequest(infoSailor, {
-    manual: true,
+const { Item } = ProDescriptions;
+
+const SailorProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ history, match: { params } }) => {
+  const { data: sailor, loading } = useRequest(infoSailor, {
+    refreshDeps: [params.id],
+    defaultParams: [parseInt(params.id)],
   });
 
-  useEffect(() => {
-    if (params.id) {
-      fetchSailor(parseInt(params.id));
-    }
-  }, [params.id]);
+  const onDetails = useCallback(
+    (id: string) => {
+      history.push(`/person/sailor/license/${id}`);
+    },
+    [params.id],
+  );
 
   return (
     <PageHeaderWrapper title="船员详情页">
-      <Card bordered={false} loading={loading}>
-        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
-          <Descriptions.Item label={SailorKeyMap.name}>{data?.name}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.gender}>{data?.gender ?? 0 ? '男' : '女'}</Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.sailorDutyTypeName}>{data?.sailorDutyTypeName}</Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.identityNumber}>{data?.identityNumber}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.licenseNumber}>{data?.licenseNumber}</Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.birthDate}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.contractWorkAt}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.birthDate}>{data?.contractExpiryAt}</Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.mobile}>{data?.mobile}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.region}>{data?.region}</Descriptions.Item>
-          <Descriptions.Item label={SailorKeyMap.address}>{data?.address}</Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.isAdvanced}>
-            {data?.isAdvanced ?? false ? '是' : '否'}
-          </Descriptions.Item>
-
-          <Descriptions.Item label={SailorKeyMap.remark}>{data?.remark}</Descriptions.Item>
-        </Descriptions>
+      <Card title="基本信息" loading={loading} className="mb-4">
+        <ProDescriptions<ISailor> column={3}>
+          <Item label={SailorKeyMap.name}>{sailor?.name}</Item>
+          <Item label={SailorKeyMap.gender} valueEnum={{ 0: '男性', 1: '女性' }}>
+            {sailor?.gender}
+          </Item>
+          <Item label={SailorKeyMap.identityNumber}>{sailor?.identityNumber}</Item>
+          <Item label={SailorKeyMap.birthDate}>{sailor?.birthDate}</Item>
+        </ProDescriptions>
       </Card>
 
-      <Card style={{ marginTop: 24 }} loading={loading}>
-        <Descriptions title="证书信息" />
-        <List
+      <Card title="联系方式" loading={loading} className="mb-4">
+        <ProDescriptions<ISailor> column={3}>
+          <Item label={SailorKeyMap.mobile}>{sailor?.mobile}</Item>
+          <Item label={SailorKeyMap.region}>{sailor?.region}</Item>
+          <Item label={SailorKeyMap.address}>{sailor?.address}</Item>
+          <Item label={SailorKeyMap.emergencyContactName}>{sailor?.emergencyContactName}</Item>
+          <Item label={SailorKeyMap.emergencyContactMobile}>{sailor?.emergencyContactMobile}</Item>
+        </ProDescriptions>
+      </Card>
+
+      <Card title="职业信息" loading={loading} className="mb-4">
+        <ProDescriptions<ISailor> column={3}>
+          <Item
+            label={SailorKeyMap.isAdvanced}
+            valueEnum={{
+              false: { text: '不是', status: 'Default' },
+              true: { text: '是', status: 'Success' },
+            }}
+          >
+            {sailor?.isAdvanced}
+          </Item>
+          <Item label={SailorKeyMap.shipName}>{sailor?.shipName}</Item>
+          <Item label={SailorKeyMap.licenseNumber}>{sailor?.licenseNumber}</Item>
+          <Item label={SailorKeyMap.sailorDutyTypeName}>{sailor?.sailorDutyTypeName}</Item>
+          <Item label={SailorKeyMap.contractExpiryAt}>{sailor?.contractExpiryAt}</Item>
+          <Item label={SailorKeyMap.contractWorkAt}>{sailor?.contractWorkAt}</Item>
+          <Item label={SailorKeyMap.remark}>{sailor?.remark}</Item>
+        </ProDescriptions>
+      </Card>
+
+      <Card title="资格证书" className="mb-4">
+        <List<ISailorCert>
+          size="large"
           rowKey="id"
-          grid={{ gutter: 12, column: 3 }}
-          dataSource={data?.sailorCerts}
+          pagination={false}
+          dataSource={sailor?.sailorCerts}
           renderItem={(item: ISailorCert) => (
-            <List.Item>
-              <Card title={item.name}>
-                <Typography.Text strong>{SailorCertKeyMap.identityNumber}</Typography.Text>: {item.identityNumber}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.expiredAt}</Typography.Text>: {item.expiredAt}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.issuedAt}</Typography.Text>: {item.issuedAt}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.sailorCertTypeName}</Typography.Text>:{' '}
-                {item.sailorCertTypeName}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.issueDepartmentTypeName}</Typography.Text>:{' '}
-                {item.issueDepartmentTypeName}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.remark}</Typography.Text>: {item.remark || '无'}
-                <br />
-                <Typography.Text strong>{SailorCertKeyMap.ossFiles}</Typography.Text>:
-                {item.ossFiles.map((item) => {
-                  return (
-                    <Button type="link" href={item.ossKey} target="_blank">
-                      {item.name}
-                    </Button>
-                  );
-                })}
-                <br />
-              </Card>
+            <List.Item
+              actions={[
+                <Button type="link" key="edit" className="px-1" onClick={() => onDetails(item.id)}>
+                  详情
+                </Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar shape="square" size="large" className="mt-1 bg-transparent" icon={<CertificateIcon />} />
+                }
+                title={item.name}
+                description={`证书编号：${item.identityNumber}`}
+              />
+              <div className={styles.listContent}>
+                <div className={styles.listContentItem}>
+                  <span>颁发机构</span>
+                  <p>{item.issueDepartmentTypeName}</p>
+                </div>
+                <div className={styles.listContentItem}>
+                  <span>颁发日期</span>
+                  <p>{item.issuedAt}</p>
+                </div>
+                <div className={styles.listContentItem}>
+                  <span>有效期至</span>
+                  <p>{item.expiredAt}</p>
+                </div>
+              </div>
             </List.Item>
           )}
         />
