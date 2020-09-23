@@ -29,8 +29,9 @@ const EditSailorCertForm: React.FC<EditSailorCertFormProps> = ({
     if (!values.id) {
       values.id = `new_${Date.now()}`;
     }
-    values.sailorCertTypeName = certificateType!.find(item => item.id == values.sailorCertTypeId)?.name;
-    values.issueDepartmentTypeName = issueDepartmentType!.find(item => item.id == values.issueDepartmentTypeId)?.name;
+    values.sailorCertTypeName = certificateType!.find((item) => item.id == values.sailorCertTypeId)?.name;
+    values.issueDepartmentTypeName = issueDepartmentType!.find((item) => item.id == values.issueDepartmentTypeId)?.name;
+
     onSubmit(values);
   };
 
@@ -91,7 +92,7 @@ const EditSailorCertForm: React.FC<EditSailorCertFormProps> = ({
         ]}
       >
         <Select placeholder={`请选择${SailorCertKeyMap.sailorCertTypeName}`}>
-          {certificateType?.map(item => {
+          {certificateType?.map((item) => {
             return (
               <Select.Option value={item.id} key={item.id}>
                 {item.name}
@@ -112,7 +113,7 @@ const EditSailorCertForm: React.FC<EditSailorCertFormProps> = ({
         ]}
       >
         <Select placeholder={`请选择${SailorCertKeyMap.issueDepartmentTypeName}`}>
-          {issueDepartmentType?.map(item => {
+          {issueDepartmentType?.map((item) => {
             return (
               <Select.Option value={item.id} key={item.id}>
                 {item.name}
