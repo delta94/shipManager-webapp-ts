@@ -1,20 +1,16 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
-import { Button, Card, message, Modal } from 'antd';
-import { useRequest, history } from 'umi';
+import { Button, Card, message } from 'antd';
+import { useRequest, IRouteComponentProps } from 'umi';
 import { deleteSailor, listSailorCategory } from '@/services/sailorService';
 import { ISailor } from '@/interfaces/ISailor';
 import useSailorTable from './useSailorTable';
 import { PlusOutlined } from '@ant-design/icons';
-import EditSailorForm from '../edit/editSailorForm';
 import hooks from './hooks';
-import useToggle from '@/hooks/useToggle';
 
-const SailorList: React.FC = () => {
+const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
   const actionRef = useRef<ActionType>();
-  const [editSailorVisible, { setLeft: hideEdit, setRight: showEdit }] = useToggle();
-  const [editSailor, updateEditSailor] = useState<ISailor>();
 
   const { run: deleteSailorRecord } = useRequest(deleteSailor, {
     manual: true,
@@ -36,8 +32,7 @@ const SailorList: React.FC = () => {
       history.push(`/person/sailor/profile/${sailor.id}`);
     });
     const unTapEditSailor = hooks.EditSailor.tap((sailor) => {
-      updateEditSailor(sailor);
-      showEdit();
+      history.push(`/person/sailor/edit/${sailor.id}`);
     });
     return () => {
       unTapDeleteSailor();
@@ -55,15 +50,8 @@ const SailorList: React.FC = () => {
     dutyTypes: sailorCategory?.SailorDutyType ?? [],
   });
 
-  const onEditSailorUpdate = useCallback(() => {
-    actionRef.current?.reload();
-    updateEditSailor(undefined);
-    hideEdit();
-  }, []);
-
-  const onEditSailorCancel = useCallback(() => {
-    updateEditSailor(undefined);
-    hideEdit();
+  const onCreateSailor = useCallback(() => {
+    history.push(`/person/sailor/create`);
   }, []);
 
   return (
@@ -77,30 +65,13 @@ const SailorList: React.FC = () => {
           request={request}
           dateFormatter="string"
           toolBarRender={() => [
-            <Button key="3" onClick={showEdit}>
+            <Button key="3" onClick={onCreateSailor}>
               <PlusOutlined />
               新建
             </Button>,
           ]}
         />
       </Card>
-      <Modal
-        onCancel={onEditSailorCancel}
-        destroyOnClose
-        width={720}
-        footer={null}
-        visible={editSailorVisible}
-        title={editSailor ? '编辑船员' : '新建船员'}
-      >
-        <EditSailorForm
-          dutyTypes={sailorCategory?.SailorDutyType ?? []}
-          issueDepartmentTypes={sailorCategory?.IssueDepartmentType ?? []}
-          sailorCertTypes={sailorCategory?.SailorCertType ?? []}
-          onUpdate={onEditSailorUpdate}
-          onCancel={onEditSailorCancel}
-          sailor={editSailor}
-        />
-      </Modal>
     </PageHeaderWrapper>
   );
 };

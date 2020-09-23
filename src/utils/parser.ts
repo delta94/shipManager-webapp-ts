@@ -2,6 +2,7 @@ import moment from 'moment';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { Pagination } from '@/interfaces/ITableList';
+import IAccount from "@/interfaces/IAccount";
 
 export const dateFormatter = (values: any): any => {
   if (values.expiredAt) {
@@ -48,6 +49,17 @@ export const dateFormatter = (values: any): any => {
   return values;
 };
 
+export const transferMomentToString = (values: object): object => {
+  // @ts-ignore
+  Object.keys(values).forEach((key) => {
+    if (values[key] != null && typeof values[key] == 'object' && values[key]._isAMomentObject) {
+      // @ts-ignore
+      values[key] = values[key].format('YYYY-MM-DD');
+    }
+  });
+  return values;
+};
+
 export const dateFormatterToString = (values: any): any => {
   if (values.expiredAt && moment.isMoment(values.expiredAt)) {
     values.expiredAt = values.expiredAt.format('YYYY-MM-DD');
@@ -82,7 +94,7 @@ export const dateFormatterToString = (values: any): any => {
 
 export const formatOSSFilesToUploadFile = (files: IOSSMetaFile[]): UploadFile[] => {
   if (files && Array.isArray(files) && files.length > 0) {
-    return files.map(file => {
+    return files.map((file) => {
       if (file.id) {
         return {
           uid: `uploaded_${file.id.toString()}`,
@@ -106,6 +118,27 @@ export const formatOSSFilesToUploadFile = (files: IOSSMetaFile[]): UploadFile[] 
 };
 
 export const formatUploadFileToOSSFiles = (value: any): any => {
+  if (Array.isArray(value)) {
+    return value.map((file: UploadFile) => {
+      let meta = {
+        name: file.name || file.fileName,
+        size: file.size,
+        type: file.type,
+        // @ts-ignore
+        ossKey: file.url || file?.originFileObj?.url || '',
+        uploadAt: moment().format('YYYY-MM-DD'),
+      } as Partial<IOSSMetaFile>;
+
+      if (file.linkProps) {
+        meta.id = file.linkProps.id;
+        meta.uploadBy = file.linkProps.uploadBy ? file.linkProps.uploadBy : '';
+        meta.uploadAt = file.linkProps.uploadAt ? file.linkProps.uploadAt : '';
+        meta.remark = file.linkProps.remark ? file.linkProps.remark : '';
+      }
+      return meta;
+    });
+  }
+
   if (value.ossFiles && Array.isArray(value.ossFiles) && value.ossFiles.length > 0) {
     value.ossFiles = value.ossFiles.map((file: UploadFile) => {
       let meta = {
@@ -159,5 +192,3 @@ export const parseT2KG = (value: number | undefined): number => {
   if (value == undefined || value == 0) return 0;
   return value * 1000;
 };
-
-

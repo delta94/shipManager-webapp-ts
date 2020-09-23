@@ -1,3 +1,37 @@
+import { ISailorCert } from '@/interfaces/ISailor';
+import request from '@/utils/request';
+
+export async function getSailorCertInfo(): Promise<ISailorCert[]> {
+  return await request(`/api/sailor-certs/`, {
+    method: 'GET',
+  });
+}
+
+export async function infoSailorCertInfo(id: number): Promise<ISailorCert> {
+  return await request(`/api/sailor-certs/${id}`, {
+    method: 'GET',
+  });
+}
+
+export async function createSailorCert(cert: ISailorCert): Promise<ISailorCert> {
+  return await request(`/api/sailor-certs/`, {
+    method: 'POST',
+    data: cert,
+  });
+}
+
+export async function updateSailorCert(cert: ISailorCert): Promise<ISailorCert> {
+  return await request(`/api/sailor-certs/`, {
+    method: 'PUT',
+    data: cert,
+  });
+}
+
+export async function deleteSailorCert(id: string): Promise<ISailorCert> {
+  return await request(`/api/sailor-certs/${id}`, {
+    method: 'DELETE',
+  });
+}
 
 export const SailorCertKeyMap = {
   name: '名称',

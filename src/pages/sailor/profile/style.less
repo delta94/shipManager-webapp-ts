@@ -1,0 +1,25 @@
+@import '~antd/es/style/themes/default.less';
+
+
+.listContent {
+  display: flex;
+  flex: none;
+  flex-direction: row;
+
+  .listContentItem {
+    display: inline-block;
+    width: 140px;
+    margin-left: 12px;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+    vertical-align: middle;
+    > span {
+      line-height: 20px;
+    }
+    > p {
+      margin-top: 4px;
+      margin-bottom: 0;
+      line-height: 22px;
+    }
+  }
+}

@@ -24,6 +24,7 @@ const steps = [
 ];
 
 const CreateShip: React.FC<CreateShipProps> = (props) => {
+
   const { data: shipCategoryType } = useRequest(listShipCategory, {
     manual: false,
     cacheKey: 'ship_category_type',

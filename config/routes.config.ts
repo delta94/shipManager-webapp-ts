@@ -15,7 +15,6 @@ export default [
       },
     ],
   },
-
   {
     path: '/',
     component: '../layouts/SecurityLayout',
@@ -58,7 +57,6 @@ export default [
               },
             ],
           },
-
           {
             path: '/person',
             name: '人员管理',
@@ -85,14 +83,31 @@ export default [
                 component: './sailor/list',
               },
               {
+                path: '/person/sailor/create',
+                name: '新建船员',
+                component: './sailor/create',
+                hideInMenu: true,
+              },
+              {
                 path: '/person/sailor/profile/:id',
                 name: '船员详情',
                 component: './sailor/profile',
                 hideInMenu: true,
               },
+              {
+                path: '/person/sailor/edit/:id',
+                name: '编辑船员',
+                component: './sailor/edit',
+                hideInMenu: true,
+              },
+              {
+                path: '/person/sailor/license/:id',
+                name: '船员证书详情',
+                component: './sailor/license',
+                hideInMenu: true,
+              },
             ],
           },
-
           {
             path: '/company',
             name: '公司信息管理',
@@ -111,7 +126,6 @@ export default [
               },
             ],
           },
-
           {
             path: '/setting',
             name: '设置',
@@ -128,7 +142,6 @@ export default [
               },
             ],
           },
-
           {
             component: './404',
           },
@@ -136,7 +149,6 @@ export default [
       },
     ],
   },
-
   {
     component: './404',
   },

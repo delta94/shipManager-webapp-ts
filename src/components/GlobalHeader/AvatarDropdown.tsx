@@ -1,5 +1,6 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
+import { ReactComponent as User } from '@/assets/svg/user.svg';
 import React from 'react';
 import { history, ConnectProps, connect } from 'umi';
 import { ConnectState } from '@/models/connect';
@@ -63,14 +64,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     return currentUser && currentUser.login ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar
-            size="small"
-            className={styles.avatar}
-            style={{ backgroundColor: '#f56a00' }}
-            icon={<UserOutlined />}
-            src={currentUser.imageUrl}
-            alt="avatar"
-          />
+          <Avatar size="small" icon={<User />} className={styles.avatar} src={currentUser.imageUrl} alt="avatar" />
           <span className={`${styles.name} anticon`}>{currentUser.login}</span>
         </span>
       </HeaderDropdown>
