@@ -5,7 +5,7 @@ export interface ICompany {
   id: number;
   name: string; //'企业名称'
   address: string; //'企业地址'
-  businessLicenseNumber: string; //'工商执照号'
+  businessLicenseNumber: string; //'社会信用代码'
   registeredCapital: number; //'注册资本/万元'
   legalPerson: string; //'法人代表'
   phone: string; //'法人代表'

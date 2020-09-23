@@ -24,7 +24,7 @@ export async function listCompanyCategoryType(): Promise<Record<ICategory, Array
 export const CompanyKeyMap = {
   name: '企业名',
   address: '企业地址',
-  businessLicenseNumber: '工商执照号',
+  businessLicenseNumber: '社会信用代码',
   registeredCapital: '注册资本/万元',
   legalPerson: '法人代表',
   phone: '联系电话',
