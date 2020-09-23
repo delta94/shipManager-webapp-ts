@@ -19,15 +19,15 @@ interface ShipLicenseFormProps {
 const ShipLicenseForm: React.FC<ShipLicenseFormProps> = ({ ship, shipCategoryType, onUpdate, navigation }) => {
   const [licenses, setLicenses] = useState<IShipLicense[]>([]);
   const [editLicense, setEditLicense] = useState<Partial<IShipLicense>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   useEffect(() => {
-    const unTapDeleteLicense = hooks.DeleteShipLicense.tap(license => {
-      setLicenses(licenses => {
-        return licenses.filter(item => item.id != license.id);
+    const unTapDeleteLicense = hooks.DeleteShipLicense.tap((license) => {
+      setLicenses((licenses) => {
+        return licenses.filter((item) => item.id != license.id);
       });
     });
-    const unTapEditShipLicense = hooks.EditShipLicense.tap(license => {
+    const unTapEditShipLicense = hooks.EditShipLicense.tap((license) => {
       setEditLicense(license);
       setRight();
     });
@@ -48,15 +48,15 @@ const ShipLicenseForm: React.FC<ShipLicenseFormProps> = ({ ship, shipCategoryTyp
         // @ts-ignore
         license.shipLicenseTypeName =
           // @ts-ignore
-          shipCategoryType?.ShipLicenseType?.find(item => item.id == license.shipLicenseTypeId).name ?? '';
+          shipCategoryType?.ShipLicenseType?.find((item) => item.id == license.shipLicenseTypeId).name ?? '';
         // @ts-ignore
         license.issueDepartmentTypeName =
           // @ts-ignore
-          shipCategoryType?.IssueDepartmentType?.find(item => item.id == license.issueDepartmentTypeId).name ?? '';
+          shipCategoryType?.IssueDepartmentType?.find((item) => item.id == license.issueDepartmentTypeId).name ?? '';
       }
       if (license.id) {
-        setLicenses(licenses => {
-          let idx = licenses.findIndex(item => item.id == license.id);
+        setLicenses((licenses) => {
+          let idx = licenses.findIndex((item) => item.id == license.id);
           if (idx > -1) {
             licenses[idx] = license;
           }
@@ -64,7 +64,7 @@ const ShipLicenseForm: React.FC<ShipLicenseFormProps> = ({ ship, shipCategoryTyp
         });
       } else {
         license.id = Date.now();
-        setLicenses(licenses => {
+        setLicenses((licenses) => {
           return [...licenses, license];
         });
       }

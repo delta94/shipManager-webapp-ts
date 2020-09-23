@@ -19,30 +19,30 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
   const [host, setHost] = useState<IShipMachine[]>([]);
 
   const [editMachine, setEditMachine] = useState<Partial<IShipMachine>>();
-  const { setLeft, setRight, state } = useToggle(false);
+  const [state, { setLeft, setRight }] = useToggle(false);
 
   useEffect(() => {
-    const unTapEditMachine = hooks.EditShipMachine.tap(machine => {
+    const unTapEditMachine = hooks.EditShipMachine.tap((machine) => {
       setEditMachine(machine);
       setRight();
     });
 
-    const unTapDeleteMachine = hooks.DeleteShipMachine.tap(machine => {
+    const unTapDeleteMachine = hooks.DeleteShipMachine.tap((machine) => {
       if (machine.machineType == 0) {
-        setHost(hosts => {
-          return hosts.filter(item => item.id != machine.id);
+        setHost((hosts) => {
+          return hosts.filter((item) => item.id != machine.id);
         });
       }
       if (machine.machineType == 1) {
-        setGenerator(generators => {
-          return generators.filter(item => item.id != machine.id);
+        setGenerator((generators) => {
+          return generators.filter((item) => item.id != machine.id);
         });
       }
     });
 
     if (ship.shipMachines && ship.shipMachines.length > 0) {
-      setHost(ship.shipMachines.filter(item => item.machineType == 0));
-      setGenerator(ship.shipMachines.filter(item => item.machineType == 1));
+      setHost(ship.shipMachines.filter((item) => item.machineType == 0));
+      setGenerator(ship.shipMachines.filter((item) => item.machineType == 1));
     }
 
     return () => {
@@ -59,8 +59,8 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
   const onMachineUpdate = useCallback((machine: IShipMachine) => {
     if (machine.id) {
       if (machine.machineType == 0) {
-        setHost(hosts => {
-          let idx = hosts.findIndex(item => item.id == machine.id);
+        setHost((hosts) => {
+          let idx = hosts.findIndex((item) => item.id == machine.id);
           if (idx > -1) {
             hosts[idx] = machine;
           }
@@ -68,8 +68,8 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
         });
       }
       if (machine.machineType == 1) {
-        setGenerator(generators => {
-          let idx = generators.findIndex(item => item.id == machine.id);
+        setGenerator((generators) => {
+          let idx = generators.findIndex((item) => item.id == machine.id);
           if (idx > -1) {
             generators[idx] = machine;
           }
@@ -79,12 +79,12 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
     } else {
       machine.id = Date.now();
       if (machine.machineType == 0) {
-        setHost(hosts => {
+        setHost((hosts) => {
           return [...hosts, machine];
         });
       }
       if (machine.machineType == 1) {
-        setGenerator(generators => {
+        setGenerator((generators) => {
           return [...generators, machine];
         });
       }
