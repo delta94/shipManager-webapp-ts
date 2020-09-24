@@ -6,18 +6,20 @@
   "shipMachines": [
     {
       "id": 112211221121,
+      "manufacturer": "XX",
       "power": 2323,
       "model": "YU3-33",
       "isRemoved": false,
-      "machineType": 0,
+      "shipMachineTypeId": 1013005,
       "remark": "无"
     },
     {
       "id": 112211221122,
       "power": 2323,
+      "manufacturer": "uixhye",
       "model": "KU3-22",
       "isRemoved": false,
-      "machineType": 1,
+      "shipMachineTypeId": 1013001,
       "remark": "无"
     }
   ],

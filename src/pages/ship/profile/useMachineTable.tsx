@@ -3,9 +3,11 @@ import { ShipMachineKeyMap } from '@/services/shipService';
 import { IShipMachine } from '@/interfaces/IShip';
 import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
+import { ICommonOptionType } from '@/interfaces/ICategory';
 
 interface IUseMachineTableDeps {
   machines: IShipMachine[] | undefined;
+  machineTypes: ICommonOptionType[] | undefined;
 }
 
 interface IUseMachineTableExport {
@@ -17,35 +19,40 @@ interface IUseMachineTableExport {
 }
 
 export default function useMachineTable(option: IUseMachineTableDeps): IUseMachineTableExport {
-  const [tab, updateTab] = useState<string>('host');
+  const [tab, updateTab] = useState<string>('');
   const [machines, updateMachines] = useState<IShipMachine[]>();
 
   useEffect(() => {
-    if (!Array.isArray(option.machines)) return;
-    if (tab == 'host') {
-      let result = option.machines.filter((item) => item.machineType == 0);
-      updateMachines(result);
-    } else {
-      let result = option.machines.filter((item) => item.machineType == 1);
-      updateMachines(result);
-    }
-  }, [tab, option.machines]);
+    if (!Array.isArray(option.machines) || tab == '') return;
+    let result = option.machines.filter((item) => item.shipMachineTypeId.toString() == tab);
+    updateMachines(result);
+  }, [tab, option.machines, option.machineTypes]);
 
   const tabList = useMemo(() => {
-    return [
-      {
-        key: 'host',
-        tab: '船舶主机',
-      },
-      {
-        key: 'generator',
-        tab: '船舶发电机',
-      },
-    ];
-  }, []);
+    if (option.machineTypes && Array.isArray(option.machines)) {
+      return option.machineTypes.map((item) => {
+        return {
+          key: item.id.toString(),
+          tab: item.name,
+        };
+      });
+    }
+    return [];
+  }, [option.machineTypes]);
+
+  useEffect(() => {
+    if (tabList && tabList.length > 0 && tab == '') {
+      updateTab(tabList[0].key);
+    }
+  }, [tabList]);
 
   const columns = useMemo(() => {
     return [
+      {
+        title: ShipMachineKeyMap.manufacturer,
+        dataIndex: 'manufacturer',
+        key: 'manufacturer',
+      },
       {
         title: ShipMachineKeyMap.model,
         dataIndex: 'model',
@@ -55,7 +62,7 @@ export default function useMachineTable(option: IUseMachineTableDeps): IUseMachi
         title: ShipMachineKeyMap.power,
         dataIndex: 'power',
         key: 'power',
-        render: (val: number) => `${val} KW`,
+        render: (val: number) => `${val} 千瓦`,
       },
       {
         title: ShipMachineKeyMap.remark,

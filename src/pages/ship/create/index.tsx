@@ -24,7 +24,6 @@ const steps = [
 ];
 
 const CreateShip: React.FC<CreateShipProps> = (props) => {
-
   const { data: shipCategoryType } = useRequest(listShipCategory, {
     manual: false,
     cacheKey: 'ship_category_type',
@@ -102,7 +101,14 @@ const CreateShip: React.FC<CreateShipProps> = (props) => {
         );
         break;
       case 'machine':
-        component = <ShipMachineForm ship={shipForm} onUpdate={onUpdate} navigation={navigation} />;
+        component = (
+          <ShipMachineForm
+            ship={shipForm}
+            shipMachineType={shipCategoryType?.ShipMachineType}
+            onUpdate={onUpdate}
+            navigation={navigation}
+          />
+        );
         break;
       case 'payload':
         component = (

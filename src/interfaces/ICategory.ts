@@ -15,6 +15,7 @@ export enum ICategory {
   ShipMaterialType = 'ShipMaterialType',
   ShipBusinessAreaType = 'ShipBusinessAreaType',
   ShipLicenseType = 'ShipLicenseType',
+  ShipMachineType = 'ShipMachineType',
 }
 
 export interface ICommonOptionType {

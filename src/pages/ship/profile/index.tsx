@@ -38,7 +38,10 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
 
   const licenseTableProps = useLicenseTable({ licenses: ship?.shipLicenses });
 
-  const machineTableProps = useMachineTable({ machines: ship?.shipMachines });
+  const machineTableProps = useMachineTable({
+    machines: ship?.shipMachines,
+    machineTypes: shipCategoryType?.ShipMachineType,
+  });
 
   const sailorTableProps = useSailorTable({ shipId: shipId });
 
@@ -72,7 +75,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
       <Card
         title="基本信息"
         bordered={false}
-        style={{ margin: '24px 0' }}
+        className="mt-3"
         loading={loading}
         extra={
           <Button type="link" onClick={onShowEditBasic}>
@@ -102,7 +105,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
 
       <Card
         title="船体参数"
-        style={{ marginBottom: 24 }}
+        className="mt-3"
         bordered={false}
         loading={loading}
         extra={
@@ -123,7 +126,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
 
       <Card
         title="航区载量信息"
-        style={{ marginBottom: 24 }}
+        className="mt-3"
         bordered={false}
         loading={loading}
         extra={
@@ -171,7 +174,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
       <Card
         bordered={false}
         tabList={licenseTableProps.tabList}
-        style={{ marginTop: 24 }}
+        className="mt-3"
         onTabChange={licenseTableProps.updateTab}
         tabBarExtraContent={
           <Button type="link" onClick={() => onShowEditLicense({ shipId })}>
@@ -191,7 +194,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
       <Card
         bordered={false}
         tabList={machineTableProps.tabList}
-        style={{ marginTop: 24 }}
+        className="mt-3"
         onTabChange={machineTableProps.updateTab}
         tabBarExtraContent={
           <Button
@@ -199,7 +202,6 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
             onClick={() =>
               onShowEditMachine({
                 shipId: shipId,
-                machineType: machineTableProps.tab == 'host' ? 0 : 1,
               })
             }
           >
@@ -208,6 +210,9 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
         }
       >
         <Table
+          locale={{
+            emptyText: '无数据',
+          }}
           key="id"
           pagination={false}
           loading={loading}
@@ -216,7 +221,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
         />
       </Card>
 
-      <Card bordered={false} title="船员列表" style={{ marginTop: 24 }}>
+      <Card bordered={false} title="船员列表" className="mt-3">
         <ProTable<ISailor>
           rowKey="id"
           search={false}
@@ -280,12 +285,17 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
         maskClosable={false}
         width={720}
         visible={editMachineVisible}
-        title={`编辑船舶${machineTableProps.tab == 'host' ? '主机' : '发电机'}信息`}
+        title={`${editMachine ? '更新' : '修改'}船机信息`}
         destroyOnClose={true}
         footer={null}
         onCancel={onCloseEditMachine}
       >
-        <EditMachineForm machine={editMachine} onUpdate={onUpdateShip} onCancel={onCloseEditMachine} />
+        <EditMachineForm
+          machine={editMachine}
+          machineTypes={shipCategoryType?.ShipMachineType}
+          onUpdate={onUpdateShip}
+          onCancel={onCloseEditMachine}
+        />
       </Modal>
 
       <Modal

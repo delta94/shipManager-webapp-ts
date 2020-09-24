@@ -167,8 +167,9 @@ export const ShipLicenseKeyMap = {
 };
 
 export const ShipMachineKeyMap = {
+  manufacturer: '生产厂商',
   model: "型号",
   power: "功率（千瓦）",
-  machineType: "船机种类",
+  shipMachineTypeName: '船机种类',
   remark: "备注",
 };

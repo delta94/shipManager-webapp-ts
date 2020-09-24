@@ -58,8 +58,12 @@ export interface IShipCert {
 export interface IShipMachine {
   id: number;
   model: string;
+  manufacturer: string;
   power: number;
-  machineType: number;
+
+  shipMachineTypeId: number;
+  shipMachineTypeName: string;
+
   isRemoved: boolean;
   remark: string;
   shipId?: number;

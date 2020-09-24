@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { IShip, IShipMachine } from '@/interfaces/IShip';
 import { NavigationProps } from '@/hooks/useStep';
-import { Card, Button, Table, Space, Divider, Popconfirm, Typography, Modal } from 'antd';
+import { Card, Button, Table, Space, Divider, Popconfirm, Modal } from 'antd';
 import { ShipMachineKeyMap } from '@/services/shipService';
 import hooks from '@/pages/ship/profile/hooks';
 import { PlusOutlined } from '@ant-design/icons';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
 import useToggle from '@/hooks/useToggle';
+import { ICommonOptionType } from '@/interfaces/ICategory';
 
 interface ShipMachineFormProps {
   ship: Partial<IShip>;
+  shipMachineType?: ICommonOptionType[];
   navigation: NavigationProps;
   onUpdate(ship: Partial<IShip>, save?: boolean): void;
 }
 
-const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navigation }) => {
-  const [generators, setGenerator] = useState<IShipMachine[]>([]);
-  const [host, setHost] = useState<IShipMachine[]>([]);
-
+const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, shipMachineType, navigation }) => {
+  const [machines, setMachines] = useState<IShipMachine[]>(ship.shipMachines ?? []);
   const [editMachine, setEditMachine] = useState<Partial<IShipMachine>>();
   const [state, { setLeft, setRight }] = useToggle(false);
 
@@ -28,22 +28,10 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
     });
 
     const unTapDeleteMachine = hooks.DeleteShipMachine.tap((machine) => {
-      if (machine.machineType == 0) {
-        setHost((hosts) => {
-          return hosts.filter((item) => item.id != machine.id);
-        });
-      }
-      if (machine.machineType == 1) {
-        setGenerator((generators) => {
-          return generators.filter((item) => item.id != machine.id);
-        });
-      }
+      setMachines((result) => {
+        return result.filter((item) => item.id != machine.id);
+      });
     });
-
-    if (ship.shipMachines && ship.shipMachines.length > 0) {
-      setHost(ship.shipMachines.filter((item) => item.machineType == 0));
-      setGenerator(ship.shipMachines.filter((item) => item.machineType == 1));
-    }
 
     return () => {
       unTapEditMachine();
@@ -58,36 +46,18 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
 
   const onMachineUpdate = useCallback((machine: IShipMachine) => {
     if (machine.id) {
-      if (machine.machineType == 0) {
-        setHost((hosts) => {
-          let idx = hosts.findIndex((item) => item.id == machine.id);
-          if (idx > -1) {
-            hosts[idx] = machine;
-          }
-          return [...hosts];
-        });
-      }
-      if (machine.machineType == 1) {
-        setGenerator((generators) => {
-          let idx = generators.findIndex((item) => item.id == machine.id);
-          if (idx > -1) {
-            generators[idx] = machine;
-          }
-          return [...generators];
-        });
-      }
+      setMachines((machines) => {
+        let idx = machines.findIndex((item) => item.id == machine.id);
+        if (idx > -1) {
+          machines[idx] = machine;
+        }
+        return [...machines];
+      });
     } else {
       machine.id = Date.now();
-      if (machine.machineType == 0) {
-        setHost((hosts) => {
-          return [...hosts, machine];
-        });
-      }
-      if (machine.machineType == 1) {
-        setGenerator((generators) => {
-          return [...generators, machine];
-        });
-      }
+      setMachines((machines) => {
+        return [...machines, machine];
+      });
     }
     setLeft();
     setEditMachine({});
@@ -95,6 +65,16 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
 
   const columns = useMemo(() => {
     return [
+      {
+        title: ShipMachineKeyMap.manufacturer,
+        dataIndex: 'manufacturer',
+        key: 'manufacturer',
+      },
+      {
+        title: ShipMachineKeyMap.shipMachineTypeName,
+        dataIndex: 'shipMachineTypeName',
+        key: 'shipMachineTypeName',
+      },
       {
         title: ShipMachineKeyMap.model,
         dataIndex: 'model',
@@ -134,61 +114,34 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
 
   return (
     <div>
-      <Card bordered={false}>
-        <Table
-          key="id"
-          pagination={false}
-          dataSource={host}
-          columns={columns}
-          locale={{
-            emptyText: '无主机数据',
-          }}
-          title={() => <Typography.Title level={4}>船舶主机</Typography.Title>}
-        />
+      <Card bordered={false} title="船机信息">
         <Button
+          className="mb-3 w-100"
           type={'dashed'}
-          style={{ width: '100%', marginTop: 8 }}
           onClick={() => {
-            onShowForm({
-              machineType: 0,
-            });
+            onShowForm({});
           }}
         >
           <PlusOutlined />
           添加主机
         </Button>
-      </Card>
 
-      <Card bordered={false}>
         <Table
-          locale={{
-            emptyText: '无发电机数据',
-          }}
           key="id"
           pagination={false}
-          dataSource={generators}
+          dataSource={machines}
           columns={columns}
-          title={() => <Typography.Title level={4}>船舶发电机</Typography.Title>}
+          locale={{
+            emptyText: '无船机信息数据',
+          }}
         />
-        <Button
-          type={'dashed'}
-          style={{ width: '100%', marginTop: 8 }}
-          onClick={() =>
-            onShowForm({
-              machineType: 1,
-            })
-          }
-        >
-          <PlusOutlined />
-          添加发电机
-        </Button>
       </Card>
 
       <Card bordered={false}>
         <Space style={{ float: 'right' }}>
           <Button
             onClick={() => {
-              onUpdate({ shipMachines: [...host, ...generators] });
+              onUpdate({ shipMachines: machines });
               navigation.previous();
             }}
           >
@@ -197,7 +150,7 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
           <Button
             type="primary"
             onClick={() => {
-              onUpdate({ shipMachines: [...host, ...generators] });
+              onUpdate({ shipMachines: machines });
               navigation.next();
             }}
           >
@@ -215,7 +168,13 @@ const ShipMachineForm: React.FC<ShipMachineFormProps> = ({ ship, onUpdate, navig
         footer={null}
         onCancel={setLeft}
       >
-        <EditMachineForm runSave={false} machine={editMachine} onUpdate={onMachineUpdate} onCancel={setLeft} />
+        <EditMachineForm
+          runSave={false}
+          machine={editMachine}
+          machineTypes={shipMachineType}
+          onUpdate={onMachineUpdate}
+          onCancel={setLeft}
+        />
       </Modal>
     </div>
   );
