@@ -41,6 +41,7 @@ build
 
 config/config.kaihang.ts
 config/config.langxian.ts
-config/config.prod.ts
+config/config.preview.ts
+
 
 
