@@ -2,7 +2,8 @@ import moment from 'moment';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { Pagination } from '@/interfaces/ITableList';
-import IAccount from "@/interfaces/IAccount";
+import IAccount from '@/interfaces/IAccount';
+import { IShip } from '@/interfaces/IShip';
 
 export const dateFormatter = (values: any): any => {
   if (values.expiredAt) {
@@ -171,6 +172,28 @@ export const parsePagination = (headers: Headers): Pagination => {
     total: parseInt(headers.get('X-Page-Total') || '0'),
     pageSize: parseInt(headers.get('X-Page-Size') || '0'),
   };
+};
+
+export const parseMetric = (value: IShip): IShip => {
+  if (value.length) {
+    value.length = parseCM2M(value.length);
+  }
+  if (value.width) {
+    value.width = parseCM2M(value.width);
+  }
+  if (value.depth) {
+    value.depth = parseCM2M(value.depth);
+  }
+  if (value.height) {
+    value.height = parseCM2M(value.height);
+  }
+  if (value.grossTone) {
+    value.grossTone = parseKG2T(value.grossTone)
+  }
+  if (value.netTone) {
+    value.netTone = parseKG2T(value.netTone)
+  }
+  return value;
 };
 
 export const parseCM2M = (value: number | undefined): number => {

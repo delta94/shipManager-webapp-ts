@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import {IShip, IShipLicense, IShipMachine, IShipPayload} from '@/interfaces/IShip';
+import { IShip, IShipLicense, IShipMachine, IShipPayload } from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { parsePagination } from '@/utils/parser';
@@ -29,7 +29,7 @@ export async function addShip(data: Partial<IShip>) {
   });
 }
 
-export async function infoShip(id: number): Promise<IShip> {
+export async function infoShip(id: number | string): Promise<IShip> {
   return request(`/api/ships/${id}`, {
     method: 'GET',
   });
@@ -168,8 +168,8 @@ export const ShipLicenseKeyMap = {
 
 export const ShipMachineKeyMap = {
   manufacturer: '生产厂商',
-  model: "型号",
-  power: "功率（千瓦）",
+  model: '型号',
+  power: '功率（千瓦）',
   shipMachineTypeName: '船机种类',
-  remark: "备注",
+  remark: '备注',
 };

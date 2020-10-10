@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { IManager } from '@/interfaces/IManager';
 import { PageableData } from '@/interfaces/ITableList';
 import { parsePagination } from '@/utils/parser';
-import {ICategory, ICommonOptionType} from "@/interfaces/ICategory";
+import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 
 export async function listManager(page: number = 1, size: number = 20, extra: any): Promise<PageableData<IManager>> {
   return await request('/api/managers', {
@@ -21,17 +21,23 @@ export async function listManager(page: number = 1, size: number = 20, extra: an
   });
 }
 
+export async function listManagerMeta(): Promise<IManager[]> {
+  return await request('/api/managers/list-meta', {
+    method: 'GET',
+  });
+}
+
 export async function createManager(manager: IManager) {
   return request(`/api/managers/`, {
     method: 'POST',
-    data: manager
+    data: manager,
   });
 }
 
 export async function updateManager(manager: IManager) {
   return request(`/api/managers/`, {
     method: 'PUT',
-    data: manager
+    data: manager,
   });
 }
 

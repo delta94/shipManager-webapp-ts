@@ -109,6 +109,29 @@ export default [
             ],
           },
           {
+            path: '/document',
+            name: '模版管理',
+            icon: 'printer',
+            routes: [
+              {
+                name: '模版列表',
+                path: '/document/list',
+                component: './document/list',
+              },
+              {
+                name: '打印模版',
+                path: '/document/generate/:id',
+                component: './document/generate',
+                hideInMenu: true
+              },
+              {
+                name: '上传模版',
+                path: '/document/upload',
+                component: './document/upload',
+              },
+            ],
+          },
+          {
             path: '/company',
             name: '公司信息管理',
             icon: 'home',
