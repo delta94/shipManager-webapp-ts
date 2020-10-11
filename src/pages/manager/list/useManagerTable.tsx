@@ -29,6 +29,14 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         hideInSearch: true,
       },
       {
+        title: ManagerKeyMap.gender,
+        dataIndex: 'gender',
+        hideInSearch: true,
+        render(value) {
+          return value == 0 ? '男' : '女'
+        }
+      },
+      {
         title: ManagerKeyMap.managerPositionName,
         hideInTable: true,
         hideInSearch: false,

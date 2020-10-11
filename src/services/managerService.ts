@@ -63,6 +63,7 @@ export const ManagerKeyMap = {
   name: '姓名',
   identityNumber: '身份证号码',
   educationLevel: '学历',
+  gender: '性别',
   mobile: '联系方式',
   remark: '备注',
   managerDutyName: '人员职位',

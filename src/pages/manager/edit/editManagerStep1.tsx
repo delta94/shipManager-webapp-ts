@@ -78,6 +78,22 @@ const EditManagerStep1: React.FC<EditManagerStep1Props> = ({ manager, dutyTypes,
         </Form.Item>
 
         <Form.Item
+          name="gender"
+          label={ManagerKeyMap.gender}
+          rules={[
+            {
+              required: true,
+              message: `请输入${ManagerKeyMap.gender}`,
+            },
+          ]}
+        >
+          <Select placeholder={`请选择 ${ManagerKeyMap.gender}`}>
+            <Select.Option value={0}>男性</Select.Option>
+            <Select.Option value={1}>女性</Select.Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
           name="managerDutyId"
           label={ManagerKeyMap.managerDutyName}
           rules={[

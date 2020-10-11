@@ -67,7 +67,7 @@ const DocumentGenerate: React.FC<IRouteComponentProps<{ id: string }>> = ({ matc
   return (
     <PageHeaderWrapper title="打印模版">
       <Card bordered className="mb-2" loading={loading}>
-        <Typography.Title>{template?.name}</Typography.Title>
+        <Typography.Title level={3}>{template?.name}</Typography.Title>
         <Typography.Text>{template?.remark}</Typography.Text>
       </Card>
 

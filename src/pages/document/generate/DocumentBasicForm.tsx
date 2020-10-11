@@ -16,6 +16,7 @@ import { listShipMeta, infoShip } from '@/services/shipService';
 import { listManagerMeta } from '@/services/managerService';
 import { getCompanyInfo } from '@/services/companyService';
 import { parseMetric } from '@/utils/parser';
+import { listSailor } from '@/services/sailorService';
 
 interface DocumentBasicFormProps {
   form: any;
@@ -60,6 +61,14 @@ const DocumentBasicForm: React.FC<DocumentBasicFormProps> = ({ template, onUpdat
     cacheKey: 'ship_manager_list',
   });
 
+  const { data: sailorList, run: fetchSailorList } = useRequest(listSailor, {
+    manual: true,
+    cacheKey: 'sailor_list',
+    formatResult(res) {
+      return res.list;
+    },
+  });
+
   const { run: fetchShipInfo } = useRequest(infoShip, {
     manual: true,
   });
@@ -76,6 +85,11 @@ const DocumentBasicForm: React.FC<DocumentBasicFormProps> = ({ template, onUpdat
 
         if (meta.managerSelect) {
           fetchManagerList();
+        }
+
+        if (meta.sailorSelect) {
+          //@ts-ignore
+          fetchSailorList();
         }
 
         if (meta.companySelect) {
@@ -111,6 +125,16 @@ const DocumentBasicForm: React.FC<DocumentBasicFormProps> = ({ template, onUpdat
       }
     },
     [shipMeta, form, managerList],
+  );
+
+  const onSailorSelect = useCallback(
+    (value: number) => {
+      if (sailorList && sailorList.length > 0) {
+        let sailor = sailorList.find((item) => item.id == value);
+        form.setFieldsValue({ sailor: sailor });
+      }
+    },
+    [shipMeta, form, sailorList],
   );
 
   return (
@@ -160,12 +184,34 @@ const DocumentBasicForm: React.FC<DocumentBasicFormProps> = ({ template, onUpdat
           </Form.Item>
         )}
 
+        {formMeta?.sailorSelect && (
+          <Form.Item
+            labelCol={{ span: 8 }}
+            name="sailorId"
+            label="请选择船员"
+            rules={[
+              {
+                required: true,
+                message: '请输入船员',
+              },
+            ]}
+          >
+            <Select placeholder="请选择船员" onSelect={onSailorSelect}>
+              {sailorList?.map((item, index) => (
+                <Select.Option value={item.id} key={index}>
+                  {item.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
+
         <Divider />
 
         <FormBuilder meta={formMeta} form={form} />
 
-        <Form.Item wrapperCol={{ span: 16, offset: 8 }}>
-          <Button type="primary" htmlType={'submit'}>
+        <Form.Item wrapperCol={{ span: 24 }}>
+          <Button type="primary" htmlType={'submit'} style={{ float: 'right' }}>
             下一步
           </Button>
         </Form.Item>

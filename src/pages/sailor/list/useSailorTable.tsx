@@ -23,6 +23,14 @@ export default function useSailorTable(options: IUseSailorTableDeps): IUseSailor
         dataIndex: 'name',
       },
       {
+        title: SailorKeyMap.gender,
+        dataIndex: 'gender',
+        hideInSearch: true,
+        render(value) {
+          return value == 0 ? '男' : '女'
+        }
+      },
+      {
         title: SailorKeyMap.identityNumber,
         dataIndex: 'identityNumber',
         hideInSearch: true,

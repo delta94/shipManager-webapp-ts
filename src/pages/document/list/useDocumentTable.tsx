@@ -1,7 +1,7 @@
 import { ProColumns } from '@ant-design/pro-table';
 import { IDocument } from '@/interfaces/IDocument';
 import React, { useMemo } from 'react';
-import { Divider, Popconfirm, Select, Tag } from 'antd';
+import { Select, Tag } from 'antd';
 import hooks from './hooks';
 import { DocumentKeyMap, listDocument } from '@/services/documentService';
 import { IPageableFilter } from '@/interfaces/ITableList';
@@ -68,18 +68,6 @@ export default function useDocumentTable(options: IUseDocumentTableDeps): IUseDo
         render: (text: any, record: IDocument) => (
           <>
             <a onClick={() => hooks.InfoDocument.call(record)}>打印</a>
-            <Divider type="vertical" />
-            <a onClick={() => hooks.EditDocument.call(record)}>更改</a>
-            <Divider type="vertical" />
-            <span>
-              <Popconfirm
-                title="是否要删除此行？"
-                placement={'left'}
-                onConfirm={() => hooks.DeleteDocument.call(record)}
-              >
-                <a>删除</a>
-              </Popconfirm>
-            </span>
           </>
         ),
       },
