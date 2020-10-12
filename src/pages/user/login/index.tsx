@@ -72,7 +72,7 @@ const Login: React.FC<LoginProps> = props => {
             ]}
           />
         </Tab>
-        <Tab key="mobile" tab="手机号登录">
+        <Tab key="mobile" tab="手机号登录" disabled>
           {status === 'error' && loginType === 'mobile' && !submitting && <LoginMessage content="验证码错误" />}
           <Mobile
             name="mobile"
