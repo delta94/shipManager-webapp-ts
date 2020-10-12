@@ -101,6 +101,8 @@ const CreateSailor: React.FC<IRouteComponentProps> = ({ history }) => {
         }
         return item;
       });
+    } else {
+      values.sailorCerts = []
     }
     run(values as ISailor);
   };
@@ -319,7 +321,7 @@ const CreateSailor: React.FC<IRouteComponentProps> = ({ history }) => {
                 label={SailorKeyMap.licenseNumber}
                 rules={[
                   {
-                    required: false,
+                    required: true,
                     message: `请输入${SailorKeyMap.licenseNumber}`,
                   },
                 ]}
