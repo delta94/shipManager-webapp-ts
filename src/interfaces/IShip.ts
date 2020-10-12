@@ -37,6 +37,8 @@ export interface IShip {
   shipPayloads: IShipPayload[];
   shipMachines: IShipMachine[];
   shipLicenses: IShipLicense[];
+
+  exHostPower: number
 }
 
 export interface IShipCert {

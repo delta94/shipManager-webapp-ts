@@ -15,7 +15,7 @@ import { useRequest } from '@@/plugin-request/request';
 import { listShipMeta, infoShip } from '@/services/shipService';
 import { listManagerMeta } from '@/services/managerService';
 import { getCompanyInfo } from '@/services/companyService';
-import { parseMetric } from '@/utils/parser';
+import { parseShipExtra } from '@/utils/parser';
 import { listSailor } from '@/services/sailorService';
 
 interface DocumentBasicFormProps {
@@ -109,7 +109,7 @@ const DocumentBasicForm: React.FC<DocumentBasicFormProps> = ({ template, onUpdat
         form.setFieldsValue({ ship: ship });
       } else {
         let ship = await fetchShipInfo(value);
-        ship = parseMetric(ship);
+        ship = parseShipExtra(ship);
         cache.current.set(id, ship);
         form.setFieldsValue({ ship: ship });
       }

@@ -2,7 +2,6 @@ import moment from 'moment';
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { Pagination } from '@/interfaces/ITableList';
-import IAccount from '@/interfaces/IAccount';
 import { IShip } from '@/interfaces/IShip';
 
 export const dateFormatter = (values: any): any => {
@@ -174,7 +173,8 @@ export const parsePagination = (headers: Headers): Pagination => {
   };
 };
 
-export const parseMetric = (value: IShip): IShip => {
+
+export const parseShipExtra = (value: IShip): IShip => {
   if (value.length) {
     value.length = parseCM2M(value.length);
   }
@@ -188,11 +188,18 @@ export const parseMetric = (value: IShip): IShip => {
     value.height = parseCM2M(value.height);
   }
   if (value.grossTone) {
-    value.grossTone = parseKG2T(value.grossTone)
+    value.grossTone = parseKG2T(value.grossTone);
   }
   if (value.netTone) {
-    value.netTone = parseKG2T(value.netTone)
+    value.netTone = parseKG2T(value.netTone);
   }
+  if (value.shipMachines && value.shipMachines.length > 0) {
+    let mainHost = value.shipMachines.find((item) => item.shipMachineTypeId == 1013001);
+    if (mainHost) {
+      value.exHostPower = mainHost.power;
+    }
+  }
+
   return value;
 };
 
