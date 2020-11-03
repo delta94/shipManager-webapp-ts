@@ -3,7 +3,6 @@ import { InputNumber, Input, Form, message, Button } from 'antd';
 import { IShip } from '@/interfaces/IShip';
 import { ShipKeyMap as ShipKey, updateShip } from '@/services/shipService';
 import { useRequest } from 'umi';
-import { parseM2CM, parseT2KG } from '@/utils/parser';
 
 interface EditMetricFormProps {
   ship: Partial<IShip>;
@@ -31,18 +30,7 @@ const EditMetricForm: React.FC<EditMetricFormProps> = ({ ship, onUpdate, onCance
   };
 
   const onFinish = (values: any) => {
-    updateShipInfo({
-      ...values,
-      ...({
-        height: parseM2CM(values.height),
-        length: parseM2CM(values.length),
-        depth: parseM2CM(values.depth),
-        width: parseM2CM(values.width),
-
-        grossTone: parseT2KG(values.grossTone),
-        netTone: parseT2KG(values.netTone),
-      } as Partial<IShip>),
-    });
+    updateShipInfo({...values } as Partial<IShip> )
   };
 
   useEffect(() => {

@@ -21,7 +21,6 @@ import { ISailor } from '@/interfaces/ISailor';
 import useMachineTable from '@/pages/ship/profile/useMachineTable';
 import useMachineForm from '@/pages/ship/profile/useMachineForm';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
-import { parseCM2M, parseKG2T } from '@/utils/parser';
 
 const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) => {
   const shipId = parseInt(match.params.id) || 0;
@@ -43,7 +42,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
     machineTypes: shipCategoryType?.ShipMachineType,
   });
 
-  const sailorTableProps = useSailorTable({ shipId: shipId });
+  const sailorTableProps = useSailorTable({ sailors: ship?.sailors });
 
   const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
 
@@ -115,12 +114,12 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
         }
       >
         <Descriptions>
-          <Descriptions.Item label={ShipKeyMap.grossTone}>{parseKG2T(ship?.grossTone)} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.netTone}>{parseKG2T(ship?.netTone)} 吨</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.length}>{parseCM2M(ship?.length)} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.width}>{parseCM2M(ship?.width)} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.height}>{parseCM2M(ship?.height)} 米</Descriptions.Item>
-          <Descriptions.Item label={ShipKeyMap.depth}>{parseCM2M(ship?.depth)} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.grossTone}>{ship?.grossTone} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.netTone}>{ship?.netTone} 吨</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.length}>{ship?.length} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.width}>{ship?.width} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.height}>{ship?.height} 米</Descriptions.Item>
+          <Descriptions.Item label={ShipKeyMap.depth}>{ship?.depth} 米</Descriptions.Item>
         </Descriptions>
       </Card>
 
@@ -133,7 +132,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           <Button
             type="link"
             onClick={() => {
-              onShowEditPayload({});
+              onShowEditPayload({ shipId: shipId});
             }}
           >
             新增
@@ -146,7 +145,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           renderItem={(item) => ({
             title: (
               <>
-                {item.shipBusinessAreaName} | <Space size={3}>载货量: {parseKG2T(item.tone)} 吨</Space>
+                {item.shipBusinessAreaName} | <Space size={3}>载货量: {item.tone} 吨</Space>
               </>
             ),
             actions: [
@@ -226,11 +225,11 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           rowKey="id"
           search={false}
           options={false}
-          actionRef={sailorTableProps.actionRef}
+          pagination={false}
           columns={sailorTableProps.columns}
           //@ts-ignore
           dateFormatter="string"
-          request={sailorTableProps.request}
+          dataSource={ship?.sailors}
         />
       </Card>
 

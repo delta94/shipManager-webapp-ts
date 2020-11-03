@@ -1,3 +1,5 @@
+import IAccount from "@/interfaces/IAccount";
+
 export interface LoginForm {
   username: string
   password: string
@@ -14,4 +16,5 @@ export interface StateType {
 
 export interface LoginResult {
   id_token: string
+  user: IAccount
 }

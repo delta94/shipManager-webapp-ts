@@ -1,11 +1,10 @@
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { connect, Dispatch } from 'umi';
-import { StateType } from '@/models/login';
 import { ConnectState } from '@/models/connect';
 import LoginFrom from './components/Login';
-
 import styles from './style.less';
+import { StateType } from '@/interfaces/ILogin';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
 
@@ -28,13 +27,13 @@ const LoginMessage: React.FC<{
   />
 );
 
-const Login: React.FC<LoginProps> = props => {
+const Login: React.FC<LoginProps> = (props) => {
   const { userLogin = {}, submitting } = props;
   const { status, type: loginType } = userLogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
 
-  const handleSubmit = values => {
+  const handleSubmit = (values: any) => {
     const { dispatch } = props;
     if (type == 'mobile') {
       message.error('暂不支持手机号登录');
@@ -103,7 +102,7 @@ const Login: React.FC<LoginProps> = props => {
           />
         </Tab>
         <div>
-          <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
+          <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
             自动登录
           </Checkbox>
           <a

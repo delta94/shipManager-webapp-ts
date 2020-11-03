@@ -23,10 +23,10 @@ export default function useLicenseTable(option: IUseLicenseTableDeps): IUseLicen
   useEffect(() => {
     if (!Array.isArray(option.licenses)) return;
     if (tab == 'inner') {
-      let result = option.licenses.filter((item) => item.shipLicenseTypeId == 1012001);
+      let result = option.licenses.filter((item) => item.shipLicenseTypeId == 1);
       updateLicenses(result);
     } else {
-      let result = option.licenses.filter((item) => item.shipLicenseTypeId != 1012001);
+      let result = option.licenses.filter((item) => item.shipLicenseTypeId == 2);
       updateLicenses(result);
     }
   }, [tab, option.licenses]);

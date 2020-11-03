@@ -56,7 +56,7 @@ export async function unlinkSailor(id: number) {
 }
 
 export async function listSailorCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/sailors/category`, {
+  return request(`/api/common-option-types/sailors`, {
     method: 'GET',
   });
 }

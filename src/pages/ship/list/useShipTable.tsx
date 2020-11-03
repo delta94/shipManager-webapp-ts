@@ -5,7 +5,6 @@ import hooks from './hooks';
 import { ShipKeyMap, listShip } from '@/services/shipService';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import { IShip, IShipBusinessAreaType, IShipMaterialType, IShipType } from '@/interfaces/IShip';
-import { parseKG2T } from '@/utils/parser';
 
 interface IUseShipTableDeps {
   shipType: IShipType[];
@@ -66,13 +65,13 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
         title: ShipKeyMap.grossTone,
         dataIndex: 'grossTone',
         hideInSearch: true,
-        render: (val: number) => `${parseKG2T(val)} 吨`,
+        render: (val: number) => `${val} 吨`,
       },
       {
         title: '操作',
         render: (text: any, record: IShip) => (
           <>
-            <a onClick={() => hooks.InfoShip.call(record)}>更多</a>
+            <a onClick={() => hooks.InfoShip.call(record)}>详情</a>
             <Divider type="vertical" />
             <span>
               <Popconfirm title="是否要删除此行？" placement={'left'} onConfirm={() => hooks.DeleteShip.call(record)}>
@@ -94,7 +93,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
     }
 
     if (params.shipTypeId !== undefined && params.shipTypeId != -1) {
-      extra['shipTypeId.equals'] = params.shipTypeId;
+      extra['shipType.equals'] = params.shipTypeId;
     }
 
     const data = await listShip(current, pageSize, extra);

@@ -7,19 +7,6 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 
 export const isUrl = (path: string): boolean => reg.test(path);
 
-export const isAntDesignPro = (): boolean => {
-  return false;
-};
-
-// 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
-export const isAntDesignProOrDev = (): boolean => {
-  const { NODE_ENV } = process.env;
-  if (NODE_ENV === 'development') {
-    return true;
-  }
-  return isAntDesignPro();
-};
-
 export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 
 /**

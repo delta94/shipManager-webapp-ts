@@ -54,7 +54,7 @@ export async function infoManager(id: number): Promise<IManager> {
 }
 
 export async function listManagerCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/managers/category`, {
+  return request(`/api/common-option-types/manager`, {
     method: 'GET',
   });
 }

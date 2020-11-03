@@ -35,47 +35,55 @@ const LoginModel: LoginModelType = {
   effects: {
 
     *login({ payload }, { call, put }) {
-      const resp1: LoginResult = yield call(accountLogin, payload);
+      try {
+        const resp1: LoginResult = yield call(accountLogin, payload);
 
-      updateToken(resp1.id_token);
+        updateToken(resp1.id_token);
 
-      const resp2: IAccount = yield call(getCurrentUser);
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: 'ok',
+            currentAuthority: resp1.user.authorities,
+          },
+        });
 
-      yield put({
-        type: 'changeLoginStatus',
-        payload: {
-          status: 'ok',
-          currentAuthority: resp2.authorities,
-        },
-      });
+        setAuthority(resp1.user.authorities);
 
-      setAuthority(resp2.authorities);
+        reloadAuthorized();
 
-      reloadAuthorized();
+        yield put({
+          type: 'user/saveCurrentUser',
+          payload: resp1.user,
+        });
 
-      yield put({
-        type: 'user/saveCurrentUser',
-        payload: resp2,
-      });
+        const urlParams = new URL(window.location.href);
+        const params = getPageQuery();
 
-      const urlParams = new URL(window.location.href);
-      const params = getPageQuery();
+        let { redirect } = params as { redirect: string };
 
-      let { redirect } = params as { redirect: string };
-
-      if (redirect) {
-        const redirectUrlParams = new URL(redirect);
-        if (redirectUrlParams.origin === urlParams.origin) {
-          redirect = redirect.substr(urlParams.origin.length);
-          if (redirect.match(/^\/.*#/)) {
-            redirect = redirect.substr(redirect.indexOf('#') + 1);
+        if (redirect) {
+          const redirectUrlParams = new URL(redirect);
+          if (redirectUrlParams.origin === urlParams.origin) {
+            redirect = redirect.substr(urlParams.origin.length);
+            if (redirect.match(/^\/.*#/)) {
+              redirect = redirect.substr(redirect.indexOf('#') + 1);
+            }
+          } else {
+            window.location.href = '/';
+            return;
           }
-        } else {
-          window.location.href = '/';
-          return;
         }
+        history.replace(redirect || '/');
+      } catch (e) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: 'error'
+          },
+        });
+        console.error(e)
       }
-      history.replace(redirect || '/');
     },
 
     *logout() {

@@ -1,5 +1,6 @@
 import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { ICommonOptionType } from '@/interfaces/ICategory';
+import {ISailor} from "@/interfaces/ISailor";
 
 export interface IShip {
   id: number;
@@ -37,8 +38,12 @@ export interface IShip {
   shipPayloads: IShipPayload[];
   shipMachines: IShipMachine[];
   shipLicenses: IShipLicense[];
+  sailors: ISailor[];
+
+  companyId: number;
 
   exHostPower: number
+
 }
 
 export interface IShipCert {

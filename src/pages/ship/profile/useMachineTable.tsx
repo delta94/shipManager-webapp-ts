@@ -19,17 +19,11 @@ interface IUseMachineTableExport {
 }
 
 export default function useMachineTable(option: IUseMachineTableDeps): IUseMachineTableExport {
-  const [tab, updateTab] = useState<string>('');
+  const [tab, updateTab] = useState<string>('1');
   const [machines, updateMachines] = useState<IShipMachine[]>();
 
-  useEffect(() => {
-    if (!Array.isArray(option.machines) || tab == '') return;
-    let result = option.machines.filter((item) => item.shipMachineTypeId.toString() == tab);
-    updateMachines(result);
-  }, [tab, option.machines, option.machineTypes]);
-
   const tabList = useMemo(() => {
-    if (option.machineTypes && Array.isArray(option.machines)) {
+    if (option.machineTypes) {
       return option.machineTypes.map((item) => {
         return {
           key: item.id.toString(),
@@ -41,10 +35,10 @@ export default function useMachineTable(option: IUseMachineTableDeps): IUseMachi
   }, [option.machineTypes]);
 
   useEffect(() => {
-    if (tabList && tabList.length > 0 && tab == '') {
-      updateTab(tabList[0].key);
-    }
-  }, [tabList]);
+    if (!Array.isArray(option.machines)) return;
+    let result = option.machines.filter((item) => item.shipMachineTypeId.toString() == tab);
+    updateMachines(result);
+  }, [tab, option.machines]);
 
   const columns = useMemo(() => {
     return [

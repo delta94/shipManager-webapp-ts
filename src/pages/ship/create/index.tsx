@@ -10,7 +10,6 @@ import ShipMachineForm from '@/pages/ship/create/ShipMachineForm';
 import ShipPayloadForm from '@/pages/ship/create/ShipPayloadForm';
 import ShipLicenseForm from '@/pages/ship/create/ShipLicenseForm';
 import ShipResult from '@/pages/ship/create/ShipResult';
-import { parseM2CM, parseT2KG } from '@/utils/parser';
 
 interface CreateShipProps {}
 
@@ -59,7 +58,6 @@ const CreateShip: React.FC<CreateShipProps> = (props) => {
         newShip.shipPayloads.forEach((item: IShipPayload) => {
           // @ts-ignore
           item.id = undefined;
-          item.tone = parseT2KG(item.tone);
         });
       }
       if (newShip.shipMachines && newShip.shipMachines.length > 0) {
@@ -67,14 +65,6 @@ const CreateShip: React.FC<CreateShipProps> = (props) => {
           item.id = undefined;
         });
       }
-
-      newShip.grossTone = parseT2KG(newShip.grossTone);
-      newShip.netTone = parseT2KG(newShip.netTone);
-
-      newShip.length = parseM2CM(newShip.width);
-      newShip.width = parseM2CM(newShip.width);
-      newShip.height = parseM2CM(newShip.height);
-      newShip.depth = parseM2CM(newShip.depth);
 
       createShip(newShip).then(() => {
         hideLoading();

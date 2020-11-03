@@ -10,7 +10,6 @@ export async function listShip(page: number = 0, size: number = 10, extra: objec
     params: {
       page: page - 1,
       size,
-      'isRemoved.equals': false,
       ...extra,
     },
     getResponse: true,
@@ -49,7 +48,7 @@ export async function updateShip(data: Partial<IShip>): Promise<IShip> {
 }
 
 export async function listShipCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/ships/category`, {
+  return request(`/api/common-option-types/ship`, {
     method: 'GET',
   });
 }

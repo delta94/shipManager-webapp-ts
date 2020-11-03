@@ -175,24 +175,6 @@ export const parsePagination = (headers: Headers): Pagination => {
 
 
 export const parseShipExtra = (value: IShip): IShip => {
-  if (value.length) {
-    value.length = parseCM2M(value.length);
-  }
-  if (value.width) {
-    value.width = parseCM2M(value.width);
-  }
-  if (value.depth) {
-    value.depth = parseCM2M(value.depth);
-  }
-  if (value.height) {
-    value.height = parseCM2M(value.height);
-  }
-  if (value.grossTone) {
-    value.grossTone = parseKG2T(value.grossTone);
-  }
-  if (value.netTone) {
-    value.netTone = parseKG2T(value.netTone);
-  }
   if (value.shipMachines && value.shipMachines.length > 0) {
     let mainHost = value.shipMachines.find((item) => item.shipMachineTypeId == 1013001);
     if (mainHost) {
@@ -201,24 +183,4 @@ export const parseShipExtra = (value: IShip): IShip => {
   }
 
   return value;
-};
-
-export const parseCM2M = (value: number | undefined): number => {
-  if (value == undefined || value == 0) return 0;
-  return value / 100;
-};
-
-export const parseKG2T = (value: number | undefined): number => {
-  if (value == undefined || value == 0) return 0;
-  return value / 1000;
-};
-
-export const parseM2CM = (value: number | undefined): number => {
-  if (value == undefined || value == 0) return 0;
-  return value * 100;
-};
-
-export const parseT2KG = (value: number | undefined): number => {
-  if (value == undefined || value == 0) return 0;
-  return value * 1000;
 };

@@ -55,7 +55,7 @@ export async function generateDocument(id: string, data: ITemplateDTO): Promise<
 }
 
 export async function listDocumentCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/documents/category`, {
+  return request(`api/common-option-types/document`, {
     method: 'GET',
   });
 }

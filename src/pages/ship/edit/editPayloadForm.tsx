@@ -3,7 +3,6 @@ import { ShipPayloadKeyMap, upsertShipPayload } from '@/services/shipService';
 import { message, Form, InputNumber, Input, Button, Select } from 'antd';
 import { IShipBusinessAreaType, IShipPayload } from '@/interfaces/IShip';
 import { useRequest } from 'umi';
-import { parseT2KG} from '@/utils/parser';
 
 interface EditPayloadFormProps {
   payload?: Partial<IShipPayload>;
@@ -41,7 +40,6 @@ const EditPayloadForm: React.FC<EditPayloadFormProps> = ({
 
   const onFinish = (values: any) => {
     if (runSave) {
-      values.tone = parseT2KG(values.tone);
       updateShipPayloadInfo(values);
     } else {
       onUpdate(values);

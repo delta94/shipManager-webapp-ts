@@ -16,7 +16,7 @@ export async function updateCompanyInfo(company: Partial<ICompany>): Promise<ICo
 }
 
 export async function listCompanyCategoryType(): Promise<Record<ICategory, Array<ICommonOptionType>>> {
-  return request(`/api/companies/category`, {
+  return request(`/api/common-option-types/company`, {
     method: 'GET',
   });
 }

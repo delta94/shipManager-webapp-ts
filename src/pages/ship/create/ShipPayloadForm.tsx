@@ -8,7 +8,6 @@ import hooks from '@/pages/ship/profile/hooks';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { PlusOutlined } from '@ant-design/icons';
 import { ShipPayloadKeyMap } from '@/services/shipService';
-import { parseT2KG } from '@/utils/parser';
 
 interface ShipPayloadFormProps {
   ship: Partial<IShip>;
@@ -31,10 +30,7 @@ const ShipPayloadForm: React.FC<ShipPayloadFormProps> = ({ ship, shipCategoryTyp
     });
     const unTapEditShipPayload = hooks.EditShipPayload.tap((payload) => {
       setEditPayload({
-        ...payload,
-        ...{
-          tone: parseT2KG(payload.tone),
-        },
+        ...payload
       });
       setRight();
     });

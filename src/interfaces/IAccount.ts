@@ -1,3 +1,4 @@
+import {ICompany} from "@/interfaces/ICompany";
 
 export default interface IAccount {
   id: number
@@ -16,6 +17,7 @@ export default interface IAccount {
 
   lastModifiedDate: Date
   authorities: IAccountRole[]
+  company: ICompany
 }
 
 

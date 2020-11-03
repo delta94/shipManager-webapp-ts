@@ -1,13 +1,12 @@
-import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd';
+import { Avatar, Card, Col, Skeleton, Row, Statistic } from 'antd';
 import React, { Component } from 'react';
 import { Link, connect } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { UserOutlined } from '@ant-design/icons';
-import moment from 'moment';
 import styles from './style.less';
 import { ConnectState } from '@/models/connect';
 import IAccount from '@/interfaces/IAccount';
 import useCreation from '@/hooks/useCreation';
+import { ReactComponent as User } from '@/assets/svg/user.svg';
 
 interface DashBoardProps {
   currentUser?: IAccount;
@@ -36,22 +35,23 @@ const PageHeaderContent: React.FC<{ currentUser: IAccount }> = ({ currentUser })
     } else if (hours > 18 && hours <= 24) {
       text = '晚上好';
     }
-    return `${text} ${currentUser.login} ，祝你开心每一天！`;
+    return `${text} ${currentUser.login}！`;
   }, [currentUser]);
   return (
     <div className={styles.pageHeaderContent}>
       <div className={styles.avatar}>
         <Avatar
           size={72}
+          icon={<User />}
           src={currentUser.imageUrl}
           alt="avatar"
-          style={{ backgroundColor: '#f56a00' }}
-          icon={<UserOutlined />}
         />
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>{helloText}</div>
-        <div>船务系统管理人员</div>
+        <div>
+          <strong>{currentUser.company.name}</strong> - 船务系统管理人员
+        </div>
       </div>
     </div>
   );
@@ -69,40 +69,9 @@ const ExtraContent: React.FC<{}> = () => (
 );
 
 class DashBoard extends Component<DashBoardProps> {
-  renderActivities = (item) => {
-    const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
-      if (item[key]) {
-        return (
-          <a href={item[key].link} key={item[key].name}>
-            {item[key].name}
-          </a>
-        );
-      }
-      return key;
-    });
-    return (
-      <List.Item key={item.id}>
-        <List.Item.Meta
-          avatar={<Avatar src={item.user.avatar} />}
-          title={
-            <span>
-              <a className={styles.username}>{item.user.name}</a>
-              &nbsp;
-              <span className={styles.event}>{events}</span>
-            </span>
-          }
-          description={
-            <span className={styles.datetime} title={item.updatedAt}>
-              {moment(item.updatedAt).fromNow()}
-            </span>
-          }
-        />
-      </List.Item>
-    );
-  };
 
   render() {
-    const { currentUser, projectNotice = [], projectLoading = false, activitiesLoading = false } = this.props;
+    const { currentUser, projectNotice = [], projectLoading = false } = this.props;
 
     if (!currentUser || !currentUser.id) {
       return null;
@@ -116,53 +85,12 @@ class DashBoard extends Component<DashBoardProps> {
               style={{ marginBottom: 24 }}
               title="进行中的项目"
               bordered={false}
-              loading={projectLoading}
               bodyStyle={{ padding: 0 }}
             >
-              {projectNotice.map((item) => (
-                <Card.Grid className={styles.projectGrid} key={item.id}>
-                  <Card bodyStyle={{ padding: 0 }} bordered={false}>
-                    <Card.Meta
-                      title={
-                        <div className={styles.cardTitle}>
-                          <Avatar size="small" src={item.logo} />
-                          <Link to={item.href}>{item.title}</Link>
-                        </div>
-                      }
-                      description={item.description}
-                    />
-                    <div className={styles.projectItemContent}>
-                      <Link to={item.memberLink}>{item.member || ''}</Link>
-                      {item.updatedAt && (
-                        <span className={styles.datetime} title={item.updatedAt}>
-                          {moment(item.updatedAt).fromNow()}
-                        </span>
-                      )}
-                    </div>
-                  </Card>
-                </Card.Grid>
-              ))}
-            </Card>
-            <Card
-              bodyStyle={{ padding: 0 }}
-              bordered={false}
-              className={styles.activeCard}
-              title="动态"
-              loading={activitiesLoading}
-            >
-              <List
-                loading={activitiesLoading}
-                renderItem={(item) => this.renderActivities(item)}
-                dataSource={[]}
-                className={styles.activitiesList}
-                size="large"
-              />
+
             </Card>
           </Col>
           <Col xl={8} lg={24} md={24} sm={24} xs={24}>
-            <Card style={{ marginBottom: 24 }} title="快速开始 / 便捷导航" bordered={false} bodyStyle={{ padding: 0 }}>
-              <div></div>
-            </Card>
             <Card
               bodyStyle={{ paddingTop: 12, paddingBottom: 12 }}
               bordered={false}
