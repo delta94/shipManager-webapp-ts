@@ -2,14 +2,14 @@ import { ICompany } from '@/interfaces/ICompany';
 import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import request from '@/utils/request';
 
-export async function getCompanyInfo(id: number = 1): Promise<ICompany> {
-  return await request(`/api/companies/${id}`, {
+export async function getCompanyInfo(): Promise<ICompany> {
+  return await request(`/api/company`, {
     method: 'GET',
   });
 }
 
 export async function updateCompanyInfo(company: Partial<ICompany>): Promise<ICompany> {
-  return await request(`/api/companies`, {
+  return await request(`/api/company`, {
     method: 'PUT',
     data: company,
   });
