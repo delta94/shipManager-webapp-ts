@@ -3,9 +3,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { useRequest, IRouteComponentProps } from 'umi';
 import { Descriptions, Card, Table, Button, Modal, message } from 'antd';
 import { getCompanyInfo, CompanyKeyMap as CompanyKeys } from '@/services/companyService';
-import { getCompanyCertInfo, deleteCompanyCert } from '@/services/companyCertService';
+import { deleteCompanyCert } from '@/services/companyCertService';
 import { ICompanyCert } from '@/interfaces/ICompany';
-import { columns, tabList } from './constant';
+import { columns } from './constant';
 import EditBasicForm from './editBaiscForm';
 import EditContactForm from '@/pages/company/infoCompany/editContactForm';
 import EditCertificateForm from '@/pages/company/infoCompany/editCertificateForm';
@@ -13,9 +13,6 @@ import hooks from '@/pages/company/infoCompany/hooks';
 import useToggle from '@/hooks/useToggle';
 
 const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
-  const [permissionCerts, updatePermissionCerts] = useState<ICompanyCert[]>([]);
-  const [extraCerts, updateExtraCerts] = useState<ICompanyCert[]>([]);
-  const [tab, updateTab] = useState<string>('permission'); // 'permission' | 'extra'
   const [editCertificate, updateEditCertificate] = useState<ICompanyCert>();
 
   const [editBasicVisible, { setLeft: hideEditBasic, setRight: showEditBasic }] = useToggle(false);
@@ -28,18 +25,10 @@ const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
     cacheKey: 'company_base_info',
   });
 
-  const { loading: loadingCompanyCert, refresh: refreshCompanyCert } = useRequest(getCompanyCertInfo, {
-    cacheKey: 'company_certs_info',
-    onSuccess(result) {
-      updateExtraCerts(result.filter((item) => item.companyCertTypeId > 1003003));
-      updatePermissionCerts(result.filter((item) => item.companyCertTypeId <= 1003003));
-    },
-  });
-
   const { run: deleteCertificate } = useRequest(deleteCompanyCert, {
     manual: true,
     onSuccess() {
-      refreshCompanyCert();
+      refreshCompanyInfo();
       message.success('证书已删除');
     },
   });
@@ -70,21 +59,14 @@ const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
   };
 
   const onCertificateUpdate = () => {
-    refreshCompanyCert();
     hideEditCerts();
     updateEditCertificate(undefined);
+    refreshCompanyInfo();
   };
 
   const onCertificateCancel = () => {
     hideEditCerts();
     updateEditCertificate(undefined);
-  };
-
-  const contentList = {
-    permission: (
-      <Table pagination={false} key="id" loading={loadingCompanyCert} dataSource={permissionCerts} columns={columns} />
-    ),
-    extra: <Table pagination={false} key="id" loading={loadingCompanyCert} dataSource={extraCerts} columns={columns} />,
   };
 
   return (
@@ -115,6 +97,7 @@ const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
           <Descriptions.Item label={CompanyKeys.legalPerson}>{company?.legalPerson}</Descriptions.Item>
         </Descriptions>
       </Card>
+
       <Card
         title="联系方式"
         bordered={false}
@@ -135,18 +118,24 @@ const InfoCompany: React.FC<IRouteComponentProps> = ({ history }) => {
         </Descriptions>
       </Card>
 
+
       <Card
+        title="相关证书"
         bordered={false}
-        tabList={tabList}
         style={{ marginTop: 24 }}
-        onTabChange={updateTab}
-        tabBarExtraContent={
+        extra={
           <Button type="link" onClick={showEditCerts}>
             新增证书
           </Button>
         }
       >
-        {contentList[tab]}
+        <Table
+          pagination={false}
+          key="id"
+          loading={loadingCompany}
+          dataSource={company?.companyCerts}
+          columns={columns}
+        />
       </Card>
 
       <Modal

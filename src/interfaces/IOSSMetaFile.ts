@@ -7,4 +7,8 @@ export default interface IOSSMetaFile {
   uploadBy: string;
   uploadAt: string;
   remark: string;
+  category: IOSSMetaCategory
 }
+
+export type IOSSMetaCategory = "Company" | "Manager"  | "Sailor" | "Ship"
+

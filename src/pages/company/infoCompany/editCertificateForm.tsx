@@ -54,7 +54,7 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
   };
 
   const onFinish = (values: any) => {
-    let certificate = formatUploadFileToOSSFiles(values) as ICompanyCert;
+    let certificate = formatUploadFileToOSSFiles(values, 'Company') as ICompanyCert;
     if (values.id) {
       updateCert(certificate);
     } else {

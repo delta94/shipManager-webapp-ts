@@ -1,5 +1,5 @@
 import moment from 'moment';
-import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
+import IOSSMetaFile, {IOSSMetaCategory} from '@/interfaces/IOSSMetaFile';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { Pagination } from '@/interfaces/ITableList';
 import { IShip } from '@/interfaces/IShip';
@@ -105,6 +105,7 @@ export const formatOSSFilesToUploadFile = (files: IOSSMetaFile[]): UploadFile[] 
           linkProps: {
             uploadBy: file.uploadBy,
             uploadAt: file.uploadAt,
+            category: file.category,
             remark: file.remark,
             id: file.id,
           },
@@ -117,7 +118,7 @@ export const formatOSSFilesToUploadFile = (files: IOSSMetaFile[]): UploadFile[] 
   return [];
 };
 
-export const formatUploadFileToOSSFiles = (value: any): any => {
+export const formatUploadFileToOSSFiles = (value: any, category: IOSSMetaCategory): any => {
   if (Array.isArray(value)) {
     return value.map((file: UploadFile) => {
       let meta = {
@@ -127,6 +128,7 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
         // @ts-ignore
         ossKey: file.url || file?.originFileObj?.url || '',
         uploadAt: moment().format('YYYY-MM-DD'),
+        category: category,
       } as Partial<IOSSMetaFile>;
 
       if (file.linkProps) {
@@ -134,6 +136,7 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
         meta.uploadBy = file.linkProps.uploadBy ? file.linkProps.uploadBy : '';
         meta.uploadAt = file.linkProps.uploadAt ? file.linkProps.uploadAt : '';
         meta.remark = file.linkProps.remark ? file.linkProps.remark : '';
+        meta.category = file.linkProps.category ? file.linkProps.category : '';
       }
       return meta;
     });
@@ -148,6 +151,7 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
         // @ts-ignore
         ossKey: file.url || file?.originFileObj?.url || '',
         uploadAt: moment().format('YYYY-MM-DD'),
+        category: category,
       } as Partial<IOSSMetaFile>;
 
       if (file.linkProps) {
@@ -155,6 +159,7 @@ export const formatUploadFileToOSSFiles = (value: any): any => {
         meta.uploadBy = file.linkProps.uploadBy ? file.linkProps.uploadBy : '';
         meta.uploadAt = file.linkProps.uploadAt ? file.linkProps.uploadAt : '';
         meta.remark = file.linkProps.remark ? file.linkProps.remark : '';
+        meta.category = file.linkProps.category ? file.linkProps.category : '';
       }
       return meta;
     });

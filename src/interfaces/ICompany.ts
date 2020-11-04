@@ -17,6 +17,7 @@ export interface ICompany {
   district: string; //'所属行政区域'
   companyTypeId: number; //'企业类型名称id'
   companyTypeName: string; //'企业类型名称'
+  companyCerts: ICompanyCert[]
 }
 
 export interface ICompanyCert {
