@@ -1,23 +1,18 @@
-export enum ICategory {
-  IssueDepartmentType = 'IssueDepartmentType',
-
-  CompanyCertType = 'CompanyCertType',
-  CompanyType = 'CompanyType',
-
-  ManagerCertType = 'ManagerCertType',
-  ManagerDutyType = 'ManagerDutyType',
-  ManagerPositionType = 'ManagerPositionType',
-
-  SailorDutyType = 'SailorDutyType',
-  SailorCertType = 'SailorCertType',
-
-  ShipType = 'ShipType',
-  ShipMaterialType = 'ShipMaterialType',
-  ShipBusinessAreaType = 'ShipBusinessAreaType',
-  ShipLicenseType = 'ShipLicenseType',
-  ShipMachineType = 'ShipMachineType',
-  DocumentCategoryType = 'DocumentCategoryType'
-}
+export type ICategory =
+  | 'IssueDepartmentType'
+  | 'CompanyCertType'
+  | 'CompanyType'
+  | 'ManagerCertType'
+  | 'ManagerDutyType'
+  | 'ManagerPositionType'
+  | 'SailorDutyType'
+  | 'SailorCertType'
+  | 'ShipType'
+  | 'ShipMaterialType'
+  | 'ShipBusinessAreaType'
+  | 'ShipLicenseType'
+  | 'ShipMachineType'
+  | 'DocumentCategoryType';
 
 export interface ICommonOptionType {
   id: number;

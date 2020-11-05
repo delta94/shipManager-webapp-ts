@@ -39,7 +39,7 @@ export default function useSailorTable(options: IUseSailorTableDeps): IUseSailor
         title: SailorKeyMap.sailorDutyTypeName,
         hideInTable: true,
         hideInSearch: false,
-        dataIndex: 'sailorDutyTypeId',
+        dataIndex: 'sailorDutyType',
         renderFormItem: (item, props) => {
           return (
             <Select placeholder="请选择类型" onSelect={props.onSelect}>

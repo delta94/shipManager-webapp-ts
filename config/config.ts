@@ -7,13 +7,13 @@ export default defineConfig({
     type: 'browser',
   },
   antd: {},
+  devtool: false,
   dva: {
     hmr: true,
   },
   request: {
     dataField: '',
   },
-  locale: false,
   dynamicImport: {
     loading: '@/components/PageLoading/index',
   },

@@ -10,7 +10,6 @@ export async function listSailor(page: number = 1, size: number = 20, extra: any
     params: {
       page: page - 1,
       size,
-      'isActive.equals': true,
       sort: 'id,desc',
       ...extra,
     },
@@ -52,12 +51,6 @@ export async function infoSailor(id: number): Promise<ISailor> {
 export async function unlinkSailor(id: number) {
   return request(`/api/sailors/unlink/${id}`, {
     method: 'POST',
-  });
-}
-
-export async function listSailorCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/common-option-types/sailors`, {
-    method: 'GET',
   });
 }
 

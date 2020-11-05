@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Steps, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { addShip, listShipCategory } from '@/services/shipService';
+import { addShip } from '@/services/shipService';
 import { useRequest } from 'umi';
 import useStep from '@/hooks/useStep';
 import ShipBasicForm from '@/pages/ship/create/ShipBasicForm';
@@ -10,6 +10,7 @@ import ShipMachineForm from '@/pages/ship/create/ShipMachineForm';
 import ShipPayloadForm from '@/pages/ship/create/ShipPayloadForm';
 import ShipLicenseForm from '@/pages/ship/create/ShipLicenseForm';
 import ShipResult from '@/pages/ship/create/ShipResult';
+import { listOptions } from '@/services/globalService';
 
 interface CreateShipProps {}
 
@@ -22,9 +23,18 @@ const steps = [
   { id: 'result', index: 5 },
 ];
 
-const CreateShip: React.FC<CreateShipProps> = (props) => {
-  const { data: shipCategoryType } = useRequest(listShipCategory, {
-    manual: false,
+const CreateShip: React.FC<CreateShipProps> = () => {
+  const { data: shipCategoryType } = useRequest(listOptions, {
+    defaultParams: [
+      [
+        'ShipBusinessAreaType',
+        'ShipMaterialType',
+        'ShipType',
+        'ShipLicenseType',
+        'IssueDepartmentType',
+        'ShipMachineType',
+      ],
+    ],
     cacheKey: 'ship_category_type',
   });
 

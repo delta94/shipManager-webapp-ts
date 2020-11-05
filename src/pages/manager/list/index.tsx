@@ -1,20 +1,32 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable, { ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, Card, message, Modal } from 'antd';
 import { useRequest, history } from 'umi';
-import { deleteManager, listManagerCategory } from '@/services/managerService';
+import { deleteManager } from '@/services/managerService';
 import { IManager } from '@/interfaces/IManager';
 import useManagerTable from './useManagerTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from '@/pages/manager/list/hooks';
 import EditManagerForm from '../edit/editManagerForm';
 import useToggle from '@/hooks/useToggle';
+import { listOptions } from '@/services/globalService';
 
 const ManagerList: React.FC = () => {
-  const actionRef = useRef<ActionType>();
   const [editManagerVisible, { setLeft: hideEdit, setRight: showEdit }] = useToggle();
+
   const [editManager, updateEditManager] = useState<IManager>();
+
+  const { data: managerCategoryType } = useRequest(listOptions, {
+    manual: false,
+    defaultParams: [['ManagerDutyType', 'ManagerPositionType', 'ManagerCertType', 'IssueDepartmentType']],
+    cacheKey: 'manager_category_type',
+  });
+
+  const { columns, request, actionRef, search } = useManagerTable({
+    positionTypes: managerCategoryType?.ManagerPositionType ?? [],
+    dutyTypes: managerCategoryType?.ManagerDutyType ?? [],
+  });
 
   const { run: deleteManagerRecord } = useRequest(deleteManager, {
     manual: true,
@@ -46,16 +58,6 @@ const ManagerList: React.FC = () => {
     };
   }, []);
 
-  const { data: managerCategoryType } = useRequest(listManagerCategory, {
-    manual: false,
-    cacheKey: 'manager_category_type',
-  });
-
-  const { columns, request } = useManagerTable({
-    positionTypes: managerCategoryType?.ManagerPositionType ?? [],
-    dutyTypes: managerCategoryType?.ManagerDutyType ?? [],
-  });
-
   const onEditManagerUpdate = useCallback(() => {
     actionRef.current?.reload();
     updateEditManager(undefined);
@@ -73,6 +75,7 @@ const ManagerList: React.FC = () => {
         <ProTable<IManager>
           actionRef={actionRef}
           rowKey="id"
+          search={search}
           columns={columns}
           //@ts-ignore
           request={request}

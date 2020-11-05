@@ -10,7 +10,7 @@ import {
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
 import { ICompanyCert } from '@/interfaces/ICompany';
 import { dateFormatter, formatUploadFileToOSSFiles } from '@/utils/parser';
-import { listCompanyCategoryType } from '@/services/companyService';
+import {listOptions} from "@/services/globalService";
 
 interface EditCertificateFormProps {
   certificate?: ICompanyCert;
@@ -43,11 +43,11 @@ const EditCertificateForm: React.FC<EditCertificateFormProps> = ({ certificate, 
     },
   });
 
-  const { data: companyCategoryType } = useRequest(listCompanyCategoryType, {
+  const { data: companyCategoryType } = useRequest(listOptions, {
     manual: false,
+    defaultParams: [['CompanyType', 'CompanyCertType', 'IssueDepartmentType']],
     cacheKey: 'company_category_type',
   });
-
   const onReset = () => {
     form.resetFields();
     onCancel();

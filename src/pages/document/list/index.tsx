@@ -3,10 +3,11 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Card, message } from 'antd';
 import { useRequest, history } from 'umi';
-import { deleteDocument, listDocumentCategory } from '@/services/documentService';
+import { deleteDocument } from '@/services/documentService';
 import { IDocument } from '@/interfaces/IDocument';
 import hooks from './hooks';
 import useDocumentTable from "./useDocumentTable";
+import {listOptions} from "@/services/globalService";
 
 const DocumentList: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -40,8 +41,9 @@ const DocumentList: React.FC = () => {
     };
   }, []);
 
-  const { data: optionTypes } = useRequest(listDocumentCategory, {
+  const { data: optionTypes } = useRequest(listOptions, {
     manual: false,
+    defaultParams: [['DocumentCategoryType']],
     cacheKey: 'document_category_type',
   });
 

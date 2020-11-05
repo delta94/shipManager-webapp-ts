@@ -5,16 +5,13 @@ import { PageHeaderWrapper, FooterToolbar } from '@ant-design/pro-layout';
 import { Button, Card, Col, DatePicker, Form, Input, Popover, Row, Select, Radio, message } from 'antd';
 import { infoSailor, updateSailor } from '@/services/sailorService';
 import { createSailorCert, deleteSailorCert, updateSailorCert } from '@/services/sailorCertService';
-import { listSailorCategory, SailorKeyMap } from '@/services/sailorService';
+import { SailorKeyMap } from '@/services/sailorService';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import {
-  dateFormatter,
-  formatUploadFileToOSSFiles,
-  transferMomentToString,
-} from '@/utils/parser';
+import { dateFormatter, formatUploadFileToOSSFiles, transferMomentToString } from '@/utils/parser';
 import { ISailor, ISailorCert } from '@/interfaces/ISailor';
 import SailorCertList from '@/pages/sailor/create/sailorCertList';
 import { listShipMeta } from '@/services/shipService';
+import { listOptions } from '@/services/globalService';
 
 const { Option } = Select;
 
@@ -26,9 +23,10 @@ interface ErrorField {
 const EditSailor: React.FC<IRouteComponentProps<{ id: string }>> = ({ history, match: { params } }) => {
   const [form] = Form.useForm();
 
-  const { data: categoryTypes } = useRequest(listSailorCategory, {
+  const { data: categoryTypes } = useRequest(listOptions, {
     manual: false,
-    cacheKey: 'manager_category_type',
+    defaultParams: [['SailorDutyType', 'SailorCertType', 'IssueDepartmentType']],
+    cacheKey: 'sailor_category_type',
   });
 
   const { data: sailor } = useRequest(infoSailor, {
@@ -152,7 +150,7 @@ const EditSailor: React.FC<IRouteComponentProps<{ id: string }>> = ({ history, m
           ...certificate,
           ...{
             sailorId: parseInt(params.id),
-            ossFiles: formatUploadFileToOSSFiles(certificate.ossFiles || []),
+            ossFiles: formatUploadFileToOSSFiles(certificate.ossFiles || [], 'Sailor'),
           },
         } as ISailorCert;
         updateCert(cloneObj).then((value) => {
@@ -177,7 +175,7 @@ const EditSailor: React.FC<IRouteComponentProps<{ id: string }>> = ({ history, m
           ...certificate,
           ...{
             sailorId: parseInt(params.id),
-            ossFiles: formatUploadFileToOSSFiles(certificate.ossFiles || []),
+            ossFiles: formatUploadFileToOSSFiles(certificate.ossFiles || [], 'Sailor'),
           },
         } as ISailorCert;
 

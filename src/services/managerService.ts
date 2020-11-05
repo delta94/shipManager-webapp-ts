@@ -2,8 +2,6 @@ import request from '@/utils/request';
 import { IManager } from '@/interfaces/IManager';
 import { PageableData } from '@/interfaces/ITableList';
 import { parsePagination } from '@/utils/parser';
-import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
-
 export async function listManager(page: number = 1, size: number = 20, extra: any): Promise<PageableData<IManager>> {
   return await request('/api/managers', {
     method: 'GET',
@@ -53,11 +51,6 @@ export async function infoManager(id: number): Promise<IManager> {
   });
 }
 
-export async function listManagerCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/common-option-types/manager`, {
-    method: 'GET',
-  });
-}
 
 export const ManagerKeyMap = {
   name: '姓名',
@@ -66,6 +59,8 @@ export const ManagerKeyMap = {
   gender: '性别',
   mobile: '联系方式',
   remark: '备注',
+  managerDutyId: '人员职位',
   managerDutyName: '人员职位',
   managerPositionName: '人员类型',
+  managerPositionId: '人员类型',
 };

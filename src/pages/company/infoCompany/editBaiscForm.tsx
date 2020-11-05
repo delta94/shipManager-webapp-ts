@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Select, Button, message } from 'antd';
-import { CompanyKeyMap as CompanyKeys, listCompanyCategoryType, updateCompanyInfo } from '@/services/companyService';
+import { CompanyKeyMap as CompanyKeys, updateCompanyInfo } from '@/services/companyService';
 import { useRequest } from 'umi';
 import styles from './style.less';
 import { ICompany } from '@/interfaces/ICompany';
+import { listOptions } from '@/services/globalService';
 
 interface EditBasicFormProps {
   company?: ICompany;
@@ -14,9 +15,10 @@ interface EditBasicFormProps {
 const EditBasicForm: React.FC<EditBasicFormProps> = ({ company, onUpdate, onCancel }) => {
   const [form] = Form.useForm();
 
-  const { data: companyCategoryType } = useRequest(listCompanyCategoryType, {
-    cacheKey: 'company_category_type',
+  const { data: companyCategoryType } = useRequest(listOptions, {
     manual: false,
+    defaultParams: [['CompanyType', 'CompanyCertType', 'IssueDepartmentType']],
+    cacheKey: 'company_category_type'
   });
 
   const { loading, run: updateCompany } = useRequest(updateCompanyInfo, {

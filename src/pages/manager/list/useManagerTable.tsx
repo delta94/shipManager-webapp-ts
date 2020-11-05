@@ -1,10 +1,11 @@
-import { ProColumns } from '@ant-design/pro-table';
+import { ProColumns, SearchConfig } from '@ant-design/pro-table';
 import { IManager, IManagerDutyType, IManagerPositionType } from '@/interfaces/IManager';
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Divider, Popconfirm, Select } from 'antd';
 import hooks from './hooks';
 import { ManagerKeyMap, listManager } from '@/services/managerService';
 import { IPageableFilter } from '@/interfaces/ITableList';
+import useCreation from '@/hooks/useCreation';
 
 interface IUseManagerTableDeps {
   positionTypes?: IManagerPositionType[];
@@ -14,55 +15,57 @@ interface IUseManagerTableDeps {
 interface IUseManagerTableExport {
   columns: ProColumns<IManager>[];
   request: Function;
+  actionRef: React.RefObject<ActionType>;
+  search: SearchConfig;
 }
 
 export default function useManagerTable(options: IUseManagerTableDeps): IUseManagerTableExport {
+  const actionRef = useRef<ActionType>();
+
+  const searchConfig = useCreation<SearchConfig>(() => {
+    return {
+      span: 6,
+      defaultCollapsed: false,
+    };
+  }, []);
+
   const columns = useMemo(() => {
     return [
       {
         title: ManagerKeyMap.name,
         dataIndex: 'name',
+        search: true,
+        order: 5,
       },
       {
         title: ManagerKeyMap.identityNumber,
         dataIndex: 'identityNumber',
-        hideInSearch: true,
+        search: true,
+        order: 4,
       },
       {
         title: ManagerKeyMap.gender,
         dataIndex: 'gender',
-        hideInSearch: true,
-        render(value) {
-          return value == 0 ? '男' : '女'
-        }
-      },
-      {
-        title: ManagerKeyMap.managerPositionName,
-        hideInTable: true,
-        hideInSearch: false,
-        dataIndex: 'managerPositionId',
-        renderFormItem: (item, props) => {
-          return (
-            <Select placeholder="请选择类型" onSelect={props.onSelect}>
-              <Select.Option key={99} value={-1}>
-                不限类型
-              </Select.Option>
-              {options.positionTypes?.map((item, index) => {
-                return (
-                  <Select.Option value={item.id} key={index}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          );
+        search: {
+          transform: (val) => {
+            if (val == 2) return {};
+            return {
+              'gender.equals': parseInt(val),
+            };
+          },
+        },
+
+        valueEnum: {
+          0: '男',
+          1: '女',
+          2: '不限',
         },
       },
 
       {
         title: ManagerKeyMap.managerDutyName,
         hideInTable: true,
-        hideInSearch: false,
+        search: false,
         dataIndex: 'managerDutyId',
         renderFormItem: (item, props) => {
           return (
@@ -82,23 +85,14 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         },
       },
       {
-        title: ManagerKeyMap.managerPositionName,
-        dataIndex: 'managerPositionName',
-        hideInSearch: true,
-      },
-      {
-        title: ManagerKeyMap.managerDutyName,
-        dataIndex: 'managerDutyName',
-        hideInSearch: true,
-      },
-      {
         title: ManagerKeyMap.educationLevel,
         dataIndex: 'educationLevel',
-        hideInSearch: true,
+        search: true,
       },
       {
         title: ManagerKeyMap.mobile,
         dataIndex: 'mobile',
+        search: true,
       },
       {
         title: '操作',
@@ -124,28 +118,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
   }, [options.positionTypes, options.dutyTypes]);
 
   const requestManagerList = async (params: IPageableFilter<IManager>) => {
-    let { current = 0, pageSize = 20 } = params;
-    let extra = {};
-
-    if (params.name !== undefined) {
-      extra['name.contains'] = params.name;
-    }
-
-    if (params.mobile !== undefined) {
-      extra['mobile.contains'] = params.mobile;
-    }
-
-    if (params.identityNumber !== undefined) {
-      extra['identityNumber.contains'] = params.identityNumber;
-    }
-
-    if (params.managerDutyId !== undefined && params.managerDutyId != -1) {
-      extra['managerDutyId.equals'] = params.managerDutyId;
-    }
-
-    if (params.managerPositionId !== undefined && params.managerPositionId != -1) {
-      extra['managerPositionId.equals'] = params.managerPositionId;
-    }
+    let { current = 0, pageSize = 20, ...extra } = params;
 
     const data = await listManager(current, pageSize, extra);
 
@@ -158,6 +131,8 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
 
   return {
     columns,
+    search: searchConfig,
+    actionRef,
     request: requestManagerList,
   };
 }

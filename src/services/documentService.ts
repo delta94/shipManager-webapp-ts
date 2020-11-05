@@ -2,7 +2,6 @@ import request from '@/utils/request';
 import { IDocument, ITemplateDTO } from '@/interfaces/IDocument';
 import { PageableData } from '@/interfaces/ITableList';
 import { parsePagination } from '@/utils/parser';
-import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 
 export async function listDocument(page: number = 1, size: number = 20, extra: any): Promise<PageableData<IDocument>> {
   return await request('/api/documents', {
@@ -51,12 +50,6 @@ export async function generateDocument(id: string, data: ITemplateDTO): Promise<
   return request(`/api/documents/generate/${id}`, {
     method: 'POST',
     data: data,
-  });
-}
-
-export async function listDocumentCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`api/common-option-types/document`, {
-    method: 'GET',
   });
 }
 

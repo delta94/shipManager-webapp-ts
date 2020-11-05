@@ -4,13 +4,14 @@ import { PageHeaderWrapper, FooterToolbar } from '@ant-design/pro-layout';
 import { Button, Card, Col, DatePicker, Form, Input, Radio, Popover, Row, Select, message } from 'antd';
 import { IRouteComponentProps } from 'umi';
 import { createSailor } from '@/services/sailorService';
-import { listSailorCategory, SailorKeyMap } from '@/services/sailorService';
+import { SailorKeyMap } from '@/services/sailorService';
 import { useRequest } from 'umi';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import SailorCertList from './sailorCertList';
 import { formatUploadFileToOSSFiles, transferMomentToString } from '@/utils/parser';
 import { ISailor, ISailorCert } from '@/interfaces/ISailor';
 import { listShipMeta } from '@/services/shipService';
+import { listOptions } from '@/services/globalService';
 
 const { Option } = Select;
 
@@ -22,9 +23,10 @@ interface ErrorField {
 const CreateSailor: React.FC<IRouteComponentProps> = ({ history }) => {
   const [form] = Form.useForm();
 
-  const { data: categoryTypes } = useRequest(listSailorCategory, {
+  const { data: categoryTypes } = useRequest(listOptions, {
     manual: false,
-    cacheKey: 'manager_category_type',
+    defaultParams: [['SailorDutyType', 'SailorCertType', 'IssueDepartmentType']],
+    cacheKey: 'sailor_category_type',
   });
 
   const { data: shipMeta } = useRequest(listShipMeta, {
@@ -95,14 +97,14 @@ const CreateSailor: React.FC<IRouteComponentProps> = ({ history }) => {
     values = transferMomentToString(values);
     if (values.sailorCerts) {
       values.valuesCerts = values.sailorCerts.map((item: ISailorCert) => {
-        formatUploadFileToOSSFiles(item);
+        formatUploadFileToOSSFiles(item, 'Sailor');
         if (item.id && item.id.toString().startsWith('new_')) {
           delete item.id;
         }
         return item;
       });
     } else {
-      values.sailorCerts = []
+      values.sailorCerts = [];
     }
     run(values as ISailor);
   };
@@ -305,11 +307,12 @@ const CreateSailor: React.FC<IRouteComponentProps> = ({ history }) => {
                 ]}
               >
                 <Select placeholder={`请选择${SailorKeyMap.sailorDutyTypeName}`}>
-                  {categoryTypes?.SailorDutyType?.map((item, index) => (
-                    <Option value={item.id} key={index}>
-                      {item.name}
-                    </Option>
-                  ))}
+                  {categoryTypes &&
+                    categoryTypes.SailorDutyType?.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
                 </Select>
               </Form.Item>
             </Col>

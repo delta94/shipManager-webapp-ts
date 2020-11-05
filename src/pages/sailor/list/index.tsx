@@ -3,11 +3,12 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
 import { useRequest, IRouteComponentProps } from 'umi';
-import { deleteSailor, listSailorCategory } from '@/services/sailorService';
+import { deleteSailor } from '@/services/sailorService';
 import { ISailor } from '@/interfaces/ISailor';
 import useSailorTable from './useSailorTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from './hooks';
+import { listOptions } from '@/services/globalService';
 
 const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
   const actionRef = useRef<ActionType>();
@@ -41,8 +42,9 @@ const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
     };
   }, []);
 
-  const { data: sailorCategory } = useRequest(listSailorCategory, {
+  const { data: sailorCategory } = useRequest(listOptions, {
     manual: false,
+    defaultParams: [['SailorDutyType', 'SailorCertType', 'IssueDepartmentType']],
     cacheKey: 'sailor_category_type',
   });
 

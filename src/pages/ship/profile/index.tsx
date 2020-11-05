@@ -1,5 +1,5 @@
 import React from 'react';
-import { infoShip, listShipCategory, ShipKeyMap } from '@/services/shipService';
+import { infoShip, ShipKeyMap } from '@/services/shipService';
 import { useRequest, IRouteComponentProps } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProList from '@ant-design/pro-list';
@@ -21,6 +21,7 @@ import { ISailor } from '@/interfaces/ISailor';
 import useMachineTable from '@/pages/ship/profile/useMachineTable';
 import useMachineForm from '@/pages/ship/profile/useMachineForm';
 import EditMachineForm from '@/pages/ship/edit/editMachineForm';
+import { listOptions } from '@/services/globalService';
 
 const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) => {
   const shipId = parseInt(match.params.id) || 0;
@@ -31,7 +32,18 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
     defaultParams: [shipId],
   });
 
-  const { data: shipCategoryType } = useRequest(listShipCategory, {
+  const { data: shipCategoryType } = useRequest(listOptions, {
+    manual: false,
+    defaultParams: [
+      [
+        'ShipBusinessAreaType',
+        'ShipMaterialType',
+        'ShipType',
+        'ShipLicenseType',
+        'IssueDepartmentType',
+        'ShipMachineType',
+      ],
+    ],
     cacheKey: 'ship_category_type',
   });
 
@@ -132,7 +144,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           <Button
             type="link"
             onClick={() => {
-              onShowEditPayload({ shipId: shipId});
+              onShowEditPayload({ shipId: shipId });
             }}
           >
             新增

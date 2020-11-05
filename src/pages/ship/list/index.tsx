@@ -3,7 +3,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
 import { useRequest } from 'umi';
-import { deleteShip, listShipCategory } from '@/services/shipService';
+import { deleteShip } from '@/services/shipService';
+import { listOptions } from '@/services/globalService';
 import { IShip } from '@/interfaces/IShip';
 import useShipTable from './useShipTable';
 import { PlusOutlined } from '@ant-design/icons';
@@ -40,8 +41,18 @@ const ShipList: React.FC = () => {
     };
   }, []);
 
-  const { data: shipCategoryType } = useRequest(listShipCategory, {
+  const { data: shipCategoryType } = useRequest(listOptions, {
     manual: false,
+    defaultParams: [
+      [
+        'ShipBusinessAreaType',
+        'ShipMaterialType',
+        'ShipType',
+        'ShipLicenseType',
+        'IssueDepartmentType',
+        'ShipMachineType',
+      ],
+    ],
     cacheKey: 'ship_category_type',
   });
 

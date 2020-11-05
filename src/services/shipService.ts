@@ -1,7 +1,6 @@
 import request from '@/utils/request';
 import { IShip, IShipLicense, IShipMachine, IShipPayload } from '@/interfaces/IShip';
 import { PageableData } from '@/interfaces/ITableList';
-import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 import { parsePagination } from '@/utils/parser';
 
 export async function listShip(page: number = 0, size: number = 10, extra: object): Promise<PageableData<IShip>> {
@@ -44,12 +43,6 @@ export async function updateShip(data: Partial<IShip>): Promise<IShip> {
   return request(`/api/ships/`, {
     method: 'PUT',
     data: data,
-  });
-}
-
-export async function listShipCategory(): Promise<Record<ICategory, ICommonOptionType[]>> {
-  return request(`/api/common-option-types/ship`, {
-    method: 'GET',
   });
 }
 
