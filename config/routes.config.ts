@@ -55,6 +55,12 @@ export default [
                 path: '/ship/create',
                 component: './ship/create',
               },
+              {
+                name: '营运证详情',
+                path: '/ship/license/:id',
+                component: './ship/infoLicense',
+                hideInMenu: true,
+              }
             ],
           },
           {

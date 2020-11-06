@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable, { ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
 import { useRequest, IRouteComponentProps } from 'umi';
 import { deleteSailor } from '@/services/sailorService';
@@ -9,9 +9,10 @@ import useSailorTable from './useSailorTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from './hooks';
 import { listOptions } from '@/services/globalService';
+import { ProCoreActionType } from '@ant-design/pro-utils';
 
 const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
-  const actionRef = useRef<ActionType>();
+  const actionRef = useRef<ProCoreActionType>();
 
   const { run: deleteSailorRecord } = useRequest(deleteSailor, {
     manual: true,

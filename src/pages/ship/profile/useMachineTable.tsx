@@ -69,8 +69,6 @@ export default function useMachineTable(option: IUseMachineTableDeps): IUseMachi
         key: 'action',
         render: (text: any, record: IShipMachine) => (
           <>
-            <a onClick={() => hooks.InfoShipMachine.call(record)}>详情</a>
-            <Divider type="vertical" />
             <a onClick={() => hooks.EditShipMachine.call(record)}>修改</a>
             <Divider type="vertical" />
             <span>

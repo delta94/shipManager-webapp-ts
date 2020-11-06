@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { IShipLicense } from '@/interfaces/IShip';
-import { useRequest } from 'umi';
+import { useRequest, useHistory } from 'umi';
 import useToggle from '@/hooks/useToggle';
 import hooks from '@/pages/ship/profile/hooks';
 import { deleteShipLicense } from '@/services/shipService';
@@ -20,6 +20,7 @@ interface IUseLicenseFormExport {
 export default function useLicenseForm(option: IUseLicenseFormDeps): IUseLicenseFormExport {
   const [editLicense, setEditLicense] = useState<Partial<IShipLicense>>();
   const [state, { setLeft, setRight }] = useToggle(false);
+  const history = useHistory();
 
   const { run } = useRequest(deleteShipLicense, {
     manual: true,
@@ -33,6 +34,10 @@ export default function useLicenseForm(option: IUseLicenseFormDeps): IUseLicense
   });
 
   useEffect(() => {
+    const unTapInfoLicense = hooks.InfoShipLicense.tap((license) => {
+      onInfoLicense(license.id)
+    });
+
     const unTapEditLicense = hooks.EditShipLicense.tap((license) => {
       setEditLicense(license);
       setRight();
@@ -43,9 +48,14 @@ export default function useLicenseForm(option: IUseLicenseFormDeps): IUseLicense
     });
 
     return () => {
+      unTapInfoLicense();
       unTapEditLicense();
       unTapDeleteLicense();
     };
+  }, []);
+
+  const onInfoLicense = useCallback((id: number) => {
+    history.push(`/ship/license/${id}`);
   }, []);
 
   const onClose = useCallback(() => {

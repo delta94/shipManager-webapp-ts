@@ -43,7 +43,7 @@ const EditLicenseForm: React.FC<EditPayloadFormProps> = ({
   };
 
   const onFinish = (values: any) => {
-    let license = formatUploadFileToOSSFiles(values) as IShipLicense;
+    let license = formatUploadFileToOSSFiles(values, "ShipLicense") as IShipLicense;
     license = dateFormatterToString(license);
     if (runSave) {
       updateShipLicenseInfo(license);

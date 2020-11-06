@@ -1,4 +1,4 @@
-import { ProColumns, SearchConfig } from '@ant-design/pro-table';
+import { ProColumns, ActionType } from '@ant-design/pro-table';
 import { IManager, IManagerDutyType, IManagerPositionType } from '@/interfaces/IManager';
 import React, { useMemo, useRef } from 'react';
 import { Divider, Popconfirm, Select } from 'antd';
@@ -6,6 +6,7 @@ import hooks from './hooks';
 import { ManagerKeyMap, listManager } from '@/services/managerService';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import useCreation from '@/hooks/useCreation';
+import { SearchConfig } from '@ant-design/pro-table/lib/Form';
 
 interface IUseManagerTableDeps {
   positionTypes?: IManagerPositionType[];
@@ -15,7 +16,7 @@ interface IUseManagerTableDeps {
 interface IUseManagerTableExport {
   columns: ProColumns<IManager>[];
   request: Function;
-  actionRef: React.RefObject<ActionType>;
+  actionRef: React.RefObject<ActionType | undefined>;
   search: SearchConfig;
 }
 
@@ -132,7 +133,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
   return {
     columns,
     search: searchConfig,
-    actionRef,
+    actionRef: actionRef,
     request: requestManagerList,
   };
 }

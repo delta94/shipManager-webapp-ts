@@ -3,19 +3,18 @@ import { SailorKeyMap, unlinkSailor } from '@/services/sailorService';
 import hooks from '@/pages/ship/profile/hooks';
 import { Badge, Divider, Popconfirm, message } from 'antd';
 import { ISailor } from '@/interfaces/ISailor';
-import { ActionType } from '@ant-design/pro-table';
 import { useRequest, history } from 'umi';
+import { ProCoreActionType } from '@ant-design/pro-utils';
 
-interface IUseSailorTableDeps {
-  shipId: number;
-}
+interface IUseSailorTableDeps {}
 
 interface IUseSailorTableExport {
   columns: any;
+  actionRef: React.MutableRefObject<ProCoreActionType | undefined>;
 }
 
-export default function useSailorTable(option: IUseSailorTableDeps): IUseSailorTableExport {
-  const actionRef = useRef<ActionType>();
+export default function useSailorTable(option?: IUseSailorTableDeps): IUseSailorTableExport {
+  const actionRef = useRef<ProCoreActionType>();
 
   const { run } = useRequest(unlinkSailor, {
     manual: true,
@@ -95,5 +94,6 @@ export default function useSailorTable(option: IUseSailorTableDeps): IUseSailorT
 
   return {
     columns,
+    actionRef
   };
 }

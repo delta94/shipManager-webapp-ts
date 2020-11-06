@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable, { ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
 import { useRequest } from 'umi';
 import { deleteShip } from '@/services/shipService';
@@ -12,7 +12,27 @@ import { history } from 'umi';
 import hooks from './hooks';
 
 const ShipList: React.FC = () => {
-  const actionRef = useRef<ActionType>();
+
+  const { data: shipCategoryType } = useRequest(listOptions, {
+    manual: false,
+    defaultParams: [
+      [
+        'ShipBusinessAreaType',
+        'ShipMaterialType',
+        'ShipType',
+        'ShipLicenseType',
+        'IssueDepartmentType',
+        'ShipMachineType',
+      ],
+    ],
+    cacheKey: 'ship_category_type',
+  });
+
+  const { columns, request, search, actionRef } = useShipTable({
+    shipType: shipCategoryType?.ShipType ?? [],
+    shipMaterialType: shipCategoryType?.ShipMaterialType ?? [],
+    shipBusinessAreaType: shipCategoryType?.ShipBusinessAreaType ?? [],
+  });
 
   const { run: deleteShipRecord } = useRequest(deleteShip, {
     manual: true,
@@ -41,27 +61,6 @@ const ShipList: React.FC = () => {
     };
   }, []);
 
-  const { data: shipCategoryType } = useRequest(listOptions, {
-    manual: false,
-    defaultParams: [
-      [
-        'ShipBusinessAreaType',
-        'ShipMaterialType',
-        'ShipType',
-        'ShipLicenseType',
-        'IssueDepartmentType',
-        'ShipMachineType',
-      ],
-    ],
-    cacheKey: 'ship_category_type',
-  });
-
-  const { columns, request } = useShipTable({
-    shipType: shipCategoryType?.ShipType ?? [],
-    shipMaterialType: shipCategoryType?.ShipMaterialType ?? [],
-    shipBusinessAreaType: shipCategoryType?.ShipBusinessAreaType ?? [],
-  });
-
   const onCreateShip = useCallback(() => {
     history.push('/ship/create');
   }, []);
@@ -72,12 +71,12 @@ const ShipList: React.FC = () => {
         <ProTable<IShip>
           actionRef={actionRef}
           rowKey="id"
+          search={search}
           columns={columns}
-          //@ts-ignore
           request={request}
           dateFormatter="string"
           toolBarRender={() => [
-            <Button type="primary" onClick={onCreateShip}>
+            <Button type="primary" onClick={onCreateShip} key="create">
               <PlusOutlined />
               新建
             </Button>,

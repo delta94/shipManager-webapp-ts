@@ -54,7 +54,7 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
     machineTypes: shipCategoryType?.ShipMachineType,
   });
 
-  const sailorTableProps = useSailorTable({ sailors: ship?.sailors });
+  const sailorTableProps = useSailorTable();
 
   const { editShipBasic, editBasicVisible, onCloseEditBasic, onShowEditBasic } = useBasicForm({ ship });
 
@@ -238,10 +238,10 @@ const ShipProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match }) 
           search={false}
           options={false}
           pagination={false}
-          columns={sailorTableProps.columns}
-          //@ts-ignore
           dateFormatter="string"
           dataSource={ship?.sailors}
+          actionRef={sailorTableProps.actionRef}
+          columns={sailorTableProps.columns}
         />
       </Card>
 

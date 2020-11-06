@@ -1,12 +1,6 @@
 import { ISailorCert } from '@/interfaces/ISailor';
 import request from '@/utils/request';
 
-export async function getSailorCertInfo(): Promise<ISailorCert[]> {
-  return await request(`/api/sailor-certs/`, {
-    method: 'GET',
-  });
-}
-
 export async function infoSailorCertInfo(id: number): Promise<ISailorCert> {
   return await request(`/api/sailor-certs/${id}`, {
     method: 'GET',

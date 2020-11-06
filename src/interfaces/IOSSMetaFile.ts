@@ -10,5 +10,5 @@ export default interface IOSSMetaFile {
   category: IOSSMetaCategory
 }
 
-export type IOSSMetaCategory = "Company" | "Manager"  | "Sailor" | "Ship"
+export type IOSSMetaCategory = "Company" | "Manager" | "Sailor" | "Ship" | "ShipLicense"
 

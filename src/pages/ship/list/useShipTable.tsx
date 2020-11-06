@@ -1,10 +1,13 @@
 import { ProColumns } from '@ant-design/pro-table';
-import React, { useMemo } from 'react';
+import { ProCoreActionType } from '@ant-design/pro-utils';
+import React, { useMemo, useRef } from 'react';
 import { Divider, Popconfirm, Select } from 'antd';
 import hooks from './hooks';
 import { ShipKeyMap, listShip } from '@/services/shipService';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import { IShip, IShipBusinessAreaType, IShipMaterialType, IShipType } from '@/interfaces/IShip';
+import { SearchConfig } from '@ant-design/pro-table/lib/Form';
+import useCreation from '@/hooks/useCreation';
 
 interface IUseShipTableDeps {
   shipType: IShipType[];
@@ -14,31 +17,56 @@ interface IUseShipTableDeps {
 
 interface IUseShipTableExport {
   columns: ProColumns<IShip>[];
-  request: Function;
+  request: any;
+  search: SearchConfig;
+  actionRef: React.MutableRefObject<ProCoreActionType | undefined>;
 }
 
 export default function useShipTable(options: IUseShipTableDeps): IUseShipTableExport {
+  const actionRef = useRef<ProCoreActionType>();
+
+  const searchConfig = useCreation<SearchConfig>(() => {
+    return {
+      span: 6,
+      defaultCollapsed: false,
+    };
+  }, []);
+
   const columns = useMemo(() => {
     return [
       {
         title: ShipKeyMap.name,
         dataIndex: 'name',
+        search: {
+          transform: (val) => {
+            return {
+              'name.contains': val,
+            };
+          },
+        },
       },
       {
         title: ShipKeyMap.carrierIdentifier,
         dataIndex: 'carrierIdentifier',
-        hideInSearch: true,
+        search: {
+          transform: (val) => {
+            return {
+              'carrierIdentifier.contains': val,
+            };
+          },
+        },
       },
       {
         title: ShipKeyMap.shipTypeName,
         dataIndex: 'shipTypeName',
-        hideInSearch: true,
-      },
-      {
-        title: ShipKeyMap.shipTypeName,
-        hideInTable: true,
-        hideInSearch: false,
-        dataIndex: 'shipTypeId',
+        search: {
+          transform: (val) => {
+            if (val == -1) return undefined;
+            return {
+              'shipType.equals': val,
+            };
+          },
+        },
         renderFormItem: (item, props) => {
           return (
             <Select placeholder="请选择类型" onSelect={props.onSelect}>
@@ -59,12 +87,12 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
       {
         title: ShipKeyMap.owner,
         dataIndex: 'owner',
-        hideInSearch: true,
+        search: false,
       },
       {
         title: ShipKeyMap.grossTone,
         dataIndex: 'grossTone',
-        hideInSearch: true,
+        search: false,
         render: (val: number) => `${val} 吨`,
       },
       {
@@ -85,16 +113,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
   }, [options.shipType]);
 
   const requestList = async (params: IPageableFilter<IShip>) => {
-    let { current = 0, pageSize = 20 } = params;
-    let extra = {};
-
-    if (params.name !== undefined) {
-      extra['name.contains'] = params.name;
-    }
-
-    if (params.shipTypeId !== undefined && params.shipTypeId != -1) {
-      extra['shipType.equals'] = params.shipTypeId;
-    }
+    let { current = 0, pageSize = 20, ...extra } = params;
 
     const data = await listShip(current, pageSize, extra);
 
@@ -108,5 +127,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
   return {
     columns,
     request: requestList,
+    search: searchConfig,
+    actionRef: actionRef,
   };
 }
