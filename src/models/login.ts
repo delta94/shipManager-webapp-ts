@@ -3,9 +3,9 @@ import { history, Reducer, Effect } from 'umi';
 import { accountLogin, getCurrentUser } from '@/services/userService';
 import { LoginResult } from '@/interfaces/ILogin';
 import IAccount, { IAccountRole } from '@/interfaces/IAccount';
-import { setAuthority, updateToken } from '@/utils/authority';
+import { setAuthority, updateToken, updateUser } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
-import {getPageQuery} from "@/utils/utils";
+import { getPageQuery } from '@/utils/utils';
 
 export interface LoginStateType {
   status?: 'ok' | 'error';
@@ -33,12 +33,12 @@ const LoginModel: LoginModelType = {
   },
 
   effects: {
-
     *login({ payload }, { call, put }) {
       try {
         const resp1: LoginResult = yield call(accountLogin, payload);
 
         updateToken(resp1.id_token);
+        updateUser(resp1.user);
 
         yield put({
           type: 'changeLoginStatus',
@@ -79,10 +79,10 @@ const LoginModel: LoginModelType = {
         yield put({
           type: 'changeLoginStatus',
           payload: {
-            status: 'error'
+            status: 'error',
           },
         });
-        console.error(e)
+        console.error(e);
       }
     },
 
@@ -98,6 +98,7 @@ const LoginModel: LoginModelType = {
         });
         reloadAuthorized();
         updateToken('');
+        updateUser(undefined);
       }
     },
   },

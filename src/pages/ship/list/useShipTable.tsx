@@ -1,18 +1,18 @@
 import { ProColumns } from '@ant-design/pro-table';
 import { ProCoreActionType } from '@ant-design/pro-utils';
-import React, { useMemo, useRef } from 'react';
-import { Divider, Popconfirm, Select } from 'antd';
+import React, { useRef, useMemo } from 'react';
+import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
 import { ShipKeyMap, listShip } from '@/services/shipService';
 import { IPageableFilter } from '@/interfaces/ITableList';
-import { IShip, IShipBusinessAreaType, IShipMaterialType, IShipType } from '@/interfaces/IShip';
+import { IShip } from '@/interfaces/IShip';
 import { SearchConfig } from '@ant-design/pro-table/lib/Form';
 import useCreation from '@/hooks/useCreation';
+import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
+import CategorySelect from '@/components/CategorySelect';
 
 interface IUseShipTableDeps {
-  shipType: IShipType[];
-  shipMaterialType: IShipMaterialType[];
-  shipBusinessAreaType: IShipBusinessAreaType[];
+  shipCategoryType?: Record<ICategory, ICommonOptionType[]>;
 }
 
 interface IUseShipTableExport {
@@ -68,20 +68,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
           },
         },
         renderFormItem: (item, props) => {
-          return (
-            <Select placeholder="请选择类型" onSelect={props.onSelect}>
-              <Select.Option key={99} value={-1}>
-                不限类型
-              </Select.Option>
-              {options.shipType?.map((item, index) => {
-                return (
-                  <Select.Option value={item.id} key={index}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          );
+          return <CategorySelect placeholder="请选择类型" category="ShipType" onSelect={props.onSelect} />;
         },
       },
       {
@@ -110,7 +97,7 @@ export default function useShipTable(options: IUseShipTableDeps): IUseShipTableE
         ),
       },
     ] as ProColumns<IShip>[];
-  }, [options.shipType]);
+  }, [options.shipCategoryType]);
 
   const requestList = async (params: IPageableFilter<IShip>) => {
     let { current = 0, pageSize = 20, ...extra } = params;

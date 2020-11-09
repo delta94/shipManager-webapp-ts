@@ -7,7 +7,6 @@ export default defineConfig({
     type: 'browser',
   },
   antd: {},
-  devtool: false,
   dva: {
     hmr: true,
   },

@@ -12,9 +12,7 @@ import { history } from 'umi';
 import hooks from './hooks';
 
 const ShipList: React.FC = () => {
-
   const { data: shipCategoryType } = useRequest(listOptions, {
-    manual: false,
     defaultParams: [
       [
         'ShipBusinessAreaType',
@@ -28,10 +26,8 @@ const ShipList: React.FC = () => {
     cacheKey: 'ship_category_type',
   });
 
-  const { columns, request, search, actionRef } = useShipTable({
-    shipType: shipCategoryType?.ShipType ?? [],
-    shipMaterialType: shipCategoryType?.ShipMaterialType ?? [],
-    shipBusinessAreaType: shipCategoryType?.ShipBusinessAreaType ?? [],
+  const { columns, request, search, actionRef, formRef } = useShipTable({
+    shipCategoryType: shipCategoryType,
   });
 
   const { run: deleteShipRecord } = useRequest(deleteShip, {
@@ -71,6 +67,7 @@ const ShipList: React.FC = () => {
         <ProTable<IShip>
           actionRef={actionRef}
           rowKey="id"
+          formRef={formRef}
           search={search}
           columns={columns}
           request={request}

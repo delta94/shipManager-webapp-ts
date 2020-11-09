@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { IStsToken } from '@/interfaces/IStsToken';
-import {ICategory, ICommonOptionType} from "@/interfaces/ICategory";
+import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 
 export async function getStsToken(): Promise<IStsToken> {
   return request('/api/aliyun/oss/token', {
@@ -12,7 +12,13 @@ export async function listOptions(categories: ICategory[]): Promise<Record<ICate
   return request(`/api/common-option-types`, {
     method: 'GET',
     params: {
-      category: categories
-    }
+      category: categories,
+    },
+  });
+}
+
+export async function getOptions(category: ICategory): Promise<ICommonOptionType[]> {
+  return request(`/api/common-option-types/${category}`, {
+    method: 'GET',
   });
 }

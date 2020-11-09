@@ -7,11 +7,10 @@ import IOSSMetaFile from '@/interfaces/IOSSMetaFile';
 import { FileImageOutlined } from '@ant-design/icons';
 import { bytesToSize } from '@/utils/utils';
 
-const SailorCert: React.FC<IRouteComponentProps<{ id: string }>> = ({
-                                                                           match: {
-                                                                             params: { id },
-                                                                           },
-                                                                         }) => {
+type SailorLicenseProps = IRouteComponentProps<{ id: string }>
+
+const SailorLicense: React.FC<SailorLicenseProps> = ({ match: { params: { id } }}) => {
+
   const { loading, data } = useRequest(infoSailorCertInfo, {
     defaultParams: [parseInt(id)],
     refreshDeps: [id],
@@ -39,8 +38,7 @@ const SailorCert: React.FC<IRouteComponentProps<{ id: string }>> = ({
           rowKey="id"
           loading={loading}
           grid={{
-            gutter: 16,
-            column: 4,
+            column: 1,
           }}
           dataSource={data?.ossFiles}
           renderItem={(item) => (
@@ -62,4 +60,4 @@ const SailorCert: React.FC<IRouteComponentProps<{ id: string }>> = ({
   );
 };
 
-export default SailorCert;
+export default SailorLicense;
