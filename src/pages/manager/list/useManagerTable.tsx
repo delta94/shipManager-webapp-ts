@@ -1,12 +1,13 @@
 import { ProColumns, ActionType } from '@ant-design/pro-table';
 import { IManager, IManagerDutyType, IManagerPositionType } from '@/interfaces/IManager';
 import React, { useMemo, useRef } from 'react';
-import { Divider, Popconfirm, Select } from 'antd';
+import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
 import { ManagerKeyMap, listManager } from '@/services/managerService';
 import { IPageableFilter } from '@/interfaces/ITableList';
 import useCreation from '@/hooks/useCreation';
 import { SearchConfig } from '@ant-design/pro-table/lib/Form';
+import CategorySelect from '@/components/CategorySelect';
 
 interface IUseManagerTableDeps {
   positionTypes?: IManagerPositionType[];
@@ -25,8 +26,8 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
 
   const searchConfig = useCreation<SearchConfig>(() => {
     return {
-      span: 6,
-      defaultCollapsed: false,
+      span: 8,
+      defaultCollapsed: true,
     };
   }, []);
 
@@ -35,65 +36,92 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
       {
         title: ManagerKeyMap.name,
         dataIndex: 'name',
-        search: true,
+        search: {
+          transform: (val) => {
+            if (!val) return undefined;
+            return {
+              'name.contains': val,
+            };
+          },
+        },
         order: 5,
       },
       {
         title: ManagerKeyMap.identityNumber,
         dataIndex: 'identityNumber',
-        search: true,
+        search: {
+          transform: (val) => {
+            if (!val) return undefined;
+            return {
+              'identityNumber.contains': val,
+            };
+          },
+        },
         order: 4,
       },
       {
         title: ManagerKeyMap.gender,
         dataIndex: 'gender',
-        search: {
-          transform: (val) => {
-            if (val == 2) return {};
-            return {
-              'gender.equals': parseInt(val),
-            };
-          },
-        },
-
+        search: false,
         valueEnum: {
           0: '男',
           1: '女',
           2: '不限',
         },
       },
-
       {
         title: ManagerKeyMap.managerDutyName,
-        hideInTable: true,
-        search: false,
-        dataIndex: 'managerDutyId',
+        dataIndex: 'managerDutyName',
+        search: {
+          transform: (val) => {
+            if (val == -1) return undefined;
+            return {
+              'managerDuty.equals': val,
+            };
+          },
+        },
         renderFormItem: (item, props) => {
-          return (
-            <Select placeholder="请选择类型" onSelect={props.onSelect}>
-              <Select.Option key={99} value={-1}>
-                不限类型
-              </Select.Option>
-              {options.dutyTypes?.map((item, index) => {
-                return (
-                  <Select.Option value={item.id} key={index}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          );
+          return <CategorySelect placeholder="请选择类型" category="ManagerDutyType" onSelect={props.onSelect} />;
+        },
+      },
+      {
+        title: ManagerKeyMap.managerPositionName,
+        dataIndex: 'managerPositionName',
+        search: {
+          transform: (val) => {
+            if (val == -1) return undefined;
+            return {
+              'managerPosition.equals': val,
+            };
+          },
+        },
+        renderFormItem: (item, props) => {
+          return <CategorySelect placeholder="请选择类型" category="ManagerPositionType" onSelect={props.onSelect} />;
         },
       },
       {
         title: ManagerKeyMap.educationLevel,
         dataIndex: 'educationLevel',
-        search: true,
+        search: {
+          transform: (val) => {
+            if (!val) return undefined;
+            return {
+              'educationLevel.contains': val,
+            };
+          },
+        },
       },
       {
         title: ManagerKeyMap.mobile,
         dataIndex: 'mobile',
-        search: true,
+        search: {
+          transform: (val) => {
+            if (!val) return undefined;
+            return {
+              'mobile.contains': val,
+            };
+          },
+        },
       },
       {
         title: '操作',
