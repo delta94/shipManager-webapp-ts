@@ -7,7 +7,6 @@ import { deleteDocument } from '@/services/documentService';
 import { IDocument } from '@/interfaces/IDocument';
 import hooks from './hooks';
 import useDocumentTable from "./useDocumentTable";
-import {listOptions} from "@/services/globalService";
 
 const DocumentList: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -41,15 +40,7 @@ const DocumentList: React.FC = () => {
     };
   }, []);
 
-  const { data: optionTypes } = useRequest(listOptions, {
-    manual: false,
-    defaultParams: [['DocumentCategoryType']],
-    cacheKey: 'document_category_type',
-  });
-
-  const { columns, request } = useDocumentTable({
-    documentCategoryTypes: optionTypes?.DocumentCategoryType ?? []
-  });
+  const { columns, request } = useDocumentTable({});
 
   return (
     <PageHeaderWrapper title="打印表单列表">
@@ -58,7 +49,6 @@ const DocumentList: React.FC = () => {
           actionRef={actionRef}
           rowKey="id"
           columns={columns}
-          //@ts-ignore
           request={request}
           dateFormatter="string"
         />

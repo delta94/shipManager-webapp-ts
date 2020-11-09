@@ -1,19 +1,17 @@
 import { ProColumns } from '@ant-design/pro-table';
 import { IDocument } from '@/interfaces/IDocument';
 import React, { useMemo } from 'react';
-import { Select, Tag } from 'antd';
+import { Tag } from 'antd';
 import hooks from './hooks';
 import { DocumentKeyMap, listDocument } from '@/services/documentService';
 import { IPageableFilter } from '@/interfaces/ITableList';
-import { ICommonOptionType } from '@/interfaces/ICategory';
+import CategorySelect from '@/components/CategorySelect';
 
-interface IUseDocumentTableDeps {
-  documentCategoryTypes: ICommonOptionType[];
-}
+interface IUseDocumentTableDeps {}
 
 interface IUseDocumentTableExport {
   columns: ProColumns<IDocument>[];
-  request: Function;
+  request: any;
 }
 
 export default function useDocumentTable(options: IUseDocumentTableDeps): IUseDocumentTableExport {
@@ -25,32 +23,20 @@ export default function useDocumentTable(options: IUseDocumentTableDeps): IUseDo
       },
       {
         title: DocumentKeyMap.documentCategoryTypeName,
-        hideInTable: true,
-        hideInSearch: false,
-        dataIndex: 'documentCategoryTypeId',
-        renderFormItem: (item, props) => {
-          return (
-            <Select placeholder="请选择类型" onSelect={props.onSelect}>
-              <Select.Option key={99} value={-1}>
-                全部
-              </Select.Option>
-              {options.documentCategoryTypes?.map((item, index) => {
-                return (
-                  <Select.Option value={item.id} key={index}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          );
-        },
-      },
-      {
-        title: DocumentKeyMap.documentCategoryTypeName,
         dataIndex: 'documentCategoryTypeName',
-        hideInSearch: true,
+        search: {
+          transform: (val) => {
+            if (val == -1) return undefined;
+            return {
+              'documentCategoryType.equals': val,
+            };
+          },
+        },
         render(text: string) {
           return <Tag color="blue">{text}</Tag>;
+        },
+        renderFormItem: (item, props) => {
+          return <CategorySelect placeholder="请选择类型" category="DocumentCategoryType" onSelect={props.onSelect} />;
         },
       },
       {
@@ -72,23 +58,10 @@ export default function useDocumentTable(options: IUseDocumentTableDeps): IUseDo
         ),
       },
     ] as ProColumns<IDocument>[];
-  }, [options.documentCategoryTypes]);
+  }, []);
 
   const requestDocumentList = async (params: IPageableFilter<IDocument>) => {
-    let { current = 0, pageSize = 20 } = params;
-    let extra = {};
-
-    if (params.name !== undefined) {
-      extra['name.contains'] = params.name;
-    }
-
-    if (params.uploadBy !== undefined) {
-      extra['mobile.contains'] = params.uploadBy;
-    }
-
-    if (params.documentCategoryTypeId !== undefined && params.documentCategoryTypeId != -1) {
-      extra['documentCategoryTypeId.equals'] = params.documentCategoryTypeId;
-    }
+    let { current = 0, pageSize = 20, ...extra } = params;
 
     const data = await listDocument(current, pageSize, extra);
 
