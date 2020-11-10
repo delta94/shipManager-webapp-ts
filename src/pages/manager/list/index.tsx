@@ -1,32 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Card, message, Modal } from 'antd';
+import { Button, Card, message } from 'antd';
 import { useRequest, history } from 'umi';
 import { deleteManager } from '@/services/managerService';
 import { IManager } from '@/interfaces/IManager';
 import useManagerTable from './useManagerTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from '@/pages/manager/list/hooks';
-import EditManagerForm from '../edit/editManagerForm';
-import useToggle from '@/hooks/useToggle';
-import { listOptions } from '@/services/globalService';
 
 const ManagerList: React.FC = () => {
-  const [editManagerVisible, { setLeft: hideEdit, setRight: showEdit }] = useToggle();
-
-  const [editManager, updateEditManager] = useState<IManager>();
-
-  const { data: managerCategoryType } = useRequest(listOptions, {
-    manual: false,
-    defaultParams: [['ManagerDutyType', 'ManagerPositionType', 'ManagerCertType', 'IssueDepartmentType']],
-    cacheKey: 'manager_category_type',
-  });
-
-  const { columns, request, actionRef, search } = useManagerTable({
-    positionTypes: managerCategoryType?.ManagerPositionType ?? [],
-    dutyTypes: managerCategoryType?.ManagerDutyType ?? [],
-  });
+  const { columns, request, actionRef, search } = useManagerTable({});
 
   const { run: deleteManagerRecord } = useRequest(deleteManager, {
     manual: true,
@@ -40,6 +24,10 @@ const ManagerList: React.FC = () => {
     },
   });
 
+  const onCreate = useCallback(() => {
+    history.push('/person/manager/create');
+  }, []);
+
   useEffect(() => {
     const unTapDeleteManager = hooks.DeleteManager.tap((manager) => {
       deleteManagerRecord(manager.id);
@@ -47,26 +35,10 @@ const ManagerList: React.FC = () => {
     const unTapInfoManager = hooks.InfoManager.tap((manager) => {
       history.push(`/person/manager/profile/${manager.id}`);
     });
-    const unTapEditManager = hooks.EditManager.tap((manager) => {
-      updateEditManager(manager);
-      showEdit();
-    });
     return () => {
       unTapDeleteManager();
       unTapInfoManager();
-      unTapEditManager();
     };
-  }, []);
-
-  const onEditManagerUpdate = useCallback(() => {
-    actionRef.current?.reload();
-    updateEditManager(undefined);
-    hideEdit();
-  }, []);
-
-  const onEditManagerCancel = useCallback(() => {
-    updateEditManager(undefined);
-    hideEdit();
   }, []);
 
   return (
@@ -77,35 +49,16 @@ const ManagerList: React.FC = () => {
           rowKey="id"
           search={search}
           columns={columns}
-          //@ts-ignore
           request={request}
           dateFormatter="string"
           toolBarRender={() => [
-            <Button key="3" onClick={showEdit}>
+            <Button key="3" onClick={onCreate}>
               <PlusOutlined />
               新建
             </Button>,
           ]}
         />
       </Card>
-      <Modal
-        onCancel={onEditManagerCancel}
-        destroyOnClose
-        width={720}
-        footer={null}
-        visible={editManagerVisible}
-        title={editManager ? '编辑管理人员' : '新建管理人员'}
-      >
-        <EditManagerForm
-          positionTypes={managerCategoryType?.ManagerPositionType ?? []}
-          dutyTypes={managerCategoryType?.ManagerDutyType ?? []}
-          issueDepartmentTypes={managerCategoryType?.IssueDepartmentType ?? []}
-          managerCertTypes={managerCategoryType?.ManagerCertType ?? []}
-          onUpdate={onEditManagerUpdate}
-          onCancel={onEditManagerCancel}
-          manager={editManager}
-        />
-      </Modal>
     </PageHeaderWrapper>
   );
 };

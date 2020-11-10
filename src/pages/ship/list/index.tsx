@@ -26,7 +26,7 @@ const ShipList: React.FC = () => {
     cacheKey: 'ship_category_type',
   });
 
-  const { columns, request, search, actionRef, formRef } = useShipTable({
+  const { columns, request, search, actionRef } = useShipTable({
     shipCategoryType: shipCategoryType,
   });
 
@@ -67,7 +67,6 @@ const ShipList: React.FC = () => {
         <ProTable<IShip>
           actionRef={actionRef}
           rowKey="id"
-          formRef={formRef}
           search={search}
           columns={columns}
           request={request}

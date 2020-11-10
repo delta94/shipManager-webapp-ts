@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { Button, Card, message } from 'antd';
@@ -8,20 +8,18 @@ import { ISailor } from '@/interfaces/ISailor';
 import useSailorTable from './useSailorTable';
 import { PlusOutlined } from '@ant-design/icons';
 import hooks from './hooks';
-import { listOptions } from '@/services/globalService';
-import { ProCoreActionType } from '@ant-design/pro-utils';
 
 const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
-  const actionRef = useRef<ProCoreActionType>();
+  const { columns, request, actionRef } = useSailorTable({});
 
   const { run: deleteSailorRecord } = useRequest(deleteSailor, {
     manual: true,
     onSuccess: () => {
       actionRef.current?.reload();
-      message.success('已成功删除管理人员');
+      message.success('已成功删除船员人员');
     },
     onError: (err) => {
-      message.error('删除管理人员时出错');
+      message.error('删除船员人员时出错');
       console.error(err);
     },
   });
@@ -43,16 +41,6 @@ const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
     };
   }, []);
 
-  const { data: sailorCategory } = useRequest(listOptions, {
-    manual: false,
-    defaultParams: [['SailorDutyType', 'SailorCertType', 'IssueDepartmentType']],
-    cacheKey: 'sailor_category_type',
-  });
-
-  const { columns, request } = useSailorTable({
-    dutyTypes: sailorCategory?.SailorDutyType ?? [],
-  });
-
   const onCreateSailor = useCallback(() => {
     history.push(`/person/sailor/create`);
   }, []);
@@ -63,8 +51,8 @@ const SailorList: React.FC<IRouteComponentProps> = ({ history }) => {
         <ProTable<ISailor>
           actionRef={actionRef}
           rowKey="id"
+          search={{ span: 8, labelWidth: "auto" }}
           columns={columns}
-          //@ts-ignore
           request={request}
           dateFormatter="string"
           toolBarRender={() => [

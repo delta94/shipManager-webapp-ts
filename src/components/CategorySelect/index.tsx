@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { getOptions } from '@/services/globalService';
 import { ICategory } from '@/interfaces/ICategory';
 import { useRequest } from 'umi';
 import { SelectProps } from 'antd/lib/select';
+import usePrevious from '@/hooks/usePrevious';
 
 interface CategorySelectProps extends SelectProps<number> {
   category: ICategory;
   value?: number;
   onSelect?: (value: number) => void;
+  onChange?: (value: number) => void;
   showNotChoose?: boolean;
 }
 
 const CategorySelect: React.FC<CategorySelectProps> = ({
   value,
   onSelect,
+  onChange,
   category,
   showNotChoose = true,
   ...restProps
@@ -27,9 +30,21 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
 
   const [selectNumber, setSelectNumber] = useState<number>();
 
+  const previousValue = usePrevious(value);
+
+  useEffect(() => {
+    if (previousValue == undefined && value != undefined) {
+      setSelectNumber(value);
+      triggerChange(value);
+    }
+  }, [previousValue, value]);
+
   const triggerChange = (changedValue: number) => {
     if (onSelect) {
       onSelect(changedValue);
+    }
+    if (onChange) {
+      onChange(changedValue);
     }
   };
 

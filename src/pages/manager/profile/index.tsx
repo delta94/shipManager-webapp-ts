@@ -1,27 +1,50 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { useRequest } from 'umi';
-import { Descriptions, Card, List, Typography, Button } from 'antd';
-import { infoManager, ManagerKeyMap } from '@/services/managerService';
-import { IManagerCert } from '@/interfaces/IManager';
-import { ManagerCertKeyMap } from '@/services/managerCertService';
+import { Descriptions, Card, Button, Table, message, Modal } from 'antd';
+import { infoManager, ManagerKeyMap, updateManager } from '@/services/managerService';
+import { IManager, IManagerCert } from '@/interfaces/IManager';
+import useManagerCertTable from './useManagerCertTable';
+import useManagerEditForm from './useManagerEditForm';
+import EditManagerBasicForm from './editManagerBasicForm';
 
 const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
-  const { data, run: fetchManager, loading } = useRequest(infoManager, {
+  const { data, loading, refresh } = useRequest(infoManager, {
+    defaultParams: [parseInt(params.id)],
+    onError() {
+      message.error('管理人员不存在');
+    },
+  });
+
+  const { run } = useRequest(updateManager, {
     manual: true,
   });
 
-  useEffect(() => {
-    if (params.id) {
-      fetchManager(parseInt(params.id));
-    }
-  }, [params.id]);
+  const { columns } = useManagerCertTable({});
+
+  const { editMangerVisible, editManger, onCloseEditManger, onShowEditManger } = useManagerEditForm({});
+
+  const onSubmit = async (value: Partial<IManager>) => {
+    // @ts-ignore
+    await run(value);
+    await refresh();
+    onCloseEditManger({});
+  };
 
   return (
     <PageHeaderWrapper title="管理人员详情页">
-      <Card bordered={false} loading={loading}>
-        <Descriptions title="基本信息" style={{ marginBottom: 32 }}>
+      <Card
+        title="基本信息"
+        bordered={false}
+        loading={loading}
+        extra={
+          <Button type="link" onClick={() => onShowEditManger({ ...data })}>
+            编辑
+          </Button>
+        }
+      >
+        <Descriptions>
           <Descriptions.Item label={ManagerKeyMap.name}>{data?.name}</Descriptions.Item>
           <Descriptions.Item label={ManagerKeyMap.identityNumber}>{data?.identityNumber}</Descriptions.Item>
           <Descriptions.Item label={ManagerKeyMap.educationLevel}>{data?.educationLevel}</Descriptions.Item>
@@ -32,43 +55,28 @@ const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: 
         </Descriptions>
       </Card>
 
-      <Card style={{ marginTop: 24 }} loading={loading}>
-        <Descriptions title="证书信息" />
-        <List
+      <br />
+
+      <Card title="管理人员证书" extra={<Button type="link">新增证书</Button>}>
+        <Table<IManagerCert>
           rowKey="id"
-          grid={{ gutter: 12, column: 3 }}
+          pagination={false}
+          loading={loading}
           dataSource={data?.managerCerts}
-          renderItem={(item: IManagerCert) => (
-            <List.Item>
-              <Card title={item.name}>
-                <Typography.Text strong>{ManagerCertKeyMap.identityNumber}</Typography.Text>: {item.identityNumber}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.expiredAt}</Typography.Text>: {item.expiredAt}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.issuedAt}</Typography.Text>: {item.issuedAt}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.managerCertTypeName}</Typography.Text>:{' '}
-                {item.managerCertTypeName}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.issueDepartmentTypeName}</Typography.Text>:{' '}
-                {item.issueDepartmentTypeName}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.remark}</Typography.Text>: {item.remark || '无'}
-                <br />
-                <Typography.Text strong>{ManagerCertKeyMap.ossFiles}</Typography.Text>:
-                {item.ossFiles.map((item) => {
-                  return (
-                    <Button type="link" href={item.ossKey} target="_blank">
-                      {item.name}
-                    </Button>
-                  );
-                })}
-                <br />
-              </Card>
-            </List.Item>
-          )}
+          columns={columns}
         />
       </Card>
+
+      <Modal
+        width={640}
+        visible={editMangerVisible}
+        onCancel={onCloseEditManger}
+        destroyOnClose={true}
+        footer={null}
+        title="更新管理人员"
+      >
+        <EditManagerBasicForm manager={editManger} onSubmit={onSubmit} onReset={onCloseEditManger} />
+      </Modal>
     </PageHeaderWrapper>
   );
 };

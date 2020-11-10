@@ -1,5 +1,5 @@
-import { ProColumns, ActionType } from '@ant-design/pro-table';
-import { IManager, IManagerDutyType, IManagerPositionType } from '@/interfaces/IManager';
+import { ProColumns } from '@ant-design/pro-table';
+import { IManager } from '@/interfaces/IManager';
 import React, { useMemo, useRef } from 'react';
 import { Divider, Popconfirm } from 'antd';
 import hooks from './hooks';
@@ -8,21 +8,19 @@ import { IPageableFilter } from '@/interfaces/ITableList';
 import useCreation from '@/hooks/useCreation';
 import { SearchConfig } from '@ant-design/pro-table/lib/Form';
 import CategorySelect from '@/components/CategorySelect';
+import { ProCoreActionType } from '@ant-design/pro-utils';
 
-interface IUseManagerTableDeps {
-  positionTypes?: IManagerPositionType[];
-  dutyTypes?: IManagerDutyType[];
-}
+interface IUseManagerTableDeps {}
 
 interface IUseManagerTableExport {
   columns: ProColumns<IManager>[];
-  request: Function;
-  actionRef: React.RefObject<ActionType | undefined>;
+  request: any;
+  actionRef: React.MutableRefObject<ProCoreActionType | undefined>;
   search: SearchConfig;
 }
 
 export default function useManagerTable(options: IUseManagerTableDeps): IUseManagerTableExport {
-  const actionRef = useRef<ActionType>();
+  const actionRef = useRef<ProCoreActionType>();
 
   const searchConfig = useCreation<SearchConfig>(() => {
     return {
@@ -127,9 +125,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         title: '操作',
         render: (text: any, record: IManager) => (
           <>
-            <a onClick={() => hooks.InfoManager.call(record)}>详情</a>
-            <Divider type="vertical" />
-            <a onClick={() => hooks.EditManager.call(record)}>更改</a>
+            <a onClick={() => hooks.InfoManager.call(record)}>更多</a>
             <Divider type="vertical" />
             <span>
               <Popconfirm
@@ -144,7 +140,7 @@ export default function useManagerTable(options: IUseManagerTableDeps): IUseMana
         ),
       },
     ] as ProColumns<IManager>[];
-  }, [options.positionTypes, options.dutyTypes]);
+  }, []);
 
   const requestManagerList = async (params: IPageableFilter<IManager>) => {
     let { current = 0, pageSize = 20, ...extra } = params;

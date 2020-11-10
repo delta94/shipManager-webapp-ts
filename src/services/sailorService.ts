@@ -2,7 +2,6 @@ import request from '@/utils/request';
 import { ISailor } from '@/interfaces/ISailor';
 import { PageableData } from '@/interfaces/ITableList';
 import { parsePagination } from '@/utils/parser';
-import { ICategory, ICommonOptionType } from '@/interfaces/ICategory';
 
 export async function listSailor(page: number = 1, size: number = 20, extra: any): Promise<PageableData<ISailor>> {
   return await request('/api/sailors', {
