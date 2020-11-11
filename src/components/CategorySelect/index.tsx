@@ -5,6 +5,7 @@ import { ICategory } from '@/interfaces/ICategory';
 import { useRequest } from 'umi';
 import { SelectProps } from 'antd/lib/select';
 import usePrevious from '@/hooks/usePrevious';
+import { FormInstance } from 'antd/lib/form';
 
 interface CategorySelectProps extends SelectProps<number> {
   category: ICategory;
@@ -12,9 +13,13 @@ interface CategorySelectProps extends SelectProps<number> {
   onSelect?: (value: number) => void;
   onChange?: (value: number) => void;
   showNotChoose?: boolean;
+  form?: FormInstance;
+  linkTypeNameField?: string;
 }
 
 const CategorySelect: React.FC<CategorySelectProps> = ({
+  form,
+  linkTypeNameField,
   value,
   onSelect,
   onChange,
@@ -45,6 +50,14 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     }
     if (onChange) {
       onChange(changedValue);
+    }
+    if (form && linkTypeNameField) {
+      let pair = data?.find((item) => item.id == changedValue);
+      if (pair) {
+        form.setFieldsValue({
+          [linkTypeNameField]: pair.name,
+        });
+      }
     }
   };
 

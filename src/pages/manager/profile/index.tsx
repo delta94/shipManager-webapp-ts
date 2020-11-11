@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { IRouteComponentProps } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { useRequest } from 'umi';
 import { Descriptions, Card, Button, Table, message, Modal } from 'antd';
@@ -9,7 +9,7 @@ import useManagerCertTable from './useManagerCertTable';
 import useManagerEditForm from './useManagerEditForm';
 import EditManagerBasicForm from './editManagerBasicForm';
 
-const ManagerProfile: React.FC<RouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
+const ManagerProfile: React.FC<IRouteComponentProps<{ id: string }>> = ({ match: { params } }) => {
   const { data, loading, refresh } = useRequest(infoManager, {
     defaultParams: [parseInt(params.id)],
     onError() {
