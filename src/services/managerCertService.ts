@@ -1,9 +1,35 @@
 import request from '@/utils/request';
-import { IManagerCertType } from '@/interfaces/IManager';
+import { IManagerCert } from '@/interfaces/IManager';
 
-export async function getManagerCertType(): Promise<IManagerCertType[]> {
-  return request('/api/common-option-types/ManagerCertType', {
+export async function getManagerCertInfo(): Promise<IManagerCert[]> {
+  return await request(`/api/manager-certs/`, {
     method: 'GET',
+  });
+}
+
+export async function infoManagerCertInfo(id: number): Promise<IManagerCert> {
+  return await request(`/api/manager-certs/${id}`, {
+    method: 'GET',
+  });
+}
+
+export async function createManagerCert(cert: IManagerCert): Promise<IManagerCert> {
+  return await request(`/api/manager-certs/`, {
+    method: 'POST',
+    data: cert,
+  });
+}
+
+export async function updateManagerCert(cert: IManagerCert): Promise<IManagerCert> {
+  return await request(`/api/manager-certs/`, {
+    method: 'PUT',
+    data: cert,
+  });
+}
+
+export async function deleteManagerCert(id: number): Promise<IManagerCert> {
+  return await request(`/api/manager-certs/${id}`, {
+    method: 'DELETE',
   });
 }
 

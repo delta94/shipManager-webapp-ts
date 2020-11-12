@@ -84,6 +84,19 @@ export default [
                 component: './manager/profile',
               },
               {
+                path: '/person/manager/create',
+                name: '新建管理人员',
+                component: './manager/create',
+                hideInMenu: true,
+              },
+              {
+                path: '/person/manager/certificate/:id',
+                name: '管理人员证书详情',
+                component: './manager/infoCertificate',
+                hideInMenu: true,
+              },
+
+              {
                 path: '/person/sailor/list',
                 name: '船员管理',
                 component: './sailor/list',
