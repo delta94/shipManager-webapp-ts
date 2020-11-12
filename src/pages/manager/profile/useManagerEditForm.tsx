@@ -12,7 +12,7 @@ interface IUseMangerFormExport {
   onShowEditManger(manager: Partial<IManager>): void;
 }
 
-export default function useManagerEditForm(option: IUseManagerFormDeps): IUseMangerFormExport {
+export default function useManagerEditForm(option?: IUseManagerFormDeps): IUseMangerFormExport {
   const [editManger, setEditManger] = useState<Partial<IManager>>();
   const [state, { setLeft, setRight }] = useToggle(false);
 

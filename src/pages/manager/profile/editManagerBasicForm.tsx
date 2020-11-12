@@ -8,10 +8,10 @@ import CategorySelect from '@/components/CategorySelect';
 interface EditManagerBasicFormProps {
   manager?: Partial<IManager>;
   onSubmit: (value: any) => Promise<void>;
-  onReset: any;
+  onCancel: any;
 }
 
-const EditManagerBasicForm: React.FC<EditManagerBasicFormProps> = ({ manager, onSubmit, onReset }) => {
+const EditManagerBasicForm: React.FC<EditManagerBasicFormProps> = ({ manager, onSubmit, onCancel }) => {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
@@ -150,7 +150,7 @@ const EditManagerBasicForm: React.FC<EditManagerBasicFormProps> = ({ manager, on
       <div style={{ height: 24 }} />
 
       <div className="g-ant-modal-footer">
-        <Button style={{ marginRight: 12 }} onClick={onReset}>
+        <Button style={{ marginRight: 12 }} onClick={onCancel}>
           取消
         </Button>
         <Button type="primary" loading={loading} htmlType="submit">

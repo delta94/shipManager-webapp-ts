@@ -34,7 +34,7 @@ const ListExtraContent: React.FC<Partial<IManagerCert>> = ({ issueDepartmentType
 
 const ManagerCertList: React.FC<ManagerCertListProps> = ({ value = [], onChange, onFileChange }) => {
   const [visible, updateVisible] = useState(false);
-  const [editCertificate, setEditCertificate] = useState<IManagerCert>();
+  const [editCertificate, setEditCertificate] = useState<Partial<IManagerCert>>();
   const [data, setData] = useState<Partial<IManagerCert>[]>(value);
   const previous = usePrevious<IManagerCert[]>(value);
 
@@ -134,7 +134,7 @@ const ManagerCertList: React.FC<ManagerCertListProps> = ({ value = [], onChange,
         onCancel={onCancel}
         footer={null}
       >
-        <EditManagerCertForm certificate={editCertificate} onCancel={onCancel} onSubmit={onSubmit} />
+        <EditManagerCertForm managerCert={editCertificate} onCancel={onCancel} onSubmit={onSubmit} />
       </Modal>
     </div>
   );

@@ -3,20 +3,22 @@ import { Form, Input, Button, DatePicker } from 'antd';
 import { IManagerCert } from '@/interfaces/IManager';
 import { ManagerCertKeyMap } from '@/services/managerCertService';
 import AliyunOSSUpload from '@/components/AliyunOSSUpload';
-import { dateFormatter, dateFormatterToString } from '@/utils/parser';
+import { dateFormatter, dateFormatterToString, formatUploadFileToOSSFiles } from '@/utils/parser';
 import CategorySelect from '@/components/CategorySelect';
 
 interface EditManagerCertFormProps {
-  certificate?: IManagerCert;
-  onCancel: Function;
-  onSubmit: Function;
+  managerCert?: Partial<IManagerCert>;
+  onCancel: any;
+  onSubmit: any;
 }
 
-const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({ certificate, onCancel, onSubmit }) => {
+const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({ managerCert, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
 
   const onFormFinish = (values: any) => {
     values = dateFormatterToString(values);
+
+    formatUploadFileToOSSFiles(values, "Manager");
 
     if (!values.id) {
       values.id = `new_${Date.now()}`;
@@ -30,17 +32,21 @@ const EditManagerCertForm: React.FC<EditManagerCertFormProps> = ({ certificate, 
   };
 
   useEffect(() => {
-    if (certificate) {
-      let values = dateFormatter({ ...certificate });
+    if (managerCert) {
+      let values = dateFormatter({ ...managerCert });
       form.setFieldsValue({
         ...values,
       });
     }
-  }, [certificate]);
+  }, [managerCert]);
 
   return (
     <Form form={form} onFinish={onFormFinish} labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
       <Form.Item label="id" name="id" noStyle>
+        <Input type="hidden" />
+      </Form.Item>
+
+      <Form.Item label="managerId" name="managerId" noStyle>
         <Input type="hidden" />
       </Form.Item>
 
